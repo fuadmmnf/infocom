@@ -18,6 +18,7 @@ class CreateComplainsTable extends Migration
 			$table->enum('status', ['pending', 'working', 'finished', 'approved'])->default('pending');
 			$table->text('complain_text');
 			$table->string('complain_summary')->default('');
+			$table->string('complain_feedback')->default('');
 			$table->enum('priority', ['low', 'medium', 'high', 'very high'])->default('low');
 			$table->dateTimeTz('complain_time')->default(\Carbon\Carbon::now());
 			$table->timestamps();

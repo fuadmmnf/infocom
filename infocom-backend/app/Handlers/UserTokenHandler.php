@@ -4,7 +4,9 @@
 namespace App\Handlers;
 
 
+use App\Models\Customer;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 
 class UserTokenHandler
@@ -21,6 +23,15 @@ class UserTokenHandler
         return $newUser;
     }
 
+    public function createCustomer(array $info){
+        $user = $this->createUser($info['name'], $info['phone'], $info['email'], $info['password']);
+        $customer = new Customer();
+        $customer->user_id = $user->id;
+        $customer->save();
+        $user->assignRole('customer');
+
+        return $customer;
+    }
 
     public function regenerateUserToken(User $user)
     {
