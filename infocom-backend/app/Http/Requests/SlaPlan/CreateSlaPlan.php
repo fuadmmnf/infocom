@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Requests\HelpTopic;
+namespace App\Http\Requests\SlaPlan;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateHelpTopic extends FormRequest
+class CreateSlaPlan extends FormRequest
 {
 	public function rules()
 	{
 		return [
-			'name' => 'required|unique:help_topics,name'
+			'name' => 'required|unique:sla_plans,name'
 		];
 	}
 

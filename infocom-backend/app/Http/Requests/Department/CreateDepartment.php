@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Requests\HelpTopic;
+namespace App\Http\Requests\Department;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateHelpTopic extends FormRequest
+class CreateDepartment extends FormRequest
 {
 	public function rules()
 	{
 		return [
-			'name' => 'required|unique:help_topics,name'
+			'name' => 'required|unique:departments,name'
 		];
 	}
 

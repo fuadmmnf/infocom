@@ -16,6 +16,6 @@ class HelpTopicController extends Controller
 
 	public function create(CreateHelpTopic $request){
 	    $helptopic = HelpTopic::create($request->validated());
-	    return response()->json($helptopic);
+	    return response()->json($helptopic, 201);
     }
 }

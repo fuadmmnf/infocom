@@ -16,6 +16,16 @@ use Illuminate\Support\Facades\Route;
 
 //helptopics
 Route::get('helptopics', [\App\Http\Controllers\Api\HelpTopicController::class, 'index']);
+
 Route::middleware(['auth:api'])->group(function(){
-    Route::get('', []);
+    //helptopics
+    Route::post('helptopics', [\App\Http\Controllers\Api\HelpTopicController::class, 'create']);
+
+    //departments
+    Route::get('departments', [\App\Http\Controllers\Api\DepartmentController::class, 'index']);
+    Route::post('departments', [\App\Http\Controllers\Api\DepartmentController::class, 'create']);
+
+    //slaplans
+    Route::get('slaplans', []);
+    Route::post('slaplans', []);
 });
