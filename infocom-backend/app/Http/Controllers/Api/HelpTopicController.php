@@ -8,14 +8,15 @@ use App\Models\HelpTopic;
 
 class HelpTopicController extends Controller
 {
-	public function index()
-	{
-	    $helptopics = HelpTopic::all();
-		return response()->json($helptopics);
-	}
+    public function index()
+    {
+        $helptopics = HelpTopic::all();
+        return response()->json($helptopics);
+    }
 
-	public function create(CreateHelpTopic $request){
-	    $helptopic = HelpTopic::create($request->validated());
-	    return response()->json($helptopic, 201);
+    public function create(CreateHelpTopic $request)
+    {
+        $helptopic = HelpTopic::create($request->validated());
+        return response()->json($helptopic, 201);
     }
 }

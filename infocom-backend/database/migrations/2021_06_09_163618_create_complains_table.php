@@ -9,7 +9,7 @@ class CreateComplainsTable extends Migration
 	public function up()
 	{
 		Schema::create('complains', function (Blueprint $table) {
-			$table->bigIncrements('id');
+			$table->id();
 			$table->unsignedBigInteger('customer_id');
 			$table->unsignedBigInteger('editor_id');
 			$table->unsignedBigInteger('helptopic_id');

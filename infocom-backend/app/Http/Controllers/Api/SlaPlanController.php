@@ -8,14 +8,15 @@ use App\Models\SlaPlan;
 
 class SlaPlanController extends Controller
 {
-	public function index()
-	{
-	    $slaplans = SlaPlan::all();
-		return response()->json($slaplans);
-	}
+    public function index()
+    {
+        $slaplans = SlaPlan::all();
+        return response()->json($slaplans);
+    }
 
-	public function create(CreateSlaPlan $request){
-	    $slaplan = SlaPlan::create($request->validated());
-	    return response()->json($slaplan, 201);
+    public function create(CreateSlaPlan $request)
+    {
+        $slaplan = SlaPlan::create($request->validated());
+        return response()->json($slaplan, 201);
     }
 }

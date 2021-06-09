@@ -8,14 +8,15 @@ use App\Models\Department;
 
 class DepartmentController extends Controller
 {
-	public function index()
-	{
-	    $departments = Department::all();
-		return response()->json($departments);
-	}
+    public function index()
+    {
+        $departments = Department::all();
+        return response()->json($departments);
+    }
 
-	public function create(CreateDepartment $request){
-	    $department = Department::create($request->validated());
-	    return response()->json($department, 201);
+    public function create(CreateDepartment $request)
+    {
+        $department = Department::create($request->validated());
+        return response()->json($department, 201);
     }
 }
