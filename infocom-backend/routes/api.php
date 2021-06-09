@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+//helptopics
+Route::get('helptopics', [\App\Http\Controllers\Api\HelpTopicController::class, 'index']);
+Route::middleware(['auth:api'])->group(function(){
+    Route::get('', []);
 });
