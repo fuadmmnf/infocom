@@ -19,7 +19,7 @@ class UserTokenHandler
         $newUser->phone = $phone;
         $newUser->password = Hash::make($password);
         $newUser->save();
-        $newUser->token = $newUser->createToken($newUser->name . $newUser->phone)->accessToken;
+        $newUser->token = $newUser->createToken($newUser->email . $newUser->phone)->accessToken;
         return $newUser;
     }
 
@@ -36,7 +36,7 @@ class UserTokenHandler
     public function regenerateUserToken(User $user)
     {
 //        $user->tokens()->delete();
-        $user->token = $user->createToken($user->name . $user->phone)->accessToken;
+        $user->token = $user->createToken($user->email . $user->phone)->accessToken;
         return $user;
     }
 
