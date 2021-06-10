@@ -11,20 +11,20 @@ export default ({store, router}) => {
 
 
   axios.onRequest((config) => {
-    if (store.getters.getUser) {
+    if (store.user.getters.getUser) {
       config.headers.common.Authorization = 'Bearer ' + store.state.user.token
-      store.commit('changeActionRunningState', true)
+      store.commit('user/changeActionRunningState', true)
     }
   })
 
   axios.onResponse((r) => {
-    store.commit('changeActionRunningState', false)
+    store.commit('user/changeActionRunningState', false)
   })
 
   axios.onError((error) => {
-    store.commit('changeActionRunningState', false)
+    store.commit('user/changeActionRunningState', false)
     if (error.response.status === 403 || error.response.status === 401) {
-      store.commit('storeUser', null)
+      store.commit('user/storeUser', null)
       router.push({name: 'login'})
     }
   })
