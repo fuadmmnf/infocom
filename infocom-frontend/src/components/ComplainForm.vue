@@ -12,6 +12,10 @@
 
     </div>
     <q-input class=" q-my-xs q-px-xs" filled clearable v-model="complain.complain_text" type="textarea" autogrow label="Complain details"/>
+    <div class="row q-px-xs " >
+      <q-btn class="bg-purple text-white" label="Submit" type="submit"/>
+
+    </div>
   </q-form>
 </template>
 
