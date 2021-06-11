@@ -10,18 +10,16 @@ export default ({store, router}) => {
   // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
 
-  axios.onRequest((config) => {
+  axios.interceptors.request.use((config) => {
     if (store.user.getters.getUser) {
       config.headers.common.Authorization = 'Bearer ' + store.state.user.token
       store.commit('user/changeActionRunningState', true)
     }
   })
 
-  axios.onResponse((r) => {
+  axios.interceptors.response.use((r) => {
     store.commit('user/changeActionRunningState', false)
-  })
-
-  axios.onError((error) => {
+  }, error => {
     store.commit('user/changeActionRunningState', false)
     if (error.response.status === 403 || error.response.status === 401) {
       store.commit('user/storeUser', null)

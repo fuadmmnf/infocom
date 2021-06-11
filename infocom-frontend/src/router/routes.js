@@ -1,11 +1,22 @@
-
 const routes = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/Index.vue') },
-      { path: 'complain', component: () => import('pages/CustomerComplain.vue') }
+      {path: '', component: () => import('pages/Index.vue')},
+      {path: 'login', component: () => import('pages/Login.vue')},
+      {path: 'complain', component: () => import('pages/CustomerComplain.vue')},
+    ]
+  },
+
+  {
+    path: '/dashboard',
+    meta: {
+      requiresAuth: true
+    },
+    component: () => import('layouts/DashboardLayout.vue'),
+    children: [
+      {path: '', component: () => import('pages/Index.vue')},
     ]
   },
 

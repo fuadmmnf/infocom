@@ -26,3 +26,6 @@ export const mutations = {
       : null
   }
 }
+
+
+export default {state, getters, mutations}

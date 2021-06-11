@@ -95,7 +95,7 @@ const linksData = [
 ];
 
 export default {
-  name: 'MainLayout',
+  name: 'DashboardLayout',
   components: { EssentialLink },
   data () {
     return {
