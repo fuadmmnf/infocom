@@ -8,9 +8,10 @@
     <div class="row q-my-none">
       <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled clearable v-model="complain.email" type="email"
                label="Email"/>
-      <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled clearable v-model="complain.helptopic_id"
+      <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled clearable v-model.number="complain.helptopic_id"
                 :options="helptopics" option-label="name"
-                option-value="id" label="Help Topic"/>
+                option-value="id" emit-value
+                map-options label="Help Topic"/>
 
     </div>
     <q-input class=" q-my-xs q-px-xs" filled clearable v-model="complain.complain_text" type="textarea" autogrow

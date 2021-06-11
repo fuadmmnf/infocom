@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 //helptopics
 Route::get('helptopics', [\App\Http\Controllers\Api\HelpTopicController::class, 'index']);
+Route::post('complains', [\App\Http\Controllers\Api\ComplainController::class, 'create']);
 
 Route::middleware(['auth:api'])->group(function(){
     //help topics
@@ -43,7 +44,6 @@ Route::middleware(['auth:api'])->group(function(){
 
     //complains
     Route::get('complains', [\App\Http\Controllers\Api\ComplainController::class, 'index']);
-    Route::post('complains', [\App\Http\Controllers\Api\ComplainController::class, 'create']);
     Route::put('complains/{complain_id}', [\App\Http\Controllers\Api\ComplainController::class, 'update']);
     Route::delete('complains/{complain_id}', [\App\Http\Controllers\Api\ComplainController::class, 'destroy']);
 });
