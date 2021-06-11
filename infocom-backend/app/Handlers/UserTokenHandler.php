@@ -27,6 +27,7 @@ class UserTokenHandler
         $user = $this->createUser($info['name'], $info['phone'], $info['email'], $info['password']);
         $customer = new Customer();
         $customer->user_id = $user->id;
+        $customer->code = $info['code']?? '';
         $customer->save();
         $user->assignRole('customer');
 

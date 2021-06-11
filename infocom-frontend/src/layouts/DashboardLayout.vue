@@ -36,7 +36,7 @@
               </q-avatar>
             </q-item-section>
             <q-item-section>
-              <q-item-label  class="text-subtitle2">Poultry Bazar</q-item-label>
+              <q-item-label  class="text-subtitle2">Infocom CMS</q-item-label>
             </q-item-section>
           </q-item>
         </q-item-label>

@@ -12,7 +12,7 @@ class CreateCallcenterAgent extends FormRequest
             'name' => 'required',
             'phone' => 'required|unique:users,phone',
             'email' => 'required|unique:users,email',
-            'password' => 'required|min:8|confirmed',
+            'password' => 'required|confirmed',
 		];
 	}
 

@@ -12,6 +12,7 @@
         "laravel/framework": "^8.40",
         "laravel/passport": "^10.1",
         "laravel/tinker": "^2.5",
+        "niklasravnsborg/laravel-pdf": "^4.1",
         "spatie/laravel-permission": "^4.2"
     },
     "require-dev": {

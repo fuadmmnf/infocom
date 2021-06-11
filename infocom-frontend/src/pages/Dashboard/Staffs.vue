@@ -13,7 +13,7 @@
         <q-btn label="Create" @click="showStaffForm = true">
           <q-dialog v-model="showStaffForm" persistent>
             <q-card style="min-width: 350px">
-              <q-form @submit="createStaff">
+              <q-form @submit.prevent.stop="createStaff">
 
                 <q-card-section class="q-pa-xs">
                   <q-list bordered padding>

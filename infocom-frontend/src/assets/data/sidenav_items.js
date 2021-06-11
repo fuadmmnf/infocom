@@ -24,12 +24,12 @@ export default function () {
       icon: 'home',
       route: {name: 'dashboard-staffs', params: {type: 'supportagents'}}
     },
-    {
-      title: 'Customers',
-      caption: '',
-      icon: 'home',
-      route: {name: 'dashboard-customers'}
-    },
+    // {
+    //   title: 'Customers',
+    //   caption: '',
+    //   icon: 'home',
+    //   route: {name: 'dashboard-customers'}
+    // },
     {
       title: 'Pending Complains',
       caption: '',
@@ -49,7 +49,7 @@ export default function () {
       route: {name: 'dashboard-complains', params: {status: 'finished'}}
     },
     {
-      title: 'Completed Complains',
+      title: 'Complain History',
       caption: '',
       icon: 'home',
       route: {name: 'dashboard-complains', params: {status: 'approved'}}

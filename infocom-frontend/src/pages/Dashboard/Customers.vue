@@ -1,13 +1,13 @@
 <template>
   <q-page>
     <q-table
-      :title="$route.params.name === 'supportagents'? 'Support Agents': 'Call Center Agents'"
+      title="Customers"
       :data="customers"
       :columns="columns"
       row-key="id"
       :rows-per-page-options="[0]"
       :pagination.sync="pagination"
-      hide-bottom
+      @update:pagination="({page}) => {fetchCustomers(page)}"
     >
       <template v-slot:top-right>
         <q-btn label="Create" @click="showCustomerForm = true">
@@ -17,8 +17,7 @@
 
                 <q-card-section class="q-pa-xs">
                   <q-list bordered padding>
-                    <q-item-label header>Create New
-                      {{ $route.params.type === 'supportagents' ? 'Support Agent' : 'Callcenter Agent' }}
+                    <q-item-label header>Create New Customer
                     </q-item-label>
 
                     <q-item>
@@ -46,11 +45,12 @@
                           :rules="[val => (!!val ) || 'Enter customer email']"
                         />
 
-                        <q-select class="q-mb-md" v-if="$route.params.type === 'supportagents'" filled clearable
-                                  v-model.number="customerForm.department_id"
-                                  :options="departments" option-label="name"
-                                  option-value="id" emit-value
-                                  map-options label="Department"/>
+                        <q-input
+                          class="q-mb-md"
+                          filled
+                          v-model="customerForm.code"
+                          label="Code"
+                        />
 
                         <q-input
                           filled
@@ -97,7 +97,7 @@ export default {
       showCustomerForm: false,
       pagination: {
         page: 1,
-        rowsPerPage: 0 // 0 means all rows
+        rowsPerPage: 20
       },
       departments: [],
       customers: [],
@@ -105,6 +105,7 @@ export default {
         name: '',
         email: '',
         phone: '',
+        code: '',
         department_id: '',
         password: '',
         password_confirmation: '',
@@ -113,29 +114,24 @@ export default {
         {name: 'name', align: 'center', label: 'Name', field: row => row.user.name, sortable: true},
         {name: 'phone', align: 'center', label: 'Phone', field: row => row.user.phone},
         {name: 'email', align: 'center', label: 'Email', field: row => row.user.email},
-      ].concat(this.$route.params.type === 'supportagents' ?
-        [{
-          name: 'department',
-          align: 'center',
-          label: 'Department',
-          field: row => row.department.name,
-          sortable: true
-        }] : []
-      )
+        {name: 'code', align: 'center', label: 'Code', field: row => row.code},
+      ]
+
     }
   },
   mounted() {
     this.fetchCustomers()
   },
   methods: {
-    fetchCustomers() {
-      this.$axios.get(this.$route.params.type)
+    fetchCustomers(page = 1) {
+      this.$axios.get(`customers?page=${page}`)
         .then((res) => {
-          this.customers = res.data
+          this.customers = res.data.data
+
         })
     },
     createCustomer() {
-      this.$axios.post(this.$route.params.type, this.customerForm)
+      this.$axios.post('customers', this.customerForm)
         .then((res) => {
           if (res.status === 201) {
             this.showCustomerForm = false

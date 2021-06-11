@@ -18,7 +18,7 @@ const routes = [
     children: [
       {path: '', name: 'dashboard-home', component: () => import('pages/Dashboard/Index.vue')},
       {path: 'staffs/:type', name: 'dashboard-staffs', component: () => import('pages/Dashboard/Staffs.vue')},
-      {path: 'customers', name: 'dashboard-customers', component: () => import('pages/Dashboard/Customers.vue')},
+      // {path: 'customers', name: 'dashboard-customers', component: () => import('pages/Dashboard/Customers.vue')},
       {path: 'resources', name: 'dashboard-resources', component: () => import('pages/Dashboard/Resources.vue')},
       {path: 'complains/:status', name: 'dashboard-complains', component: () => import('pages/Dashboard/Complains.vue')},
     ]

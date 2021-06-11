@@ -12,7 +12,8 @@ class CreateCustomer extends FormRequest
 		    'name' => 'required',
 			'phone' => 'required|unique:users,phone',
 			'email' => 'required|unique:users,email',
-			'password' => 'required|min:8|confirmed',
+			'code' => 'sometimes',
+			'password' => 'required|confirmed',
 		];
 	}
 
