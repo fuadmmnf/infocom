@@ -7,6 +7,7 @@ export const state = () => ({
 
 export const getters = {
   getUser: (state) => state.user,
+  getActionRunningState: (state) => state.isActionRunning
 }
 export const mutations = {
   changeActionRunningState(state, status) {

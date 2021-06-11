@@ -11,20 +11,23 @@ export default ({store, router}) => {
 
 
   axios.interceptors.request.use((config) => {
-    if (store.user.getters.getUser) {
+    if (store.getters.getUser) {
       config.headers.common.Authorization = 'Bearer ' + store.state.user.token
-      store.commit('user/changeActionRunningState', true)
     }
+    store.commit('changeActionRunningState', true)
+    return config
   })
 
   axios.interceptors.response.use((r) => {
-    store.commit('user/changeActionRunningState', false)
+    store.commit('changeActionRunningState', false)
+    return r
   }, error => {
-    store.commit('user/changeActionRunningState', false)
-    if (error.response.status === 403 || error.response.status === 401) {
-      store.commit('user/storeUser', null)
+    store.commit('changeActionRunningState', false)
+    if (error.status === 403 || error.status === 401) {
+      store.commit('storeUser', null)
       router.push({name: 'login'})
     }
+    return error
   })
 
   Vue.prototype.$axios = axios

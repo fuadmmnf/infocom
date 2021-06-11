@@ -1,13 +1,13 @@
 <template>
-  <q-page >
+  <q-page>
     <div>
-      <div  class="row justify-center q-my-md">
+      <div class="row justify-center q-my-md">
         <h5 class="text-center text-h5 q-my-md">Customer Complain Form</h5>
       </div>
-      <div  class="row justify-center q-my-md">
+      <div class="row justify-center q-my-md">
         <q-card flat bordered class="q-pa-lg" style="min-width: 80%">
-          <q-card-section >
-            <ComplainForm :helptopics="[]"/>
+          <q-card-section>
+            <ComplainForm :helptopics="helptopics"/>
           </q-card-section>
         </q-card>
       </div>
@@ -17,13 +17,33 @@
 
 <script>
 import ComplainForm from "components/ComplainForm";
+
 export default {
   name: 'CusomerComplain',
   components: {ComplainForm},
   data() {
     return {
-      email: '',
-      password: ''
+      helptopics: []
+    }
+  },
+  mounted() {
+    this.fetchHelpTopics()
+    this.$root.$on('complain-created', (complain) => {
+      this.$q.notify({
+        type: 'positive',
+        message: `Complain Submitted Successfully`,
+        position: 'top-right'
+      })
+      this.$router.replace('home')
+    })
+  },
+  methods: {
+    fetchHelpTopics() {
+      this.$axios.get('helptopics')
+        .then((res) => {
+          console.log(res)
+          this.helptopics = res.data
+        }).catch(e=> console.error(e))
     }
   }
 }
