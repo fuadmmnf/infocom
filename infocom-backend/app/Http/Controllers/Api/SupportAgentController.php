@@ -13,7 +13,9 @@ class SupportAgentController extends Controller
 {
     public function index()
     {
-        //
+        $supportAgents = SupportAgent::orderByDesc('created_at')->get();
+        $supportAgents->load('user', 'department');
+        return response()->json($supportAgents);
     }
 
     public function create(CreateSupportAgent $request)

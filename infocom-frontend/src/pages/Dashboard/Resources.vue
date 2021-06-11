@@ -29,7 +29,6 @@
                     />
                   </q-item-section>
                 </q-item>
-                <q-separator/>
               </q-list>
             </q-card-section>
 
@@ -42,6 +41,7 @@
         </q-dialog>
       </q-btn>
     </div>
+    <br/>
     <div class="row">
       <resource-table class="q-px-md" title="Help Topics" resource_url="helptopics"/>
       <resource-table class="q-px-md" title="Departments" resource_url="departments"/>
@@ -54,7 +54,7 @@
 import ResourceTable from "components/ResourceTable";
 
 export default {
-  name: 'DashboardIndex',
+  name: 'DashboardResources',
   components: {ResourceTable},
   data() {
     return {

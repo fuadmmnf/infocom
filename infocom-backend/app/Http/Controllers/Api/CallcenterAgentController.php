@@ -7,15 +7,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CallcenterAgent\CreateCallcenterAgent;
 use App\Models\CallcenterAgent;
 
-class CallcenterAgentController extends Controller
-{
-    public function index()
-    {
-        //
+class CallcenterAgentController extends Controller {
+    public function index() {
+        $callcenterAgents = CallcenterAgent::orderByDesc('created_at')->with('user')->get();
+        return response()->json($callcenterAgents);
     }
 
-    public function create(CreateCallcenterAgent $request)
-    {
+    public function create(CreateCallcenterAgent $request) {
         $info = $request->validated();
 
         $userTokenHandler = new UserTokenHandler();

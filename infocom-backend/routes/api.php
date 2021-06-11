@@ -35,12 +35,15 @@ Route::middleware(['auth:api'])->group(function(){
 
 
     //callcenteragents
+    Route::get('callcenteragents', [\App\Http\Controllers\Api\CallcenterAgentController::class, 'index']);
     Route::post('callcenteragents', [\App\Http\Controllers\Api\CallcenterAgentController::class, 'create']);
 
     //supportagents
+    Route::get('supportagents', [\App\Http\Controllers\Api\SupportAgentController::class, 'index']);
     Route::post('supportagents', [\App\Http\Controllers\Api\SupportAgentController::class, 'create']);
 
     //customers
+    Route::get('customers', [\App\Http\Controllers\Api\CustomerController::class, 'index']);
     Route::post('customers', [\App\Http\Controllers\Api\CustomerController::class, 'create']);
 
     //complains

@@ -16,13 +16,13 @@ export default function () {
       title: 'Callcenter Agents',
       caption: '',
       icon: 'home',
-      route: {name: 'dashboard-staffs', params: {type: 'callcenter'}}
+      route: {name: 'dashboard-staffs', params: {type: 'callcenteragents'}}
     },
     {
       title: 'Support Agents',
       caption: '',
       icon: 'home',
-      route: {name: 'dashboard-staffs', params: {type: 'supportagent'}}
+      route: {name: 'dashboard-staffs', params: {type: 'supportagents'}}
     },
     {
       title: 'Customers',

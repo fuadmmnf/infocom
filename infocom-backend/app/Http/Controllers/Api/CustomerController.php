@@ -9,8 +9,10 @@ use App\Models\Customer;
 
 class CustomerController extends Controller {
     public function index() {
-
+        $customers = Customer::orderByDesc('created_at')->with('user')->paginate(20);
+        return response()->json($customers);
     }
+
 
     public function create(CreateCustomer $request) {
         $userTokenHandler = new UserTokenHandler();
