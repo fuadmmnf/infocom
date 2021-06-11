@@ -12,7 +12,7 @@ export default ({store, router}) => {
 
   axios.interceptors.request.use((config) => {
     if (store.getters.getUser) {
-      config.headers.common.Authorization = 'Bearer ' + store.state.user.token
+      config.headers.common.Authorization = 'Bearer ' + store.getters.getUser.token
     }
     store.commit('changeActionRunningState', true)
     return config

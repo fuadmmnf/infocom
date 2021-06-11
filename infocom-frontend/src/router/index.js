@@ -25,7 +25,7 @@ export default function ({ store } ) {
   store.commit('init')
 
   Router.beforeEach((to, from, next) => {
-    const currentUser = store.state.user.user
+    const currentUser = store.getters.getUser
     const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
     if (requiresAuth && currentUser === null) {
       next('/login')

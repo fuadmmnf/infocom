@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//users
+Route::post('login', [\App\Http\Controllers\Api\UserController::class, 'login']);
+
 //helptopics
 Route::get('helptopics', [\App\Http\Controllers\Api\HelpTopicController::class, 'index']);
 Route::post('complains', [\App\Http\Controllers\Api\ComplainController::class, 'create']);
@@ -30,8 +33,6 @@ Route::middleware(['auth:api'])->group(function(){
     Route::get('slaplans', [\App\Http\Controllers\Api\SlaPlanController::class, 'index']);
     Route::post('slaplans', [\App\Http\Controllers\Api\SlaPlanController::class, 'create']);
 
-    //users
-    Route::post('login', [\App\Http\Controllers\Api\UserController::class, 'login']);
 
     //callcenteragents
     Route::post('callcenteragents', [\App\Http\Controllers\Api\CallcenterAgentController::class, 'create']);

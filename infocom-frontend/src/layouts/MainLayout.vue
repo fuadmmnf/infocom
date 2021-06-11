@@ -1,12 +1,16 @@
 <template>
   <q-layout view="hHh lpr fFf">
-    <q-header class="bg-purple-10" elevated>
+    <q-header elevated>
       <q-toolbar>
         <q-toolbar-title>
-          Quasar App
+          Infocom CMS
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <div>
+          <q-btn :to="{name: 'customer-complain'}" flat label="create complain" />
+          <q-btn :to="{name: 'login'}" v-if="$store.getters.getUser === null" flat label="login" />
+          <q-btn :to="{name: 'dashboard'}" v-else flat label="dashboard" />
+        </div>
       </q-toolbar>
     </q-header>
 

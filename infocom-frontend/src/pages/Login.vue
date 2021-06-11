@@ -1,22 +1,23 @@
 <template>
-  <q-page class="window-height window-width row justify-center items-center">
-    <div class="column">
-      <div class="row">
-        <h5 class="text-h5  q-my-md">Infocom Login</h5>
+  <q-page>
+    <div>
+      <div class="row justify-center q-my-md">
+        <h5 class="text-center text-h5 q-my-md">Infocom Login</h5>
       </div>
-      <div class="row">
-        <q-card class="shadow-1">
+      <div class="row justify-center q-my-md">
+        <q-card flat bordered class="q-pa-lg" style="min-width: 40%">
           <q-card-section>
-            <q-form class="q-gutter-md">
-              <q-input filled clearable v-model="email" type="email" label="email"/>
-              <q-input filled clearable v-model="password" type="password" label="password"/>
+            <q-form @submit="login" class="q-gutter-md">
+              <div class="row">
+                <q-input class="col-12 q-my-xs q-px-xs" filled clearable type="email" v-model="loginForm.email" label="Email"/>
+                <q-input class="col-12  q-my-xs q-px-xs" filled clearable v-model="loginForm.password" type="password" label="Password"/>
+              </div>
+              <div class="row q-px-xs ">
+                <q-btn class="bg-purple text-white" label="Submit" type="login"
+                       :disable="this.$store.getters.getActionRunningState"/>
+
+              </div>
             </q-form>
-          </q-card-section>
-          <q-card-actions class="q-px-md">
-            <q-btn unelevated color="light-green-7" size="lg" class="full-width" label="Login"/>
-          </q-card-actions>
-          <q-card-section class="text-center q-pa-none">
-<!--            <p class="text-grey-6">Not reigistered? Created an Account</p>-->
           </q-card-section>
         </q-card>
       </div>
@@ -29,8 +30,21 @@ export default {
   name: 'Login',
   data() {
     return {
-      email: '',
-      password: ''
+      loginForm: {
+        email: '',
+        password: ''
+      }
+    }
+  },
+  methods: {
+    login(){
+      this.$axios.post('login', this.loginForm)
+      .then((res) => {
+        if(res.status === 200){
+          this.$store.commit('storeUser', res.data)
+          this.$router.replace({name: 'dashboard-home'})
+        }
+      })
     }
   }
 }

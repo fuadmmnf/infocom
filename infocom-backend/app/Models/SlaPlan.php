@@ -6,4 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class SlaPlan extends Model
 {
+    protected $guarded = [];
 }
