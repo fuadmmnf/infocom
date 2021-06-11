@@ -11,7 +11,7 @@ class CreateComplainsTable extends Migration
 		Schema::create('complains', function (Blueprint $table) {
 			$table->id();
 			$table->unsignedBigInteger('customer_id');
-			$table->unsignedBigInteger('editor_id');
+			$table->unsignedBigInteger('editor_id')->nullable();
 			$table->unsignedBigInteger('helptopic_id');
 			$table->unsignedBigInteger('department_id')->nullable();
 			$table->unsignedBigInteger('slaplan_id')->nullable();

@@ -34,7 +34,7 @@ export default {
         message: `Complain Submitted Successfully`,
         position: 'top-right'
       })
-      this.$router.replace('home')
+      this.$router.replace({name: 'home'})
     })
   },
   methods: {
@@ -43,7 +43,7 @@ export default {
         .then((res) => {
           console.log(res)
           this.helptopics = res.data
-        }).catch(e=> console.error(e))
+        }).catch(e => console.error(e))
     }
   }
 }

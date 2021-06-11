@@ -28,14 +28,14 @@ class ComplainController extends Controller {
 
         \DB::beginTransaction();
         try {
-            $customer = User::where('email', $info['email'])->where('phone', $info['phone'])->firstOrFail();
+            $customer = User::where('email', $info['email'])->where('phone', $info['phone'])->first();
             if (!$customer) {
                 $info['password'] = $info['password'] ?? $info['phone'];
                 $userTokenHandler = new UserTokenHandler();
-                $customer = $userTokenHandler->createCustomer($request->validated());
+                $customer = $userTokenHandler->createCustomer($info);
             }
             $info['customer_id'] = $customer->id;
-            $complain = Complain::create($info);
+            $complain = Complain::create(array_diff_key($info, array_flip(['name', 'phone', 'email', 'password'])));
         } catch (\Exception $exception) {
             DB::rollBack();
             throw new \Exception($exception->getMessage());
