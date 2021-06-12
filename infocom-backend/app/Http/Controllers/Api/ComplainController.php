@@ -7,10 +7,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Complain\CreateComplain;
 use App\Http\Requests\Complain\DestroyComplain;
 use App\Http\Requests\Complain\UpdateComplain;
+use App\Mail\CustomerComplainApproval;
 use App\Models\Complain;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class ComplainController extends Controller {
     public function index(Request $request) {
@@ -47,12 +49,16 @@ class ComplainController extends Controller {
 
     public function update(UpdateComplain $request) {
         $complain = Complain::findOrFail($request->route('complain_id'));
-
+        $complain->load('customer', 'customer.user');
         $info = array_filter($request->validated(), function ($val, $key) use ($complain) {
             return !is_null($val) && $val !== '' && $complain[$key] !== $val;
         }, ARRAY_FILTER_USE_BOTH);
 
         $complain->update($info);
+
+        if ($complain->status == 'approved') {
+            Mail::to($complain->customer->user->email)->send(new CustomerComplainApproval($complain));
+        }
 
         return response()->noContent();
     }
