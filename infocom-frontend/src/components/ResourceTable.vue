@@ -39,6 +39,14 @@ export default {
     }
   },
   mounted() {
+    if (this.resource_url === 'departments') {
+      this.columns.push({
+        name: 'leader',
+        align: 'center',
+        label: 'Leader',
+        field: row => row.leader.name !== undefined ? `${row.leader.name}` : ''
+      })
+    }
     this.fetchResource()
     this.$root.$on('resource-created', this.fetchResource)
   },
