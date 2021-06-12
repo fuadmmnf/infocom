@@ -19,7 +19,7 @@ class ComplainController extends Controller {
             $complainsQuery->where('department_id', $request->query('department_id'));
         }
         $complains = $complainsQuery->paginate(20);
-        $complains->load('customer', 'customer.user');
+        $complains->load('customer', 'customer.user', 'editor', 'editor.user');
         return response()->json($complains);
     }
 

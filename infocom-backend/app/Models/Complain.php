@@ -13,4 +13,8 @@ class Complain extends Model {
     public function customer() {
         return $this->belongsTo(Customer::class);
     }
+
+    public function editor(){
+        return $this->belongsTo(SupportAgent::class);
+    }
 }

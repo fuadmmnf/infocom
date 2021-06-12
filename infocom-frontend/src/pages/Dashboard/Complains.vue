@@ -27,7 +27,7 @@
         <q-tab-panels v-model="tab" animated>
           <q-tab-panel v-if="hasCallcenterAgentAccess" name="agent-complain">
             <div class="text-h6">New Customer Complain</div>
-            <complain-form :helptopics="helptopics" :departments="departments" :slaplans="slaplans"/>
+            <complain-form/>
           </q-tab-panel>
 
           <q-tab-panel v-if="hasCallcenterAgentAccess" name="pending">
@@ -42,16 +42,19 @@
 
           <q-tab-panel v-if="hasSupportAgentAccess" name="running">
             <div class="text-h6">Running Complains</div>
+            <complains-list status="working"/>
           </q-tab-panel>
 
 
           <q-tab-panel v-if="hasCallcenterAgentAccess" name="feedback">
             <div class="text-h6">Feedback Complains</div>
+            <complains-list status="finished"/>
           </q-tab-panel>
 
 
           <q-tab-panel name="history">
             <div class="text-h6">Complain History</div>
+            <complains-list status="approved"/>
           </q-tab-panel>
         </q-tab-panels>
       </q-card>
@@ -72,10 +75,16 @@ export default {
     }
   },
   mounted() {
-
+    this.$root.$on('complain-created', (complain) => {
+      this.$q.notify({
+        type: 'positive',
+        message: `Complain Created Successfully`,
+        position: 'top-right'
+      })
+    })
   },
   computed: {
-    hasSupportAgentAccess: function (){
+    hasSupportAgentAccess: function () {
       return this.$store.getters.getUser.support_agent !== undefined ||
         this.$store.getters.getUser.super_admin !== undefined
     },
@@ -86,8 +95,6 @@ export default {
     },
 
   },
-  methods: {
-
-  }
+  methods: {}
 }
 </script>

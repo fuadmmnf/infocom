@@ -3,7 +3,6 @@
     <q-table
       title=""
       flat
-
       :data="complains"
       :columns="columns"
       row-key="id"
@@ -79,6 +78,16 @@ export default {
   },
   mounted() {
     // this.fetchComplainsList()
+    this.$root.$on('complain-updated', (data) => {
+      this.showComplainDetailModal = false
+      this.selectedComplain = null;
+      this.fetchComplainsList(this.pagination.page)
+      this.$q.notify({
+        type: 'positive',
+        message: `Complain Submitted Successfully`,
+        position: 'top-right'
+      })
+    })
   },
   methods: {
     fetchComplainsList(page = 1) {

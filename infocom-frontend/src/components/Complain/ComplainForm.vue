@@ -1,15 +1,15 @@
 <template>
-  <q-form @submit="complain.status === undefined? createComplain(): updateComplain()" @reset="complain = {}"
+  <q-form @submit="complain.status === undefined? createComplain(): updateComplain(true)" @reset="complain = {}"
           class="q-gutter-md">
     <div class="row">
-      <q-input class="col-md-6 col-xs-12  q-my-xs q-px-xs" filled clearable v-model="complain.name" label="Full Name"/>
-      <q-input class="col-md-6 col-xs-12  q-my-xs q-px-xs" filled clearable v-model="complain.phone" label="Phone"/>
+      <q-input class="col-md-6 col-xs-12  q-my-xs q-px-xs" filled  v-model="complain.name" label="Full Name"/>
+      <q-input class="col-md-6 col-xs-12  q-my-xs q-px-xs" filled  v-model="complain.phone" label="Phone"/>
     </div>
 
     <div class="row q-my-none">
-      <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled clearable v-model="complain.email" type="email"
+      <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled  v-model="complain.email" type="email"
                label="Email"/>
-      <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled clearable v-model.number="complain.helptopic_id"
+      <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled  v-model.number="complain.helptopic_id"
                 :options="$store.getters.getHelpTopics" option-label="name"
                 option-value="id" emit-value
                 map-options label="Help Topic"/>
@@ -18,7 +18,7 @@
 
     <div v-if="$store.getters.getDepartments.length" class="row q-my-none">
 
-      <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled clearable v-model="complain.ticket_source"
+      <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled  v-model="complain.ticket_source"
                 :options="[
                   {label: 'Agent Create', value: 'agent'},
                   {label: 'Customer Email', value: 'email'},
@@ -26,7 +26,7 @@
                 emit-value
                 label="Ticket Source"/>
 
-      <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled clearable v-model.number="complain.department_id"
+      <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled  v-model.number="complain.department_id"
                 :options="$store.getters.getDepartments" option-label="name"
                 option-value="id" emit-value
                 map-options label="Department"/>
@@ -34,16 +34,16 @@
     </div>
 
 
-    <div v-if="slaplans.length" class="row q-my-none">
+    <div v-if="$store.getters.getSlaPlans.length" class="row q-my-none">
 
-      <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled clearable v-model.number="complain.slaplan_id"
+      <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled  v-model.number="complain.slaplan_id"
                 :options="$store.getters.getSlaPlans"
                 option-label="name"
                 option-value="id" emit-value
                 map-options
                 label="SLA Plan"/>
 
-      <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled clearable v-model="complain.priority"
+      <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled  v-model="complain.priority"
                 :options="[
                   {label: 'Low', value: 'low'},
                   {label: 'Medium', value: 'medium'},
@@ -57,16 +57,20 @@
     </div>
 
 
-    <q-input v-if="$store.getters.getDepartments.length" class=" q-my-xs q-px-xs" filled clearable
+    <q-input v-if="$store.getters.getDepartments.length" class=" q-my-xs q-px-xs" filled
              v-model="complain.complain_summary"
              type="textarea" autogrow
              label="Complain Summary"/>
 
-    <q-input class=" q-my-xs q-px-xs" filled clearable v-model="complain.complain_text" type="textarea" autogrow
+    <q-input class=" q-my-xs q-px-xs" filled  v-model="complain.complain_text" type="textarea" autogrow
              label="Complain details"/>
 
-    <div class="row q-px-xs ">
-      <q-btn v-if="$store.getters.getDepartments.length" class="bg-red text-white q-mr-sm" label="Reset" type="reset"/>
+    <div v-if="complain.status !== 'approved'" class="row q-px-xs ">
+      <q-btn v-if="complain.status === undefined" class="bg-red text-white q-mr-sm" label="Reset" type="reset"/>
+      <q-btn v-if="complain.status !== undefined" class="bg-info text-white q-mr-sm" label="Save" type="button"
+             @click="updateComplain(false)"
+             :disable="this.$store.getters.getActionRunningState"/>
+
       <q-btn class="bg-purple text-white" label="Submit" type="submit"
              :disable="this.$store.getters.getActionRunningState"/>
 
@@ -99,7 +103,12 @@ export default {
   computed: {},
   mounted() {
     if (this.existingComplain.status !== undefined) {
-      this.complain = {...this.existingComplain}
+      this.complain = {
+        ...this.existingComplain,
+        name: this.existingComplain.customer.user.name,
+        phone: this.existingComplain.customer.user.phone,
+        email: this.existingComplain.customer.user.email,
+      }
     }
   },
   methods: {
@@ -107,19 +116,26 @@ export default {
       this.$axios.post('complains', this.complain)
         .then((res) => {
           if (res.status === 201) {
+            this.complain = {}
             this.$root.$emit('complain-created', res.data)
           }
         })
 
     },
 
-    updateComplain() {
-      this.$axios.put('complains', this.complain)
+    updateComplain(isStatusChange) {
+      const statusList = ['pending', 'assigned', 'working', 'finished', 'approved']
+      if (isStatusChange) {
+        this.complain.status = statusList[statusList.indexOf(this.complain.status) + 1]
+      }
+      this.$axios.put(`complains/${this.complain.id}`, this.complain)
         .then((res) => {
-          if (res.status === 201) {
-            this.$root.$emit('complain-created', res.data)
-          }
-        })
+          this.$root.$emit('complain-updated', res.data)
+        }).catch((e) => {
+        if (isStatusChange) {
+          this.complain.status = statusList[statusList.indexOf(this.complain.status) - 1]
+        }
+      })
 
     }
   }
