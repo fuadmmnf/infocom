@@ -14,12 +14,12 @@ use Illuminate\Support\Facades\DB;
 
 class ComplainController extends Controller {
     public function index(Request $request) {
-        $complainsQuery = DB::table('complains')->where('status', 'LIKE', '%' . $request->query('status') ?? '' . '%');
+        $complainsQuery = Complain::where('status', 'LIKE', '%' . $request->query('status') ?? '' . '%');
         if ($request->query('department_id') !== null) {
             $complainsQuery->where('department_id', $request->query('department_id'));
         }
-
         $complains = $complainsQuery->paginate(20);
+        $complains->load('customer', 'customer.user');
         return response()->json($complains);
     }
 

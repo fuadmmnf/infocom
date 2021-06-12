@@ -7,7 +7,7 @@
       <div class="row justify-center q-my-md">
         <q-card flat bordered class="q-pa-lg" style="min-width: 80%">
           <q-card-section>
-            <ComplainForm :helptopics="helptopics"/>
+            <complain-form :helptopics="helptopics"/>
           </q-card-section>
         </q-card>
       </div>
@@ -16,8 +16,8 @@
 </template>
 
 <script>
-import ComplainForm from "components/ComplainForm";
 
+import ComplainForm from "components/Complain/ComplainForm";
 export default {
   name: 'CusomerComplain',
   components: {ComplainForm},

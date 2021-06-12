@@ -13,12 +13,12 @@ class CreateComplainsTable extends Migration {
             $table->unsignedBigInteger('helptopic_id');
             $table->unsignedBigInteger('department_id')->nullable();
             $table->unsignedBigInteger('slaplan_id')->nullable();
-            $table->enum('status', ['pending', 'working', 'finished', 'approved'])->default('pending');
+            $table->enum('status', ['pending', 'assigned', 'working', 'finished', 'approved'])->default('pending');
             $table->enum('ticket_source', ['customer', 'agent', 'email'])->default('customer');
             $table->text('complain_text');
             $table->string('complain_summary')->default('');
             $table->string('complain_feedback')->default('');
-            $table->enum('priority', ['low', 'medium', 'high', 'very high'])->default('low');
+            $table->enum('priority', ['low', 'medium', 'high', 'urgent'])->default('low');
             $table->dateTimeTz('complain_time')->default(\Carbon\Carbon::now());
             $table->timestamps();
 

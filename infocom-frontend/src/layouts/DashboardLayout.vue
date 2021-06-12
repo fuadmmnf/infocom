@@ -14,7 +14,9 @@
         <q-toolbar-title>
           Infocom CMS Dashboard
         </q-toolbar-title>
-
+        <div>
+          <q-btn @click="logout" flat label="logout"/>
+        </div>
       </q-toolbar>
     </q-header>
 
@@ -32,11 +34,11 @@
           <q-item>
             <q-item-section side>
               <q-avatar rounded size="70px">
-                <img alt="logo" src="~assets/logo.png" />
+                <img alt="logo" src="~assets/logo.png"/>
               </q-avatar>
             </q-item-section>
             <q-item-section>
-              <q-item-label  class="text-subtitle2">Infocom CMS</q-item-label>
+              <q-item-label class="text-subtitle2">Infocom CMS</q-item-label>
             </q-item-section>
           </q-item>
         </q-item-label>
@@ -58,13 +60,19 @@
 <script>
 import EssentialLink from 'components/EssentialLink.vue'
 import sidenavdata from "assets/data/sidenav_items";
+
 export default {
   name: 'DashboardLayout',
-  components: { EssentialLink },
-  data () {
+  components: {EssentialLink},
+  data() {
     return {
       leftDrawerOpen: false,
       essentialLinks: sidenavdata(),
+    }
+  },methods: {
+    logout(){
+      this.$store.commit('storeUser', null)
+      this.$router.replace({name: 'home'})
     }
   }
 }

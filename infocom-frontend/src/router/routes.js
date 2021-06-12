@@ -20,7 +20,7 @@ const routes = [
       {path: 'staffs/:type', name: 'dashboard-staffs', component: () => import('pages/Dashboard/Staffs.vue')},
       // {path: 'customers', name: 'dashboard-customers', component: () => import('pages/Dashboard/Customers.vue')},
       {path: 'resources', name: 'dashboard-resources', component: () => import('pages/Dashboard/Resources.vue')},
-      {path: 'complains/:status', name: 'dashboard-complains', component: () => import('pages/Dashboard/Complains.vue')},
+      {path: 'complains', name: 'dashboard-complains', component: () => import('pages/Dashboard/Complains.vue')},
     ]
   },
 

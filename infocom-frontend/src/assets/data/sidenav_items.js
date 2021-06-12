@@ -31,28 +31,28 @@ export default function () {
     //   route: {name: 'dashboard-customers'}
     // },
     {
-      title: 'Pending Complains',
+      title: 'Complains',
       caption: '',
       icon: 'home',
-      route: {name: 'dashboard-complains', params: {status: 'pending'}}
+      route: {name: 'dashboard-complains'}
     },
-    {
-      title: 'Working Complains',
-      caption: '',
-      icon: 'home',
-      route: {name: 'dashboard-complains', params: {status: 'working'}}
-    },
-    {
-      title: 'Feedback Complains',
-      caption: '',
-      icon: 'home',
-      route: {name: 'dashboard-complains', params: {status: 'finished'}}
-    },
-    {
-      title: 'Complain History',
-      caption: '',
-      icon: 'home',
-      route: {name: 'dashboard-complains', params: {status: 'approved'}}
-    },
+    // {
+    //   title: 'Working Complains',
+    //   caption: '',
+    //   icon: 'home',
+    //   route: {name: 'dashboard-complains', params: {status: 'working'}}
+    // },
+    // {
+    //   title: 'Feedback Complains',
+    //   caption: '',
+    //   icon: 'home',
+    //   route: {name: 'dashboard-complains', params: {status: 'finished'}}
+    // },
+    // {
+    //   title: 'Complain History',
+    //   caption: '',
+    //   icon: 'home',
+    //   route: {name: 'dashboard-complains', params: {status: 'approved'}}
+    // },
   ]
 }
