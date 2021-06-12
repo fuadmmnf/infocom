@@ -69,7 +69,31 @@ export default {
       leftDrawerOpen: false,
       essentialLinks: sidenavdata(),
     }
-  },methods: {
+  },
+  mounted() {
+    this.fetchDepartments()
+    this.fetchHelpTopics()
+    this.fetchSlaPlans()
+  },
+  methods: {
+    fetchDepartments() {
+      this.$axios.get('departments')
+        .then((res) => {
+          this.$store.commit('setDepartments', res.data)
+        })
+    },
+    fetchSlaPlans() {
+      this.$axios.get('slaplans')
+        .then((res) => {
+          this.$store.commit('setSlaPlans', res.data)
+        })
+    },
+    fetchHelpTopics() {
+      this.$axios.get('helptopics')
+        .then((res) => {
+          this.$store.commit('setHelpTopics', res.data)
+        })
+    },
     logout(){
       this.$store.commit('storeUser', null)
       this.$router.replace({name: 'home'})

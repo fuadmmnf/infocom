@@ -4,7 +4,7 @@ export default function () {
       title: 'Dashboard',
       caption: '',
       icon: 'home',
-      route: {name: 'dashboard'}
+      route: {name: 'dashboard-home'}
     },
     {
       title: 'Resources',

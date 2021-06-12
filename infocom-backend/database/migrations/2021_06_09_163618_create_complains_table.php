@@ -20,6 +20,7 @@ class CreateComplainsTable extends Migration {
             $table->string('complain_feedback')->default('');
             $table->enum('priority', ['low', 'medium', 'high', 'urgent'])->default('low');
             $table->dateTimeTz('complain_time')->default(\Carbon\Carbon::now());
+            $table->dateTimeTz('deleated_at')->nullable();
             $table->timestamps();
 
 

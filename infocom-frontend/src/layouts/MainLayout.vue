@@ -27,6 +27,17 @@ export default {
   name: 'MainLayout',
   data() {
     return {}
+  },
+  mounted() {
+    this.fetchHelpTopics()
+  },
+  methods: {
+    fetchHelpTopics() {
+      this.$axios.get('helptopics')
+        .then((res) => {
+          this.$store.commit('setHelpTopics', res.data)
+        })
+    },
   }
 }
 </script>

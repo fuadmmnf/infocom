@@ -23,7 +23,6 @@ export default {
   components: {ComplainForm},
   data() {
     return {
-      helptopics: []
     }
   },
   mounted() {
@@ -41,8 +40,7 @@ export default {
     fetchHelpTopics() {
       this.$axios.get('helptopics')
         .then((res) => {
-          console.log(res)
-          this.helptopics = res.data
+          this.$store.commit('setHelpTopics', res.data)
         }).catch(e => console.error(e))
     }
   }

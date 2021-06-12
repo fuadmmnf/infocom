@@ -69,15 +69,10 @@ export default {
   data() {
     return {
       tab: 'agent-complain',
-      departments: [],
-      slaplans: [],
-      helptopics: [],
     }
   },
   mounted() {
-    this.fetchDepartments()
-    this.fetchHelpTopics()
-    this.fetchSlaPlans()
+
   },
   computed: {
     hasSupportAgentAccess: function (){
@@ -92,24 +87,7 @@ export default {
 
   },
   methods: {
-    fetchDepartments() {
-      this.$axios.get('departments')
-        .then((res) => {
-          this.departments = res.data
-        })
-    },
-    fetchSlaPlans() {
-      this.$axios.get('slaplans')
-        .then((res) => {
-          this.slaplans = res.data
-        })
-    },
-    fetchHelpTopics() {
-      this.$axios.get('helptopics')
-        .then((res) => {
-          this.helptopics = res.data
-        })
-    }
+
   }
 }
 </script>
