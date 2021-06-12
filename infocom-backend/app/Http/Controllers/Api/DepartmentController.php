@@ -4,9 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Department\CreateDepartment;
-use App\Http\Requests\Department\CreateLeader;
+use App\Http\Requests\Department\UpdateDepartment;
 use App\Models\Department;
-use App\Models\DepartmentLeaders;
 
 class DepartmentController extends Controller {
     public function index() {
@@ -20,12 +19,10 @@ class DepartmentController extends Controller {
         return response()->json($department, 201);
     }
 
-    public function createLeader(CreateLeader $request) {
+    public function update(UpdateDepartment $request) {
         $info = $request->validated();
-        $departmentLeader = DepartmentLeaders::updateOrCreate(
-            ['department_id' => $info['department_id']],
-            ['leader_id' => $info['leader_id']]
-        );
-        return response()->json($departmentLeader, 201);
+        $department = Department::findOrFail($request->route('department_id'));
+        $department->update($info);
+        return response()->noContent();
     }
 }

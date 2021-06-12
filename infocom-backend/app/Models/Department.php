@@ -12,6 +12,6 @@ class Department extends Model {
     }
 
     public function leader() {
-        return $this->hasOneThrough(SupportAgent::class, DepartmentLeaders::class);
+        return $this->belongsTo(SupportAgent::class, 'leader_id');
     }
 }

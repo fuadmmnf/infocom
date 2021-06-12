@@ -4,10 +4,9 @@ namespace App\Http\Requests\Department;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateLeader extends FormRequest {
+class UpdateDepartment extends FormRequest {
 	public function rules() {
 		return [
-			'department_id' => 'required|numeric',
             'leader_id' => 'required|numeric'
 		];
 	}

@@ -28,6 +28,7 @@ Route::middleware(['auth:api'])->group(function(){
     //departments
     Route::get('departments', [\App\Http\Controllers\Api\DepartmentController::class, 'index']);
     Route::post('departments', [\App\Http\Controllers\Api\DepartmentController::class, 'create']);
+    Route::put('departments/{department_id}', [\App\Http\Controllers\Api\DepartmentController::class, 'update']);
 
     //slaplans
     Route::get('slaplans', [\App\Http\Controllers\Api\SlaPlanController::class, 'index']);
