@@ -10,7 +10,7 @@
       hide-bottom
     >
       <template v-slot:top-right>
-        <q-btn v-if="supportagents.length" label="Make Leader" @click="showLeaderAssignForm = true">
+        <q-btn v-if="supportagents.length" no-caps label="Assign Leader" @click="showLeaderAssignForm = true">
           <q-dialog v-model="showLeaderAssignForm" persistent>
             <q-card style="min-width: 350px">
               <q-form @submit="createDepartmentLeader">

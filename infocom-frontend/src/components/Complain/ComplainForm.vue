@@ -2,14 +2,14 @@
   <q-form @submit="complain.status === undefined? createComplain(): updateComplain(true)" @reset="complain = {}"
           class="q-gutter-md">
     <div class="row">
-      <q-input class="col-md-6 col-xs-12  q-my-xs q-px-xs" filled  v-model="complain.name" label="Full Name"/>
-      <q-input class="col-md-6 col-xs-12  q-my-xs q-px-xs" filled  v-model="complain.phone" label="Phone"/>
+      <q-input class="col-md-6 col-xs-12  q-my-xs q-px-xs" filled v-model="complain.name" label="Full Name"/>
+      <q-input class="col-md-6 col-xs-12  q-my-xs q-px-xs" filled v-model="complain.phone" label="Phone"/>
     </div>
 
     <div class="row q-my-none">
-      <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled  v-model="complain.email" type="email"
+      <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="complain.email" type="email"
                label="Email"/>
-      <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled  v-model.number="complain.helptopic_id"
+      <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model.number="complain.helptopic_id"
                 :options="$store.getters.getHelpTopics" option-label="name"
                 option-value="id" emit-value
                 map-options label="Help Topic"/>
@@ -18,7 +18,7 @@
 
     <div v-if="$store.getters.getDepartments.length" class="row q-my-none">
 
-      <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled  v-model="complain.ticket_source"
+      <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="complain.ticket_source"
                 :options="[
                   {label: 'Agent Create', value: 'agent'},
                   {label: 'Customer Email', value: 'email'},
@@ -26,7 +26,7 @@
                 emit-value
                 label="Ticket Source"/>
 
-      <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled  v-model.number="complain.department_id"
+      <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model.number="complain.department_id"
                 :options="$store.getters.getDepartments" option-label="name"
                 option-value="id" emit-value
                 map-options label="Department"/>
@@ -36,14 +36,14 @@
 
     <div v-if="$store.getters.getSlaPlans.length" class="row q-my-none">
 
-      <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled  v-model.number="complain.slaplan_id"
+      <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model.number="complain.slaplan_id"
                 :options="$store.getters.getSlaPlans"
                 option-label="name"
                 option-value="id" emit-value
                 map-options
                 label="SLA Plan"/>
 
-      <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled  v-model="complain.priority"
+      <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="complain.priority"
                 :options="[
                   {label: 'Low', value: 'low'},
                   {label: 'Medium', value: 'medium'},
@@ -62,19 +62,59 @@
              type="textarea" autogrow
              label="Complain Summary"/>
 
-    <q-input class=" q-my-xs q-px-xs" filled  v-model="complain.complain_text" type="textarea" autogrow
+    <q-input class=" q-my-xs q-px-xs" filled v-model="complain.complain_text" type="textarea" autogrow
              label="Complain details"/>
 
-    <div v-if="complain.status !== 'approved'" class="row q-px-xs ">
-      <q-btn v-if="complain.status === undefined" class="bg-red text-white q-mr-sm" label="Reset" type="reset"/>
-      <q-btn v-if="complain.status !== undefined" class="bg-info text-white q-mr-sm" label="Save" type="button"
+
+    <q-input v-if="statusList.indexOf(complain.status) > 1" class=" q-my-xs q-px-xs" filled
+             v-model="complain.complain_feedback"
+             type="textarea" autogrow
+             label="Complain Feedback"/>
+
+
+    <!--    Action bar for complain according to status-->
+    <div v-if="complain.status === undefined">
+      <q-btn class=" q-mr-sm" label="Reset" type="reset"/>
+      <q-btn class="bg-purple text-white" label="Submit" type="submit"
+             :disable="this.$store.getters.getActionRunningState"/>
+    </div>
+
+    <div v-else-if="statusList.indexOf(complain.status) === 0">
+      <q-btn class="bg-info text-white q-mr-sm" label="Save" type="button"
              @click="updateComplain(false)"
              :disable="this.$store.getters.getActionRunningState"/>
 
       <q-btn class="bg-purple text-white" label="Submit" type="submit"
              :disable="this.$store.getters.getActionRunningState"/>
-
     </div>
+
+
+    <div v-else-if="statusList.indexOf(complain.status) === 1 && $store.getters.getUser.support_agent !== undefined">
+      <q-btn class="bg-purple text-white" no-caps label="Accept Ticket" type="submit"
+             :disable="this.$store.getters.getActionRunningState"/>
+    </div>
+
+    <div v-else-if="statusList.indexOf(complain.status) === 2">
+      <q-btn class="bg-info text-white q-mr-sm" label="Save" type="button"
+             @click="updateComplain(false)"
+             :disable="this.$store.getters.getActionRunningState"/>
+
+      <q-btn class="bg-purple text-white" label="Submit" type="submit"
+             :disable="this.$store.getters.getActionRunningState"/>
+    </div>
+
+
+    <div v-else-if="statusList.indexOf(complain.status) === 3">
+<!--      <q-btn class="bg-info text-white q-mr-sm" label="Resubmit" type="button"-->
+<!--             @click="updateComplain(false)"-->
+<!--             :disable="this.$store.getters.getActionRunningState"/>-->
+
+      <q-btn class="bg-purple text-white" label="Approve" type="submit"
+             :disable="this.$store.getters.getActionRunningState"/>
+    </div>
+
+    <!--    Action bar for complain according to status-->
+
   </q-form>
 </template>
 
@@ -91,6 +131,7 @@ export default {
   },
   data() {
     return {
+      statusList: ['pending', 'assigned', 'working', 'finished', 'approved'],
       complain: {
         name: '',
         phone: '',
@@ -123,17 +164,22 @@ export default {
 
     },
 
-    updateComplain(isStatusChange) {
-      const statusList = ['pending', 'assigned', 'working', 'finished', 'approved']
-      if (isStatusChange) {
-        this.complain.status = statusList[statusList.indexOf(this.complain.status) + 1]
+    updateComplain(isStatusPromoted) {
+
+      if (isStatusPromoted) {
+        this.complain.status = this.statusList[this.statusList.indexOf(this.complain.status) + 1]
+        if (this.complain.status === 'working') {
+          this.complain.editor_id = this.$store.getters.getUser.support_agent.id
+        }
       }
+
+
       this.$axios.put(`complains/${this.complain.id}`, this.complain)
         .then((res) => {
           this.$root.$emit('complain-updated', res.data)
         }).catch((e) => {
-        if (isStatusChange) {
-          this.complain.status = statusList[statusList.indexOf(this.complain.status) - 1]
+        if (isStatusPromoted) {
+          this.complain.status = this.statusList[this.statusList.indexOf(this.complain.status) - 1]
         }
       })
 

@@ -20,7 +20,7 @@ class CreateComplainsTable extends Migration {
             $table->string('complain_feedback')->default('');
             $table->enum('priority', ['low', 'medium', 'high', 'urgent'])->nullable();
             $table->dateTimeTz('complain_time')->useCurrent();
-            $table->dateTimeTz('deleated_at')->nullable();
+            $table->dateTimeTz('deleted_at')->nullable();
             $table->timestamps();
 
 
