@@ -45,6 +45,7 @@
     <div class="row">
       <resource-table class="q-px-md" title="Help Topics" resource_url="helptopics"/>
       <resource-table class="q-px-md" title="SLA Plans" resource_url="slaplans"/>
+      <resource-table class="q-px-md" title="Pop Addresses" resource_url="popaddresses"/>
       <resource-table class="q-px-md" title="Departments" resource_url="departments"/>
     </div>
   </q-page>
@@ -61,6 +62,7 @@ export default {
       showResourceForm: false,
       resourceOptions: [
         {label: 'Help Topic', value: 'helptopics'},
+        {label: 'Pop Address', value: 'popaddresses'},
         {label: 'Department', value: 'departments'},
         {label: 'SLA Plan', value: 'slaplans'},
       ],

@@ -9,7 +9,7 @@ class CreateCustomersTable extends Migration {
         Schema::create('customers', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('pop_id');
+            $table->unsignedBigInteger('popaddress_id');
             $table->string('code')->nullable();
             $table->string('address')->default('');
             $table->string('technical_contact')->default('');
@@ -24,7 +24,7 @@ class CreateCustomersTable extends Migration {
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('pop_id')->references('id')->on('pop_addresses');
+            $table->foreign('popaddress_id')->references('id')->on('pop_addresses');
         });
     }
 
