@@ -71,11 +71,18 @@ export default {
     }
   },
   mounted() {
+    this.fetchPopAddresses()
     this.fetchDepartments()
     this.fetchHelpTopics()
     this.fetchSlaPlans()
   },
   methods: {
+    fetchPopAddresses(){
+      this.$axios.get('popaddresses')
+        .then((res) => {
+          this.$store.commit('setPopAddresses', res.data)
+        })
+    },
     fetchDepartments() {
       this.$axios.get('departments')
         .then((res) => {

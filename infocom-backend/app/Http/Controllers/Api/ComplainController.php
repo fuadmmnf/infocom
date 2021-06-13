@@ -14,6 +14,7 @@ use App\Models\CallcenterAgent;
 use App\Models\Complain;
 use App\Models\SupportAgent;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -72,20 +73,27 @@ class ComplainController extends Controller {
     private function handleComplainChange(Complain $before, Complain $after) {
         if ($before->status != $after->status) {
             if ($after->status == 'assigned') {
+                $after->assigned_time = Carbon::now();
                 $departmentTeam = SupportAgent::where('department_id', $after->department_id)->with('user')->get();
                 foreach ($departmentTeam as $supportagent) {
                     Mail::to($supportagent->user->email)->send(new ComplainStatusStaffAlert($after));
                 }
             } else if ($after->status == 'finished') {
+                $after->finished_time = Carbon::now();
                 foreach (CallcenterAgent::with('user')->get() as $callcenteragent) {
                     Mail::to($callcenteragent->user->email)->send(new ComplainStatusStaffAlert($after));
                 }
             } else if ($after->status == 'approved') {
+                $after->approved_time = Carbon::now();
                 $message = '';
                 SMSHandler::sendSMS($after->customer->user->phone, $message);
                 Mail::to($after->customer->user->email)->send(new CustomerComplainApproval($after));
             }
+            $after->save();
+        } else if ($before->status == $after->status && $before->editor_id != $after->editor_id) {
+            Mail::to($after->editor->user->email)->send(new ComplainStatusStaffAlert($after));
         }
+
 
     }
 

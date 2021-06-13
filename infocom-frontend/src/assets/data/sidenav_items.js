@@ -24,6 +24,12 @@ export default function () {
       icon: 'home',
       route: {name: 'dashboard-staffs', params: {type: 'supportagents'}}
     },
+    {
+      title: 'Customers',
+      caption: '',
+      icon: 'home',
+      route: {name: 'dashboard-customers'}
+    },
 
     {
       title: 'Complains',

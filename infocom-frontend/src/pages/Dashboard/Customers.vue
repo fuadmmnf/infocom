@@ -106,7 +106,16 @@ export default {
         email: '',
         phone: '',
         code: '',
-        department_id: '',
+        popaddress_id: '',
+        technical_contact: '',
+        management_contact: '',
+        connection_package: '',
+        other_services: '',
+        connection_details: '',
+        additional_technical_box: '',
+        billing_information: '',
+        kam_name: '',
+        installation_date: '',
         password: '',
         password_confirmation: '',
       },
@@ -115,6 +124,7 @@ export default {
         {name: 'phone', align: 'center', label: 'Phone', field: row => row.user.phone},
         {name: 'email', align: 'center', label: 'Email', field: row => row.user.email},
         {name: 'code', align: 'center', label: 'Code', field: row => row.code},
+        {name: 'popaddress', align: 'center', label: 'POP', field: row => row.popaddress.name},
       ]
 
     }

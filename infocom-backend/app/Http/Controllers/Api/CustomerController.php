@@ -10,7 +10,8 @@ use App\Models\Customer;
 
 class CustomerController extends Controller {
     public function index() {
-        $customers = Customer::orderByDesc('created_at')->with('user')->paginate(20);
+        $customers = Customer::orderByDesc('created_at')->paginate(20);
+        $customers->load('user', 'popaddress');
         return response()->json($customers);
     }
 
