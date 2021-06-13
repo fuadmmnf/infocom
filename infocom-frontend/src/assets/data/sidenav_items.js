@@ -24,35 +24,18 @@ export default function () {
       icon: 'home',
       route: {name: 'dashboard-staffs', params: {type: 'supportagents'}}
     },
-    // {
-    //   title: 'Customers',
-    //   caption: '',
-    //   icon: 'home',
-    //   route: {name: 'dashboard-customers'}
-    // },
+
     {
       title: 'Complains',
       caption: '',
       icon: 'home',
       route: {name: 'dashboard-complains'}
     },
-    // {
-    //   title: 'Working Complains',
-    //   caption: '',
-    //   icon: 'home',
-    //   route: {name: 'dashboard-complains', params: {status: 'working'}}
-    // },
-    // {
-    //   title: 'Feedback Complains',
-    //   caption: '',
-    //   icon: 'home',
-    //   route: {name: 'dashboard-complains', params: {status: 'finished'}}
-    // },
-    // {
-    //   title: 'Complain History',
-    //   caption: '',
-    //   icon: 'home',
-    //   route: {name: 'dashboard-complains', params: {status: 'approved'}}
-    // },
+    {
+      title: 'Reports',
+      caption: '',
+      icon: 'home',
+      route: {name: 'dashboard-reports'}
+    },
   ]
 }

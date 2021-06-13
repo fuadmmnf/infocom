@@ -19,8 +19,8 @@ class CreateComplainsTable extends Migration {
             $table->string('complain_summary')->default('');
             $table->string('complain_feedback')->default('');
             $table->enum('priority', ['low', 'medium', 'high', 'urgent'])->nullable();
-            $table->string('customer_feedback')->default('');
-            $table->integer('customer_rating')->default(5);
+            $table->string('customer_review')->default('');
+            $table->integer('customer_rating')->nullable();
             $table->dateTimeTz('complain_time')->useCurrent();
             $table->dateTimeTz('deleted_at')->nullable();
             $table->timestamps();
