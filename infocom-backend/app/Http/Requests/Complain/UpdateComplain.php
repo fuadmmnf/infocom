@@ -18,6 +18,8 @@ class UpdateComplain extends FormRequest {
             'complain_feedback' => 'sometimes',
             'priority' => 'sometimes',
             'complain_time' => 'sometimes|date',
+            'customer_review' => 'sometimes',
+            'customer_rating' => 'sometimes',
         ];
     }
 

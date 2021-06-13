@@ -4,13 +4,11 @@ namespace App\Http\Requests\Customer;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateCustomer extends FormRequest {
+class UpdateCustomer extends FormRequest {
     public function rules() {
         return [
             'popaddress_id' => 'required|numeric',
             'name' => 'required',
-            'phone' => 'required|unique:users,phone',
-            'email' => 'required|unique:users,email',
             'code' => 'required',
             'password' => 'required|confirmed',
             'technical_contact' => 'present',
@@ -21,7 +19,6 @@ class CreateCustomer extends FormRequest {
             'additional_technical_box' => 'present',
             'billing_information' => 'present',
             'kam_name' => 'present',
-            'installation_date' => 'nullable|date',
         ];
     }
 
