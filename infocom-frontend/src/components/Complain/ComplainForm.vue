@@ -108,7 +108,14 @@
 
 
     <div v-else-if="statusIndex === 1 && $store.getters.getUser.support_agent !== undefined">
-
+      <q-select class="col-md-6 col-xs-8 q-my-xs q-px-xs" filled v-model.number="complain.editor_id"
+                :options="supportagents.filter((sa) => sa.department_id === complain.department_id)"
+                :option-label="(sa) => sa.user===undefined? '': `${sa.user.name} (${sa.user.phone})`"
+                option-value="id" emit-value
+                map-options
+                label="Editor"
+                :disable="statusIndex > 1 || !hasTeamLeaderPermission"
+      />
 
       <q-btn class="bg-purple text-white" no-caps label="Confirm Ticket" type="submit"
              :disable="this.$store.getters.getActionRunningState"/>
@@ -129,6 +136,7 @@
       <!--             @click="updateComplain(false)"-->
       <!--             :disable="this.$store.getters.getActionRunningState"/>-->
 
+
       <q-btn class="bg-purple text-white" label="Approve" type="submit"
              :disable="this.$store.getters.getActionRunningState"/>
     </div>
@@ -148,6 +156,12 @@ export default {
         return {}
       }
     },
+    supportagents: {
+      type: Array,
+      default: () => {
+        return []
+      }
+    }
   },
   data() {
     return {
@@ -168,6 +182,9 @@ export default {
     },
     isComplainEditor: function () {
       return (this.$store.getters.getUser.support_agent === undefined) ? false : this.complain.editor_id === this.$store.getters.getUser.support_agent.id
+    },
+    hasTeamLeaderPermission: function () {
+      return this.$store.getters.getUser.support_agent === undefined ? false : this.$store.getters.getDepartments.find((d) => (d.leader_id === this.$store.getters.getUser.support_agent.id && d.id === this.complain.department_id))
     }
   },
   mounted() {

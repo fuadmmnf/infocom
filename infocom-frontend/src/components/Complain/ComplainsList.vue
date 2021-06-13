@@ -27,7 +27,7 @@
           </q-btn>
         </q-bar>
         <q-card-section class="q-pa-xs">
-          <complain-form :existing-complain="selectedComplain"/>
+          <complain-form :existing-complain="selectedComplain" :supportagents="supportagents"/>
         </q-card-section>
 
         <q-card-actions align="right" class="text-primary">
@@ -57,6 +57,8 @@ export default {
     return {
       showComplainDetailModal: false,
       selectedComplain: null,
+      selectedDepartmentId: this.$store.getters.getUser.support_agent === undefined ? '' : this.$store.getters.getUser.support_agent.department_id,
+      supportagents: [],
       pagination: {
         page: 1,
         rowsPerPage: 20
@@ -78,6 +80,10 @@ export default {
   },
   mounted() {
     // this.fetchComplainsList()
+    if (this.status === 'assigned') {
+      this.fetchSupportAgent()
+    }
+    this.fetchSupportAgent()
     this.$root.$on('complain-updated', (data) => {
       this.showComplainDetailModal = false
       this.selectedComplain = null;
@@ -91,10 +97,17 @@ export default {
   },
   methods: {
     fetchComplainsList(page = 1) {
-      const dept_id = this.$store.getters.getUser.department_id === undefined ? '' : this.$store.getters.getUser.department_id
+      const dept_id =
       this.$axios.get(`complains?status=${this.status}${dept_id === '' ? '' : ('&department=' + dept_id)}&page=${page}`)
         .then((res) => {
           this.complains = res.data.data
+        })
+    },
+
+    fetchSupportAgent() {
+      this.$axios.get('supportagents')
+        .then((res) => {
+          this.supportagents = res.data
         })
     }
   }
