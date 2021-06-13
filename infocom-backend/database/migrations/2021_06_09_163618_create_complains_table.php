@@ -10,6 +10,7 @@ class CreateComplainsTable extends Migration {
             $table->id();
             $table->unsignedBigInteger('customer_id');
             $table->unsignedBigInteger('editor_id')->nullable();
+            $table->unsignedBigInteger('agent_id')->nullable();
             $table->unsignedBigInteger('helptopic_id');
             $table->unsignedBigInteger('department_id')->nullable();
             $table->unsignedBigInteger('slaplan_id')->nullable();
@@ -22,11 +23,15 @@ class CreateComplainsTable extends Migration {
             $table->string('customer_review')->default('');
             $table->integer('customer_rating')->nullable();
             $table->dateTimeTz('complain_time')->useCurrent();
+            $table->dateTimeTz('assign_time')->nullable();
+            $table->dateTimeTz('completed_time')->nullable();
+            $table->dateTimeTz('approve_time')->nullable();
             $table->dateTimeTz('deleted_at')->nullable();
             $table->timestamps();
 
 
             $table->foreign('customer_id')->references('id')->on('customers');
+            $table->foreign('agent_id')->references('id')->on('callcenter_agents');
             $table->foreign('editor_id')->references('id')->on('support_agents');
             $table->foreign('helptopic_id')->references('id')->on('help_topics');
             $table->foreign('department_id')->references('id')->on('departments');
