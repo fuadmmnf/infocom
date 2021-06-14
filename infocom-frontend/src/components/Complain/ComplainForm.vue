@@ -127,6 +127,17 @@
     </div>
 
     <div v-else-if="statusIndex === 2">
+
+      <q-select class="col-md-6 col-xs-8 q-my-xs q-px-xs" filled v-model.number="complain.editor_id"
+                :options="supportagents.filter((sa) => sa.department_id === complain.department_id)"
+                :option-label="(sa) => sa.user===undefined? '': `${sa.user.name} (${sa.user.phone})`"
+                option-value="id" emit-value
+                map-options
+                label="Editor"
+                :disable="statusIndex > 1 || !hasTeamLeaderPermission"
+      />
+
+
       <q-btn class="bg-info text-white q-mr-sm" label="Save" type="button"
              @click="updateComplain(false)"
              :disable="$store.getters.getActionRunningState" />
