@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Complain\CreateComplain;
 use App\Http\Requests\Complain\DestroyComplain;
 use App\Http\Requests\Complain\UpdateComplain;
+use App\Http\Requests\Complain\UpdateCustomerFeedback;
 use App\Mail\ComplainStatusStaffAlert;
 use App\Mail\CustomerComplainApproval;
 use App\Models\CallcenterAgent;
@@ -31,6 +32,11 @@ class ComplainController extends Controller
         $complains->load('customer', 'customer.user', 'editor', 'editor.user');
         return response()->json($complains);
     }
+
+//    public function getComplainByCode($complain_code){
+//        $complain = Complain::where('code', $complain_code)->firstOrFail();
+//        return response()->json($complain);
+//    }
 
     private function generateCode()
     {
@@ -133,6 +139,13 @@ class ComplainController extends Controller
         }
 
         DB::commit();
+        return response()->noContent();
+    }
+
+    public function storeFeedback(UpdateCustomerFeedback $request)
+    {
+        $complain = Complain::where('code', $request->route('complain_code'))->firstOrFail();
+        $complain->update($request->validated());
         return response()->noContent();
     }
 
