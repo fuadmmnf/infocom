@@ -8,17 +8,25 @@
       :rows-per-page-options="[0]"
       :pagination.sync="pagination"
       @row-click="(e, row, idx) => {
-        customerForm = row
+        customerForm = {
+          ...row,
+          name: row.user.name,
+          phone: row.user.phone,
+          email: row.user.email
+        }
         showCustomerForm = true
       }"
       @update:pagination="({page}) => {fetchCustomers(page)}"
     >
       <template v-slot:top-right>
-        <q-btn label="Create" @click="showCustomerForm = true">
+        <q-btn label="Create" @click="() => {
+          customerForm = {}
+          showCustomerForm = true
+        }">
 
 
           <q-dialog v-model="showCustomerForm" persistent>
-            <q-card style="min-width: 70%" >
+            <q-card style="min-width: 70%">
               <q-bar>
                 <div>Create Customer</div>
 
@@ -29,7 +37,8 @@
                 </q-btn>
               </q-bar>
 
-              <q-form @submit="createCustomer" @reset="customerForm = {}"
+              <q-form @submit="customerForm.id === undefined? createCustomer(): updateCustomer()"
+                      @reset="customerForm = {}"
                       class="q-gutter-md">
                 <div class="row">
                   <q-input class="col-md-6 col-xs-12  q-my-xs q-px-xs" filled v-model="customerForm.name"
@@ -55,7 +64,7 @@
 
                   />
                   <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.installation_date"
-                           mask="date" :rules="['date']"
+                           mask="date"
                            label="Installation Date">
                     <template v-slot:append>
                       <q-icon name="event" class="cursor-pointer">
@@ -185,6 +194,23 @@ export default {
               position: 'top-right'
             })
           }
+        })
+    },
+    updateCustomer() {
+      this.$axios.put(`customers/${this.customerForm.id}`, this.customerForm)
+        .then((res) => {
+          if (res.status === 204) {
+            this.showCustomerForm = false
+            this.fetchCustomers()
+            this.customerForm = {}
+            this.$q.notify({
+              type: 'positive',
+              message: `Customer Updated Successfully`,
+              position: 'top-right'
+            })
+
+          }
+
         })
     }
   }

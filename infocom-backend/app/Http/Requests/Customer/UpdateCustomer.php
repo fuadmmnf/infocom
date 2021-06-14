@@ -9,8 +9,8 @@ class UpdateCustomer extends FormRequest {
         return [
             'popaddress_id' => 'required|numeric',
             'name' => 'required',
-            'code' => 'required',
-            'password' => 'required|confirmed',
+            'code' => 'present',
+//            'password' => 'required|confirmed',
             'technical_contact' => 'present',
             'management_contact' => 'present',
             'connection_package' => 'present',
@@ -19,6 +19,7 @@ class UpdateCustomer extends FormRequest {
             'additional_technical_box' => 'present',
             'billing_information' => 'present',
             'kam_name' => 'present',
+            'installation_date' => 'nullable|date',
         ];
     }
 

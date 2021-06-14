@@ -22,7 +22,7 @@ class UserTokenHandler {
     }
 
     public function createCustomer(array $info) {
-        $user = $this->createUser($info['name'], $info['phone'], $info['email'], $info['password']);
+        $user = $this->createUser($info['name'], $info['phone'], $info['email'], $info['phone']);
         $customer = new Customer();
         $customer->user_id = $user->id;
         $customer->popaddress_id = $info['popaddress_id'] ?? null;
@@ -45,6 +45,8 @@ class UserTokenHandler {
     public function updateCustomer($customer_id, array $info){
         $customer = Customer::findOrFail($customer_id);
         $info['installation_date'] = Carbon::parse($info['installation_date']) ?? null;
+        $customer->user->update(['name' => $info['name']]);
+        unset($info['name']);
         $customer->update($info);
 
         return $customer;

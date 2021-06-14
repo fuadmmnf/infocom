@@ -50,7 +50,7 @@ Route::middleware(['auth:api'])->group(function () {
     //customers
     Route::get('customers', [\App\Http\Controllers\Api\CustomerController::class, 'index']);
     Route::post('customers', [\App\Http\Controllers\Api\CustomerController::class, 'create']);
-    Route::post('customers/{customer_id}', [\App\Http\Controllers\Api\CustomerController::class, 'update']);
+    Route::put('customers/{customer_id}', [\App\Http\Controllers\Api\CustomerController::class, 'update']);
 
     //complains
     Route::get('complains', [\App\Http\Controllers\Api\ComplainController::class, 'index']);
