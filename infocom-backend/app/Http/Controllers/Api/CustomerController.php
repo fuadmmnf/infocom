@@ -15,6 +15,11 @@ class CustomerController extends Controller {
         return response()->json($customers);
     }
 
+    public function searchCustomer($customer_code){
+        $customer = Customer::where('code', $customer_code)->firstOrFail();
+        $customer->load('user', 'popaddress');
+        return response()->json($customer);
+    }
 
     public function create(CreateCustomer $request) {
         $userTokenHandler = new UserTokenHandler();

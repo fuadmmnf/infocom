@@ -1,16 +1,21 @@
 <template>
   <q-form @submit="complain.status === undefined? createComplain(): updateComplain(true)" @reset="complain = {}"
           class="q-gutter-md">
+    <div class="row items-center" v-if="isAuthenticated">
+      <q-input class="col-md-3 col-xs-5  q-my-xs q-px-xs" filled v-model="search" label="Search Customer"></q-input>
+      <q-btn flat  label="search" type="button" @click="searchCustomer"/>
+    </div>
+
     <div class="row">
       <q-input class="col-md-6 col-xs-12  q-my-xs q-px-xs" filled v-model="complain.name" label="Full Name"
-               :disable="statusIndex > 0"/>
+               :disable="statusIndex > 0" :readonly="isAuthenticated"/>
       <q-input class="col-md-6 col-xs-12  q-my-xs q-px-xs" filled v-model="complain.phone" label="Phone"
-               :disable="statusIndex > 0"/>
+               :disable="statusIndex > 0" :readonly="isAuthenticated"/>
     </div>
 
     <div class="row q-my-none">
       <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="complain.email" type="email"
-               label="Email" :disable="statusIndex > 0"/>
+               label="Email" :disable="statusIndex > 0" :readonly="isAuthenticated"/>
       <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model.number="complain.helptopic_id"
                 :options="$store.getters.getHelpTopics" option-label="name"
                 option-value="id" emit-value
@@ -167,6 +172,7 @@ export default {
     return {
       statusList: ['pending', 'assigned', 'working', 'finished', 'approved'],
       selectedEditorId: '',
+      search: '',
       complain: {
         name: '',
         phone: '',
@@ -179,6 +185,9 @@ export default {
   computed: {
     statusIndex: function () {
       return this.statusList.indexOf(this.complain.status)
+    },
+    isAuthenticated: function (){
+      return this.$store.getters.getUser.phone !== undefined
     },
     isComplainEditor: function () {
       return (this.$store.getters.getUser.support_agent === undefined) ? false : this.complain.editor_id === this.$store.getters.getUser.support_agent.id
@@ -202,6 +211,15 @@ export default {
     }
   },
   methods: {
+    searchCustomer(){
+      this.$axios.get(`customers/${this.search}`)
+      .then((res) => {
+        this.complain.name = res.data.user.name
+        this.complain.email = res.data.user.email
+        this.complain.phone = res.data.user.phone
+      })
+    },
+
     createComplain() {
       this.$axios.post('complains', this.complain)
         .then((res) => {
