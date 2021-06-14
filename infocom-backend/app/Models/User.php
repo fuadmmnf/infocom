@@ -44,19 +44,23 @@ class User extends Authenticatable
     ];
 
 
-    public function super_admin(){
+    public function super_admin()
+    {
         return $this->hasOne(Admin::class);
     }
 
-    public function support_agent(){
-        return $this->hasOne(Admin::class);
+    public function support_agent()
+    {
+        return $this->hasOne(SupportAgent::class);
     }
 
-    public function callcenter_agent(){
-        return $this->hasOne(Admin::class);
+    public function callcenter_agent()
+    {
+        return $this->hasOne(CallcenterAgent::class);
     }
 
-    public function customer(){
-        return $this->hasOne(Admin::class);
+    public function customer()
+    {
+        return $this->hasOne(Customer::class);
     }
 }

@@ -1,7 +1,7 @@
 <template>
   <q-form @submit="complain.status === undefined? createComplain(): updateComplain(true)" @reset="complain = {}"
           class="q-gutter-md">
-    <div class="row items-center" v-if="isAuthenticated">
+    <div class="row items-center" v-if="isAuthenticated && complain.status === undefined">
       <q-input class="col-md-3 col-xs-5  q-my-xs q-px-xs" filled v-model="search" label="Search Customer"></q-input>
       <q-btn flat label="search" type="button" @click="searchCustomer" />
     </div>
@@ -171,7 +171,6 @@ export default {
   data() {
     return {
       statusList: ['pending', 'assigned', 'working', 'finished', 'approved'],
-      selectedEditorId: '',
       search: '',
       complain: {
         name: '',
@@ -201,9 +200,7 @@ export default {
     }
   },
   mounted() {
-    if (this.$store.getters.getUser.support_agent !== undefined) {
-      this.selectedEditorId = this.$store.getters.getUser.support_agent.id
-    }
+
 
     if (this.existingComplain.status !== undefined) {
       this.complain = {
@@ -213,11 +210,16 @@ export default {
         email: this.existingComplain.customer.user.email,
       }
     }
+
+    if (this.$store.getters.getUser.support_agent !== undefined) {
+      this.complain.editor_id = this.$store.getters.getUser.support_agent.id
+    }
   },
   methods: {
     searchCustomer() {
       this.$axios.get(`customers/${this.search}`)
         .then((res) => {
+          this.complain.customer_id = res.data.id
           this.complain.name = res.data.user.name
           this.complain.email = res.data.user.email
           this.complain.phone = res.data.user.phone
@@ -225,8 +227,9 @@ export default {
     },
 
     createComplain() {
-      this.complain.agent_id = (this.isAuthenticated && this.$store.getters.getUser.callcenter_agent !==
-                                undefined) ? this.$store.getters.getUser.callcenter_agent.id : null
+      if (this.isAuthenticated && this.$store.getters.getUser.callcenter_agent !== undefined) {
+        this.complain.agent_id = this.$store.getters.getUser.callcenter_agent.id
+      }
       this.$axios.post('complains', this.complain)
         .then((res) => {
           if (res.status === 201) {
@@ -243,13 +246,13 @@ export default {
 
         this.complain.status = this.statusList[this.statusList.indexOf(this.complain.status) + 1]
 
-        if(this.complain.status === 'assigned'){
+        if (this.complain.status === 'assigned') {
           this.complain.agent_id = (this.isAuthenticated && this.$store.getters.getUser.callcenter_agent !==
                                     undefined) ? this.$store.getters.getUser.callcenter_agent.id : null
         }
-        if (this.complain.status === 'working') {
-          this.complain.editor_id = this.selectedEditorId
-        }
+        // if (this.complain.status === 'working') {
+          // this.complain.editor_id = this.selectedEditorId
+        // }
       }
 
 

@@ -9,8 +9,8 @@
           <q-card-section>
             <q-form @submit="login" class="q-gutter-md">
               <div class="row">
-                <q-input class="col-12 q-my-xs q-px-xs" filled clearable type="email" v-model="loginForm.email" label="Email"/>
-                <q-input class="col-12  q-my-xs q-px-xs" filled clearable v-model="loginForm.password" type="password" label="Password"/>
+                <q-input class="col-12 q-my-xs q-px-xs" filled  type="email" v-model="loginForm.email" label="Email"/>
+                <q-input class="col-12  q-my-xs q-px-xs" filled  v-model="loginForm.password" type="password" label="Password"/>
               </div>
               <div class="row q-px-xs ">
                 <q-btn class="bg-purple text-white" label="Submit" type="login"

@@ -71,7 +71,7 @@ export default {
   components: {ComplainsList, ComplainForm},
   data() {
     return {
-      tab: 'agent-complain',
+      tab: this.$store.getters.getUser.support_agent === undefined? 'agent-complain': 'assigned',
     }
   },
   mounted() {

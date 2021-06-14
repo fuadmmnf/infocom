@@ -19,8 +19,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
-class ComplainController extends Controller {
-    public function index(Request $request) {
+class ComplainController extends Controller
+{
+    public function index(Request $request)
+    {
         $complainsQuery = Complain::where('status', 'LIKE', '%' . $request->query('status') ?? '' . '%');
         if ($request->query('department_id') !== null) {
             $complainsQuery->where('department_id', $request->query('department_id'));
@@ -30,13 +32,15 @@ class ComplainController extends Controller {
         return response()->json($complains);
     }
 
-    private function generateCode() {
+    private function generateCode()
+    {
         $pool = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
         $random_string = substr(str_shuffle(str_repeat($pool, 20)), 0, 20);
         return $random_string;
     }
 
-    public function create(CreateComplain $request) {
+    public function create(CreateComplain $request)
+    {
         $info = $request->validated();
 
         \DB::beginTransaction();
@@ -52,11 +56,23 @@ class ComplainController extends Controller {
                 $info['customer_id'] = $customer->id;
                 $complain = Complain::create(array_diff_key($info, array_flip(['name', 'phone', 'email', 'password'])));
 
-                foreach (CallcenterAgent::with('user')->get() as $callcenteragent) {
-                    Mail::to($callcenteragent->user->email)->send(new ComplainStatusStaffAlert($complain));
+                if ($complain->status == 'pending') {
+                    foreach (CallcenterAgent::with('user')->get() as $callcenteragent) {
+//                        Mail::to($callcenteragent->user->email)->send(new ComplainStatusStaffAlert($complain));
+                    }
                 }
+
+
             } else {
+                $info['status'] = 'assigned'; // as customer_id only set when agent makes the request
                 $complain = Complain::create($info);
+                if ($complain->status == 'assigned') {
+                    $complain->assigned_time = Carbon::now();
+                    $departmentTeam = SupportAgent::where('department_id', $complain->department_id)->with('user')->get();
+                    foreach ($departmentTeam as $supportagent) {
+//                        Mail::to($supportagent->user->email)->send(new ComplainStatusStaffAlert($complain));
+                    }
+                }
             }
 
 
@@ -70,34 +86,36 @@ class ComplainController extends Controller {
     }
 
 
-    private function handleComplainChange(Complain $before, Complain $after) {
+    private function handleComplainChange(Complain $before, Complain $after)
+    {
         if ($before->status != $after->status) {
             if ($after->status == 'assigned') {
                 $after->assigned_time = Carbon::now();
                 $departmentTeam = SupportAgent::where('department_id', $after->department_id)->with('user')->get();
                 foreach ($departmentTeam as $supportagent) {
-                    Mail::to($supportagent->user->email)->send(new ComplainStatusStaffAlert($after));
+//                    Mail::to($supportagent->user->email)->send(new ComplainStatusStaffAlert($after));
                 }
             } else if ($after->status == 'finished') {
                 $after->finished_time = Carbon::now();
                 foreach (CallcenterAgent::with('user')->get() as $callcenteragent) {
-                    Mail::to($callcenteragent->user->email)->send(new ComplainStatusStaffAlert($after));
+//                    Mail::to($callcenteragent->user->email)->send(new ComplainStatusStaffAlert($after));
                 }
             } else if ($after->status == 'approved') {
                 $after->approved_time = Carbon::now();
                 $message = '';
-                SMSHandler::sendSMS($after->customer->user->phone, $message);
-                Mail::to($after->customer->user->email)->send(new CustomerComplainApproval($after));
+//                SMSHandler::sendSMS($after->customer->user->phone, $message);
+//                Mail::to($after->customer->user->email)->send(new CustomerComplainApproval($after));
             }
             $after->save();
         } else if ($before->status == $after->status && $before->editor_id != $after->editor_id) {
-            Mail::to($after->editor->user->email)->send(new ComplainStatusStaffAlert($after));
+//            Mail::to($after->editor->user->email)->send(new ComplainStatusStaffAlert($after));
         }
 
 
     }
 
-    public function update(UpdateComplain $request) {
+    public function update(UpdateComplain $request)
+    {
         $complain = Complain::findOrFail($request->route('complain_id'));
         $complain->load('customer', 'customer.user');
 
@@ -118,7 +136,8 @@ class ComplainController extends Controller {
         return response()->noContent();
     }
 
-    public function destroy(DestroyComplain $request) {
+    public function destroy(DestroyComplain $request)
+    {
         $complain = Complain::findOrFail($request->route('complain_id'));
         if ($complain->status != 'pending') {
             throw new \Exception('Cannot delete processed complain');
