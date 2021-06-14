@@ -9,6 +9,7 @@ class UpdateComplain extends FormRequest {
         return [
             'helptopic_id' => 'sometimes|numeric',
             'department_id' => 'sometimes|numeric',
+            'agent_id' => 'sometimes|nullable|numeric',
             'editor_id' => 'sometimes|nullable|numeric',
             'slaplan_id' => 'sometimes|numeric',
             'status' => 'sometimes',
