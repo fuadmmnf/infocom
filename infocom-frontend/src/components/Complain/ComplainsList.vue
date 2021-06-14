@@ -97,7 +97,7 @@ export default {
   },
   methods: {
     fetchComplainsList(page = 1) {
-      this.$axios.get(`complains?status=${this.status}${this.selectedDepartmentId === '' ? '' : ('&department=' + this.selectedDepartmentId)}&page=${page}`)
+      this.$axios.get(`complains?status=${this.status}${this.selectedDepartmentId === '' ? '' : ('&department_id=' + this.selectedDepartmentId)}&page=${page}`)
         .then((res) => {
           this.complains = res.data.data
         })
