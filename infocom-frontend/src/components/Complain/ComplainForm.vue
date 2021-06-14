@@ -94,16 +94,16 @@
     <div v-if="complain.status === undefined">
       <q-btn class=" q-mr-sm" label="Reset" type="reset"/>
       <q-btn class="bg-purple text-white" label="Submit" type="submit"
-             :disable="this.$store.getters.getActionRunningState"/>
+             :disable="$store.getters.getActionRunningState"/>
     </div>
 
     <div v-else-if="statusIndex === 0">
       <q-btn class="bg-info text-white q-mr-sm" label="Save" type="button"
              @click="updateComplain(false)"
-             :disable="this.$store.getters.getActionRunningState"/>
+             :disable="$store.getters.getActionRunningState"/>
 
       <q-btn class="bg-purple text-white" label="Submit" type="submit"
-             :disable="this.$store.getters.getActionRunningState"/>
+             :disable="$store.getters.getActionRunningState"/>
     </div>
 
 
@@ -118,16 +118,16 @@
       />
 
       <q-btn class="bg-purple text-white" no-caps label="Confirm Ticket" type="submit"
-             :disable="this.$store.getters.getActionRunningState"/>
+             :disable="$store.getters.getActionRunningState"/>
     </div>
 
     <div v-else-if="statusIndex === 2">
       <q-btn class="bg-info text-white q-mr-sm" label="Save" type="button"
              @click="updateComplain(false)"
-             :disable="this.$store.getters.getActionRunningState"/>
+             :disable="$store.getters.getActionRunningState"/>
 
       <q-btn class="bg-purple text-white" label="Submit" type="submit"
-             :disable="this.$store.getters.getActionRunningState"/>
+             :disable="$store.getters.getActionRunningState"/>
     </div>
 
 
@@ -138,7 +138,7 @@
 
 
       <q-btn class="bg-purple text-white" label="Approve" type="submit"
-             :disable="this.$store.getters.getActionRunningState"/>
+             :disable="$store.getters.getActionRunningState"/>
     </div>
 
     <!--    Action bar for complain according to status-->

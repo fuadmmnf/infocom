@@ -7,80 +7,113 @@
       row-key="id"
       :rows-per-page-options="[0]"
       :pagination.sync="pagination"
+      @row-click="(e, row, idx) => {
+        customerForm = row
+        showCustomerForm = true
+      }"
       @update:pagination="({page}) => {fetchCustomers(page)}"
     >
       <template v-slot:top-right>
         <q-btn label="Create" @click="showCustomerForm = true">
+
+
           <q-dialog v-model="showCustomerForm" persistent>
-            <q-card style="min-width: 350px">
-              <q-form @submit="createCustomer">
+            <q-card style="min-width: 70%" >
+              <q-bar>
+                <div>Create Customer</div>
 
-                <q-card-section class="q-pa-xs">
-                  <q-list bordered padding>
-                    <q-item-label header>Create New Customer
-                    </q-item-label>
+                <q-space />
 
-                    <q-item>
-                      <q-item-section>
-                        <q-input
-                          filled
-                          v-model="customerForm.name"
-                          label="Name"
-                          :rules="[val => (!!val ) || 'Enter customer name']"
-                        />
+                <q-btn dense flat icon="close" v-close-popup>
+                  <q-tooltip>Close</q-tooltip>
+                </q-btn>
+              </q-bar>
 
-                        <q-input
-                          filled
-                          v-model="customerForm.phone"
-                          label="Phone"
-                          type="tel"
-                          :rules="[val => (!!val ) || 'Enter customer phone number']"
-                        />
+              <q-form @submit="createCustomer" @reset="customerForm = {}"
+                      class="q-gutter-md">
+                <div class="row">
+                  <q-input class="col-md-6 col-xs-12  q-my-xs q-px-xs" filled v-model="customerForm.name"
+                           label="Full Name" />
+                  <q-input class="col-md-6 col-xs-12  q-my-xs q-px-xs" filled v-model="customerForm.phone" label="Phone"
+                  />
+                </div>
 
-                        <q-input
-                          filled
-                          v-model="customerForm.email"
-                          label="Email"
-                          type="email"
-                          :rules="[val => (!!val ) || 'Enter customer email']"
-                        />
+                <div class="row q-my-none">
+                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.email" type="email"
+                           label="Email" />
+                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.code" label="Code" />
 
-                        <q-input
-                          class="q-mb-md"
-                          filled
-                          v-model="customerForm.code"
-                          label="Code"
-                        />
 
-                        <q-input
-                          filled
-                          v-model="customerForm.password"
-                          label="Password"
-                          type="password"
-                          :rules="[val => (!!val ) || 'Enter customer password']"
-                        />
+                </div>
 
-                        <q-input
-                          filled
-                          v-model="customerForm.password_confirmation"
-                          label="Password Confirmation"
-                          type="password"
-                          :rules="[val => (!!val || val !== customerForm.password ) || 'Retype customer password']"
-                        />
-                      </q-item-section>
-                    </q-item>
-                  </q-list>
+                <div class="row q-my-none">
+                  <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
+                            v-model.number="customerForm.popaddress_id"
+                            :options="$store.getters.getPopAddresses" option-label="name"
+                            option-value="id" emit-value
+                            map-options label="Pop Address"
 
-                </q-card-section>
+                  />
+                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.installation_date"
+                           mask="date" :rules="['date']"
+                           label="Installation Date">
+                    <template v-slot:append>
+                      <q-icon name="event" class="cursor-pointer">
+                        <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                          <q-date v-model="customerForm.installation_date">
+                            <div class="row items-center justify-end">
+                              <q-btn v-close-popup label="Close" color="primary" flat />
+                            </div>
+                          </q-date>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+                </div>
 
-                <q-card-actions align="right" class="text-primary">
-                  <q-btn flat label="Close" v-close-popup/>
-                  <q-btn flat
-                         :disable="customerForm.password !== customerForm.password_confirmation || customerForm.name ==='' || customerForm.phone === '' || customerForm.email === ''"
-                         label="Confirm"
-                         type="submit"/>
-                </q-card-actions>
+                <div class="row q-my-none">
+                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.technical_contact"
+                           label="Technical Contact" />
+                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.management_contact"
+                           label="Management Contact" />
+                </div>
+
+                <div class="row q-my-none">
+                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.connection_package"
+                           label="Connection Package" />
+                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.connection_details"
+                           label="Connection Details" />
+                </div>
+
+                <div class="row q-my-none">
+                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.other_services"
+                           label="Other Services" />
+                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
+                           v-model="customerForm.additional_technical_box"
+                           label="Additional Technical Box" />
+                </div>
+
+                <div class="row q-my-none">
+                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.billing_information"
+                           label="Billing Information" />
+                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.kam_name"
+                           label="KAM Name" />
+                </div>
+
+
+                <div class="q-pa-sm">
+                  <!--      <q-btn class="bg-info text-white q-mr-sm" label="Resubmit" type="button"-->
+                  <!--             @click="updateComplain(false)"-->
+                  <!--             :disable="this.$store.getters.getActionRunningState"/>-->
+
+                  <q-btn class=" q-mr-sm" label="Reset" type="reset" />
+
+                  <q-btn class="bg-purple text-white" label="Submit" type="submit"
+                         :disable="$store.getters.getActionRunningState" />
+                </div>
+
               </q-form>
+
             </q-card>
           </q-dialog>
         </q-btn>
@@ -120,17 +153,16 @@ export default {
         password_confirmation: '',
       },
       columns: [
-        {name: 'name', align: 'center', label: 'Name', field: row => row.user.name, sortable: true},
-        {name: 'phone', align: 'center', label: 'Phone', field: row => row.user.phone},
-        {name: 'email', align: 'center', label: 'Email', field: row => row.user.email},
-        {name: 'code', align: 'center', label: 'Code', field: row => row.code},
-        {name: 'popaddress', align: 'center', label: 'POP', field: row => row.popaddress.name},
+        { name: 'name', align: 'center', label: 'Name', field: row => row.user.name, sortable: true },
+        { name: 'phone', align: 'center', label: 'Phone', field: row => row.user.phone },
+        { name: 'email', align: 'center', label: 'Email', field: row => row.user.email },
+        { name: 'code', align: 'center', label: 'Code', field: row => row.code },
+        { name: 'popaddress', align: 'center', label: 'POP', field: row => row.popaddress.name },
       ]
 
     }
   },
   mounted() {
-    this.fetchCustomers()
   },
   methods: {
     fetchCustomers(page = 1) {
