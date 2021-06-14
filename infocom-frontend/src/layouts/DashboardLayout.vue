@@ -92,7 +92,7 @@ export default {
     fetchSlaPlans() {
       this.$axios.get('slaplans')
         .then((res) => {
-          this.$store.commit('setSlaPlans', res.data)
+          this.$store.commit('setSLAPlans', res.data)
         })
     },
     fetchHelpTopics() {

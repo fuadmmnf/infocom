@@ -47,10 +47,10 @@
     </div>
 
 
-    <div v-if="$store.getters.getSlaPlans.length" class="row q-my-none">
+    <div v-if="$store.getters.getSLAPlans.length" class="row q-my-none">
 
       <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model.number="complain.slaplan_id"
-                :options="$store.getters.getSlaPlans"
+                :options="$store.getters.getSLAPlans"
                 option-label="name"
                 option-value="id" emit-value
                 map-options

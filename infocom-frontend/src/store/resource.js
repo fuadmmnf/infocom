@@ -6,13 +6,13 @@ export const state = () => ({
 })
 
 export const getters = {
-  getSlaPlans: (state) => state.slaplans,
+  getSLAPlans: (state) => state.slaplans,
   getPopAddresses: (state) => state.popaddresses,
   getDepartments: (state) => state.departments,
   getHelpTopics: (state) => state.helptopics,
 }
 export const mutations = {
-  setSlaPlans(state, plans) {
+  setSLAPlans(state, plans) {
     state.slaplans = plans
   },
   setPopAddresses(state, popaddresses){

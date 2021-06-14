@@ -109,6 +109,7 @@ export default {
       this.$axios.get(this.resource_url)
         .then((res) => {
           this.data = res.data
+          this.$store.commit('set' + this.title.replace(' ', ''), this.data)
         })
     },
     fetchSupportAgents() {
