@@ -33,10 +33,11 @@ class ComplainController extends Controller
         return response()->json($complains);
     }
 
-//    public function getComplainByCode($complain_code){
-//        $complain = Complain::where('code', $complain_code)->firstOrFail();
-//        return response()->json($complain);
-//    }
+    public function getComplainByCode($complain_code)
+    {
+        $complain = Complain::where('code', $complain_code)->firstOrFail();
+        return response()->json($complain);
+    }
 
     private function generateCode()
     {
