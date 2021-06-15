@@ -25,7 +25,7 @@ class CustomerComplainAcknowledge extends Mailable {
      *
      * @return $this
      */
-    public function build() {
+    public function build( ) {
         return $this->subject("Infocom Complain Feedback")
             ->view('mail.complainapproval');
     }
