@@ -29,8 +29,8 @@ class ReportController extends Controller
         $assignedComplains = $assignedComplains->get();
         $finishedComplains = $finishedComplains->get();
 
-        $assignedComplains->load('editor', 'editor.user');
-        $finishedComplains->load('editor', 'editor.user');
+        $assignedComplains->load('customer', 'customer.user', 'department', 'editor', 'editor.user');
+        $finishedComplains->load('customer', 'customer.user', 'department', 'editor', 'editor.user');
 
         $complains = [];
         foreach ($assignedComplains as $complain) {
@@ -48,6 +48,18 @@ class ReportController extends Controller
         usort($complains, function ($a, $b) {
             return $a->time->lte($b->time) ? -1 : 1;
         });
+
+        $complains = array_map(function ($c) {
+            return ($this->department_id != '' ? [] : [
+                    'department' => $c->department->name
+                ]) + [
+                    'time' => $c->time->format('Y-m-d H:i'),
+                    'member' => `{$c->editor->user->name} ({$c->editor->user->phone})`,
+                    'task' => $c->type,
+                    'complain' => `TT{$c->id}`,
+                    'customer' => `{$c->customer->user->name} ({$c->customer->user->phone})`
+                ];
+        }, $complains);
 
         return response()->json($complains);
     }
