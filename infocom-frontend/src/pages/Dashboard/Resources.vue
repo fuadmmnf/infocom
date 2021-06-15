@@ -1,6 +1,6 @@
 <template>
   <q-page class=" q-ma-md">
-    <div class="row justify-end">
+    <div v-if="$store.getters.hasAdminAccess" class="row justify-end">
       <q-btn label="Create" @click="showResourceForm = true">
         <q-dialog v-model="showResourceForm" persistent>
           <q-card style="min-width: 350px">
@@ -33,20 +33,20 @@
             </q-card-section>
 
             <q-card-actions align="right" class="text-primary">
-              <q-btn flat label="Close" v-close-popup/>
+              <q-btn flat label="Close" v-close-popup />
               <q-btn flat :disable="resourceForm.type === '' || resourceForm.name ===''" label="Confirm"
-                     @click="createResource"/>
+                     @click="createResource" />
             </q-card-actions>
           </q-card>
         </q-dialog>
       </q-btn>
     </div>
-    <br/>
+    <br />
     <div class="row">
-      <resource-table class="q-px-md" title="Help Topics" resource_url="helptopics"/>
-      <resource-table class="q-px-md" title="SLA Plans" resource_url="slaplans"/>
-      <resource-table class="q-px-md" title="Pop Addresses" resource_url="popaddresses"/>
-      <resource-table class="q-px-md" title="Departments" resource_url="departments"/>
+      <resource-table class="q-px-md" title="Help Topics" resource_url="helptopics" />
+      <resource-table class="q-px-md" title="SLA Plans" resource_url="slaplans" />
+      <resource-table class="q-px-md" title="Pop Addresses" resource_url="popaddresses" />
+      <resource-table class="q-px-md" title="Departments" resource_url="departments" />
     </div>
   </q-page>
 </template>
@@ -56,15 +56,15 @@ import ResourceTable from "components/ResourceTable";
 
 export default {
   name: 'DashboardResources',
-  components: {ResourceTable},
+  components: { ResourceTable },
   data() {
     return {
       showResourceForm: false,
       resourceOptions: [
-        {label: 'Help Topic', value: 'helptopics'},
-        {label: 'Pop Address', value: 'popaddresses'},
-        {label: 'Department', value: 'departments'},
-        {label: 'SLA Plan', value: 'slaplans'},
+        { label: 'Help Topic', value: 'helptopics' },
+        { label: 'Pop Address', value: 'popaddresses' },
+        { label: 'Department', value: 'departments' },
+        { label: 'SLA Plan', value: 'slaplans' },
       ],
       resourceForm: {
         type: '',

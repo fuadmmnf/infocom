@@ -1,6 +1,7 @@
 <template>
   <q-page>
     <q-table
+      v-if="$store.getters.hasCallcenterAccess"
       title="Customers"
       :data="customers"
       :columns="columns"

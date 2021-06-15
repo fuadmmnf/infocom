@@ -1,5 +1,6 @@
 <template>
   <q-item
+    v-if="permission === null || $store.getters[permission]"
     clickable
     :to="link"
   >
@@ -11,7 +12,7 @@
     </q-item-section>
 
     <q-item-section>
-      <q-item-label  class="text-body1">{{ title }}</q-item-label>
+      <q-item-label class="text-body1">{{ title }}</q-item-label>
       <q-item-label caption>
         {{ caption }}
       </q-item-label>
@@ -38,6 +39,10 @@ export default {
     icon: {
       type: String,
       default: ''
+    },
+    permission: {
+      type: String,
+      default: () => {return null}
     }
   }
 }

@@ -47,6 +47,7 @@
           :key="idx"
           :title="link.title"
           :link="link.route"
+          :permission="link.permission"
         />
       </q-list>
     </q-drawer>

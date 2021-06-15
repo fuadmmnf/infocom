@@ -1,6 +1,7 @@
 <template>
   <q-page>
     <q-table
+      v-if="$store.getters.hasAdminAccess"
       :title="$route.params.type === 'supportagents'? 'Support Agents': 'Call Center Agents'"
       :data="staffs"
       :columns="columns"

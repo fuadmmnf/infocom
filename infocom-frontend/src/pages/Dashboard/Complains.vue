@@ -92,7 +92,7 @@ export default {
 
     hasCallcenterAgentAccess: function () {
       return this.$store.getters.getUser !== null && (this.$store.getters.getUser.callcenter_agent !== undefined ||
-             this.$store.getters.getUser.super_admin !== undefined)
+                                                      this.$store.getters.getUser.super_admin !== undefined)
     },
 
   },
