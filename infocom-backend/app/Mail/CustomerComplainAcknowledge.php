@@ -7,16 +7,19 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class CustomerComplainAcknowledge extends Mailable {
+class CustomerComplainAcknowledge extends Mailable
+{
     use Queueable, SerializesModels;
 
     public $complain;
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Complain $complain) {
+    public function __construct(Complain $complain)
+    {
         $this->complain = $complain;
     }
 
@@ -25,8 +28,9 @@ class CustomerComplainAcknowledge extends Mailable {
      *
      * @return $this
      */
-    public function build( ) {
-        return $this->subject("Infocom Complain Feedback")
-            ->view('mail.complainapproval');
+    public function build()
+    {
+        return $this->subject("Acknowledgement Mail")
+            ->view('mail.complainacknowledgement');
     }
 }
