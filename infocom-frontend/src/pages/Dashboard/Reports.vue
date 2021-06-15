@@ -9,6 +9,7 @@
                       :options="departments" option-label="name"
                       option-value="id" emit-value
                       map-options label="Department"
+                      :readonly="isSupportAgent"
             />
             <download-excel class="col-2 q-mr-sm">
               <q-btn
@@ -30,6 +31,7 @@
                       :options="departments" option-label="name"
                       option-value="id" emit-value
                       map-options label="Department"
+                      :readonly="isSupportAgent"
             />
             <download-excel class="col-2 q-mr-sm">
               <q-btn
@@ -49,6 +51,7 @@
                       :options="departments" option-label="name"
                       option-value="id" emit-value
                       map-options label="Department"
+                      :readonly="isSupportAgent"
             />
             <download-excel class="col-2 q-mr-sm">
               <q-btn
@@ -67,6 +70,7 @@
                       :options="departments" option-label="name"
                       option-value="id" emit-value
                       map-options label="Department"
+                      :readonly="isSupportAgent"
             />
             <download-excel class="col-2 q-mr-sm">
               <q-btn
@@ -85,6 +89,7 @@
                       :options="departments" option-label="name"
                       option-value="id" emit-value
                       map-options label="Department"
+                      :readonly="isSupportAgent"
             />
             <download-excel class="col-2 q-mr-sm">
               <q-btn
@@ -109,6 +114,7 @@ export default {
   components: { 'downloadExcel': JsonExcel },
   data() {
     return {
+      isSupportAgent: false,
       departments: [
         { id: '', name: 'all depts' },
         ...this.$store.getters.getDepartments
@@ -139,6 +145,15 @@ export default {
         from: ''
       },
     }
+  },
+  mounted() {
+    this.isSupportAgent = this.$store.getters.getUser.support_agent !== undefined
+    const dept_id = this.isSupportAgent ? this.$store.getters.getUser.support_agent.id : ''
+    this.departmentLogRange.department_id = dept_id
+    this.complainStatusRange.department_id = dept_id
+    this.topicStatusRange.department_id = dept_id
+    this.serviceTimeRange.department_id = dept_id
+    this.popStatusRange.department_id = dept_id
   }
 }
 </script>
