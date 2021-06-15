@@ -25,4 +25,16 @@ class Complain extends Model
     {
         return $this->belongsTo(SupportAgent::class);
     }
+
+    public function activityLog(){
+        return ($this->department_id != '' ? [] : [
+            'department' => $this->department->name
+        ]) + [
+            'time' => $this->time->format('Y-m-d H:i'),
+            'member' => `{$this->editor->user->name} ({$this->editor->user->phone})`,
+            'task' => $this->type,
+            'complain' => `TT{$this->id}`,
+            'customer' => `{$this->customer->user->name} ({$this->customer->user->phone})`
+        ];
+    }
 }

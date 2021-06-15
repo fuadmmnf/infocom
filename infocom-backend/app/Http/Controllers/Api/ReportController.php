@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Complain;
+use App\Models\HelpTopic;
+use App\Models\PopAddress;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
@@ -50,18 +52,15 @@ class ReportController extends Controller
         });
 
         $complains = array_map(function ($c) {
-            return ($this->department_id != '' ? [] : [
-                    'department' => $c->department->name
-                ]) + [
-                    'time' => $c->time->format('Y-m-d H:i'),
-                    'member' => `{$c->editor->user->name} ({$c->editor->user->phone})`,
-                    'task' => $c->type,
-                    'complain' => `TT{$c->id}`,
-                    'customer' => `{$c->customer->user->name} ({$c->customer->user->phone})`
-                ];
+            return $c->activitylog();
         }, $complains);
 
-        return response()->json($complains);
+
+        return response()->json([
+            'title' => ``,
+            'headers' => ($this->department_id != '' ? [] : ['Department']) + ['Time', 'Member', 'Task', 'Complain', 'Customer'],
+            'rows' => $complains
+        ]);
     }
 
     public function fetchComplainStatusLog()
@@ -71,16 +70,19 @@ class ReportController extends Controller
 
     public function fetchTopicWisePopLog()
     {
-
+        $helptopics = HelpTopic::all();
+        $popaddresses = PopAddress::all();
     }
 
     public function fetchServiceTimeLog()
     {
+        $helptopics = HelpTopic::all();
 
     }
 
     public function fetchPopLog()
     {
+        $popaddresses = PopAddress::withCount('customers')->get(); //customers_count
 
     }
 }
