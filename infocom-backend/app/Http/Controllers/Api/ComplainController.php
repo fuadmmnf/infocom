@@ -10,6 +10,7 @@ use App\Http\Requests\Complain\DestroyComplain;
 use App\Http\Requests\Complain\UpdateComplain;
 use App\Http\Requests\Complain\UpdateCustomerFeedback;
 use App\Mail\ComplainStatusStaffAlert;
+use App\Mail\CustomerComplainAcknowledge;
 use App\Mail\CustomerComplainApproval;
 use App\Models\CallcenterAgent;
 use App\Models\Complain;
@@ -65,7 +66,7 @@ class ComplainController extends Controller
 
                 if ($complain->status == 'pending') {
                     foreach (CallcenterAgent::with('user')->get() as $callcenteragent) {
-//                        Mail::to($callcenteragent->user->email)->send(new ComplainStatusStaffAlert($complain));
+                        Mail::to($callcenteragent->user->email)->send(new ComplainStatusStaffAlert($complain));
                     }
                 }
 
@@ -73,11 +74,13 @@ class ComplainController extends Controller
             } else {
                 $info['status'] = 'assigned'; // as customer_id only set when agent makes the request
                 $complain = Complain::create($info);
+                $complain->load('customer', 'customer.user');
                 if ($complain->status == 'assigned') {
                     $complain->assigned_time = Carbon::now();
+                    Mail::to($complain->customer->user->email)->send(new CustomerComplainAcknowledge($complain));
                     $departmentTeam = SupportAgent::where('department_id', $complain->department_id)->with('user')->get();
                     foreach ($departmentTeam as $supportagent) {
-//                        Mail::to($supportagent->user->email)->send(new ComplainStatusStaffAlert($complain));
+                        Mail::to($supportagent->user->email)->send(new ComplainStatusStaffAlert($complain));
                     }
                 }
             }
@@ -98,24 +101,27 @@ class ComplainController extends Controller
         if ($before->status != $after->status) {
             if ($after->status == 'assigned') {
                 $after->assigned_time = Carbon::now();
+                Mail::to($after->customer->user->email)->send(new CustomerComplainAcknowledge($after));
+
                 $departmentTeam = SupportAgent::where('department_id', $after->department_id)->with('user')->get();
                 foreach ($departmentTeam as $supportagent) {
-//                    Mail::to($supportagent->user->email)->send(new ComplainStatusStaffAlert($after));
+                    Mail::to($supportagent->user->email)->send(new ComplainStatusStaffAlert($after));
                 }
+
             } else if ($after->status == 'finished') {
                 $after->finished_time = Carbon::now();
                 foreach (CallcenterAgent::with('user')->get() as $callcenteragent) {
-//                    Mail::to($callcenteragent->user->email)->send(new ComplainStatusStaffAlert($after));
+                    Mail::to($callcenteragent->user->email)->send(new ComplainStatusStaffAlert($after));
                 }
             } else if ($after->status == 'approved') {
                 $after->approved_time = Carbon::now();
                 $message = '';
 //                SMSHandler::sendSMS($after->customer->user->phone, $message);
-//                Mail::to($after->customer->user->email)->send(new CustomerComplainApproval($after));
+                Mail::to($after->customer->user->email)->send(new CustomerComplainApproval($after));
             }
             $after->save();
         } else if ($before->status == $after->status && $before->editor_id != $after->editor_id) {
-//            Mail::to($after->editor->user->email)->send(new ComplainStatusStaffAlert($after));
+            Mail::to($after->editor->user->email)->send(new ComplainStatusStaffAlert($after));
         }
 
 
