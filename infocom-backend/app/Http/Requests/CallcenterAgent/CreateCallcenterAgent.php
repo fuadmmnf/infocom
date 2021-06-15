@@ -18,6 +18,7 @@ class CreateCallcenterAgent extends FormRequest
 
 	public function authorize()
 	{
-		return true;
+	    $user = $this->user('api');
+		return $user!=null && $user->can('crud:callcenter_agent');
 	}
 }
