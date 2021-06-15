@@ -59,4 +59,12 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('complains/{complain_id}', [\App\Http\Controllers\Api\ComplainController::class, 'update']);
     Route::put('complains/{complain_code}/feedback', [\App\Http\Controllers\Api\ComplainController::class, 'storeFeedback']);
     Route::delete('complains/{complain_id}', [\App\Http\Controllers\Api\ComplainController::class, 'destroy']);
+
+
+    //reports
+    Route::get('reports/departmentlog', [\App\Http\Controllers\Api\ReportController::class, 'fetchDepartmentActivityLog']);
+    Route::get('reports/complainstatus', [\App\Http\Controllers\Api\ReportController::class, 'fetchComplainStatusLog']);
+    Route::get('reports/topicwisepop', [\App\Http\Controllers\Api\ReportController::class, 'fetchTopicWisePopLog']);
+    Route::get('reports/servicetime', [\App\Http\Controllers\Api\ReportController::class, 'fetchServiceTimeLog']);
+    Route::get('reports/pop', [\App\Http\Controllers\Api\ReportController::class, 'fetchPopLog']);
 });
