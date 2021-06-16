@@ -71,7 +71,7 @@ class ReportController extends Controller {
 
 
         return response()->json([
-            'title' => ``,
+            'title' => `Activity log for ` . $this->start . ' - ' . $this->end,
             'headers' => ($this->department_id != '' ? [] : ['Department']) + ['Time', 'Member', 'Task', 'Complain', 'Customer'],
             'rows' => $complains
         ]);
@@ -111,14 +111,13 @@ class ReportController extends Controller {
                 ] + $popCounts;
         });
         return response()->json([
-            'title' => ``,
+            'title' => `Pop wise service report from ` . $this->start . ' - ' . $this->end,
             'headers' => ($topicWisePopLog->count()) ? array_keys($topicWisePopLog[0]) : ['S\N', 'Help/Complaint Issue', 'Count'],
             'rows' => $topicWisePopLog
         ]);
     }
 
-    public
-    function fetchServiceTimeLog() {
+    public function fetchServiceTimeLog() {
         $helptopics = HelpTopic::all();
         $approvedcomplains = Complain::orderBy('approved_time')->whereBetween('approved_time', [$this->start, $this->end]);
         if ($this->department_id !== '') {
@@ -155,15 +154,26 @@ class ReportController extends Controller {
                 ] + $serviceHourCounts;
         });
 
+        $topicServiceLog = $topicServiceLog->merge(collect([
+            'S/N' => '',
+            'Help/Complaint Issue' => '',
+            'Count' => $topicServiceLog->sum('Count'),
+            'Less than 2 hours' => $topicServiceLog->sum('Less than 2 hours'),
+            'Less than 4 hours' => $topicServiceLog->sum('Less than 4 hours'),
+            'Less than 8 hours' => $topicServiceLog->sum('Less than 8 hours'),
+            'Less than 24 hours' => $topicServiceLog->sum('Less than 24 hours'),
+            'Less than 48 hours' => $topicServiceLog->sum('Less than 48 hours'),
+            '48 hours plus' => $topicServiceLog->sum('48 hours plus'),
+        ]));
+
         return response()->json([
-            'title' => ``,
+            'title' => `Report on Service Time ` . $this->start . ' - ' . $this->end,
             'headers' => ($topicServiceLog->count()) ? array_keys($topicServiceLog[0]) : ['S\N', 'Help/Complaint Issue', 'Count'],
             'rows' => $topicServiceLog
         ]);
     }
 
-    public
-    function fetchPopLog() {
+    public function fetchPopLog() {
         $popaddresses = PopAddress::withCount('customers')->get(); //customers_count
         $approvedcomplains = Complain::orderBy('approved_time')->whereBetween('approved_time', [$this->start, $this->end]);
         if ($this->department_id !== '') {
@@ -187,16 +197,27 @@ class ReportController extends Controller {
                 $weeklyComplainCounts['Column-' . $idx] = ($count / (float)$popaddress->customers_count) * 100.0;
             }
 
+            $overallTotal = array_sum(array_filter($weeklyComplainCounts, function ($v, $k) {
+                return str_starts_with($k, 'Week-');
+            }, ARRAY_FILTER_USE_BOTH));
+            $overallPercentage = ($overallTotal / (float)$popaddress->customers_count) * 100.0;
+
             return [
                     'S/N' => $key,
                     'POP' => $popaddress->name,
                     'Client Number' => $popaddress->customers_count,
-                    'Overall (%)' => ''
+                    'Overall (%)' => `{$overallTotal} ({$overallPercentage}%)`
                 ] + $weeklyComplainCounts;
         });
 
+        $poplog = $poplog->merge(collect([
+            'S/N' => '',
+            'POP' => '',
+            'Client Number' => $poplog->sum('Client Number'),
+        ]));
+
         return response()->json([
-            'title' => ``,
+            'title' => `Report for ` . $this->start . ' - ' . $this->end,
             'headers' => ($poplog->count()) ? array_keys($poplog[0]) : ['S\N', 'POP', 'Client Number', 'Overall (%)'],
             'rows' => $poplog
         ]);
