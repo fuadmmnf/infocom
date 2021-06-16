@@ -14,7 +14,8 @@
             <download-excel class="col-2 q-mr-sm"
                             :name="generateFileName('department_activity_log', departmentLogRange)"
                             :header=" generateFileName('department_activity_log', departmentLogRange)"
-                            :fetch="fetchDataDepartmentLog">
+                            :fetch="fetchDataDepartmentLog"
+            >
               <q-btn
 
                 color="secondary"
@@ -26,25 +27,29 @@
       </q-date>
 
 
-      <q-date class="col-3 q-ma-sm" v-model="complainStatusRange" range color="indigo-10"
-              subtitle="Complain Status Report">
-        <template>
-          <div class="flex flex-center items-center ">
-            <q-select class="col q-pr-xs " dense filled v-model.number="selectedDepartmentId"
-                      :options="departments" option-label="name"
-                      option-value="id" emit-value
-                      map-options label="Department"
-                      :readonly="isSupportAgent"
-            />
-            <download-excel class="col-2 q-mr-sm">
-              <q-btn
-                color="indigo-10"
-                icon="text_snippet"
-              />
-            </download-excel>
-          </div>
-        </template>
-      </q-date>
+<!--      <q-date class="col-3 q-ma-sm" v-model="complainStatusRange" range color="indigo-10"-->
+<!--              subtitle="Complain Status Report">-->
+<!--        <template>-->
+<!--          <div class="flex flex-center items-center ">-->
+<!--            <q-select class="col q-pr-xs " dense filled v-model.number="selectedDepartmentId"-->
+<!--                      :options="departments" option-label="name"-->
+<!--                      option-value="id" emit-value-->
+<!--                      map-options label="Department"-->
+<!--                      :readonly="isSupportAgent"-->
+<!--            />-->
+<!--            <download-excel class="col-2 q-mr-sm"-->
+<!--                            :name="generateFileName('complain_report', complainStatusRange)"-->
+<!--                            :header=" generateFileName('complain_report', complainStatusRange)"-->
+<!--                            :fetch="fetchComplainStatusLog"-->
+<!--            >-->
+<!--              <q-btn-->
+<!--                color="indigo-10"-->
+<!--                icon="text_snippet"-->
+<!--              />-->
+<!--            </download-excel>-->
+<!--          </div>-->
+<!--        </template>-->
+<!--      </q-date>-->
 
 
       <q-date class="col-3 q-ma-sm" v-model="topicStatusRange" range color="indigo" subtitle="POP/Topic Report">
@@ -56,7 +61,11 @@
                       map-options label="Department"
                       :readonly="isSupportAgent"
             />
-            <download-excel class="col-2 q-mr-sm">
+            <download-excel class="col-2 q-mr-sm"
+                            :name="generateFileName('pop_topic_log', topicStatusRange)"
+                            :header=" generateFileName('pop_topic_log', topicStatusRange)"
+                            :fetch="fetchDataTopicLog"
+            >
               <q-btn
                 color="indigo"
                 icon="text_snippet"
@@ -75,7 +84,11 @@
                       map-options label="Department"
                       :readonly="isSupportAgent"
             />
-            <download-excel class="col-2 q-mr-sm">
+            <download-excel class="col-2 q-mr-sm"
+                            :name="generateFileName('service_time_log', serviceTimeRange)"
+                            :header=" generateFileName('service_time_log', serviceTimeRange)"
+                            :fetch="fetchDataServiceLog"
+            >
               <q-btn
                 color="blue-grey"
                 icon="text_snippet"
@@ -94,7 +107,11 @@
                       map-options label="Department"
                       :readonly="isSupportAgent"
             />
-            <download-excel class="col-2 q-mr-sm">
+            <download-excel class="col-2 q-mr-sm"
+                            :name="generateFileName('pop_log', popStatusRange)"
+                            :header=" generateFileName('pop_log', popStatusRange)"
+                            :fetch="fetchDataPopLog"
+            >
               <q-btn
                 color="purple-9"
                 icon="text_snippet"
@@ -160,8 +177,27 @@ export default {
     },
     async fetchDataDepartmentLog() {
       const response = await this.$axios.get(`reports/departmentlog?department_id=${this.selectedDepartmentId}&start=${this.departmentLogRange.from.replaceAll('/', '-')}&end=${this.departmentLogRange.to.replaceAll('/', '-')}`)
-      return response.data
-    }
+      return response.data.rows
+    },
+    // async fetchComplainStatusLog() {
+    //   const response = await this.$axios.get(`reports/complainstatus?department_id=${this.selectedDepartmentId}&start=${this.departmentLogRange.from.replaceAll('/', '-')}&end=${this.departmentLogRange.to.replaceAll('/', '-')}`)
+    //   return response.data.rows
+    // }
+
+    async fetchDataTopicLog() {
+      const response = await this.$axios.get(`reports/topicwisepop?department_id=${this.selectedDepartmentId}&start=${this.topicStatusRange.from.replaceAll('/', '-')}&end=${this.topicStatusRange.to.replaceAll('/', '-')}`)
+      return response.data.rows
+    },
+
+    async fetchDataServiceLog() {
+      const response = await this.$axios.get(`reports/servicetime?department_id=${this.selectedDepartmentId}&start=${this.serviceTimeRange.from.replaceAll('/', '-')}&end=${this.serviceTimeRange.to.replaceAll('/', '-')}`)
+      return response.data.rows
+    },
+
+    async fetchDataPopLog() {
+      const response = await this.$axios.get(`reports/pop?department_id=${this.selectedDepartmentId}&start=${this.popStatusRange.from.replaceAll('/', '-')}&end=${this.popStatusRange.to.replaceAll('/', '-')}`)
+      return response.data.rows
+    },
   }
 }
 </script>

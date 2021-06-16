@@ -106,7 +106,7 @@ class ReportController extends Controller
         $topicWisePopLog = $helptopics->map(function ($helptopic, $key) use ($approvedcomplains, $popaddresses) {
 
             $topicComplains = $approvedcomplains->filter(function ($complain) use ($helptopic) {
-                return $complain->customer->helptopic_id == $helptopic->id;
+                return $complain->helptopic_id == $helptopic->id;
             });
 
             $popCounts = [];
@@ -118,7 +118,7 @@ class ReportController extends Controller
             }
 
             return [
-                    'S/N' => $key,
+                    'S/N' => $key + 1,
                     'Help/Complaint Issue' => $helptopic->name,
                     'Count' => array_sum($popCounts),
                 ] + $popCounts;
@@ -142,7 +142,7 @@ class ReportController extends Controller
                 'Count' => 'Percentage',
 
             ] + $popaddresses->map(function ($popaddress) use ($topicWisePopLog, $totalCount) {
-                return [$popaddress->name => ($topicWisePopLog->sum($popaddress->name) / (float)$totalCount) * 100.0];
+                return [$popaddress->name => $totalCount? (($topicWisePopLog->sum($popaddress->name) / (float)$totalCount) * 100.0): 0];
             })->all()
         ));
 
@@ -233,13 +233,13 @@ class ReportController extends Controller
                     return $complain->approved_time->between($week['start'], $week['end']);
                 })->count();
                 $weeklyComplainCounts['Week-' . $idx] = $count;
-                $weeklyComplainCounts['Column-' . $idx] = ($count / (float)$popaddress->customers_count) * 100.0;
+                $weeklyComplainCounts['Column-' . $idx] = $popaddress->customers_count? (($count / (float)$popaddress->customers_count) * 100.0) : 0;
             }
 
             $overallTotal = array_sum(array_filter($weeklyComplainCounts, function ($v, $k) {
                 return str_starts_with($k, 'Week-');
             }, ARRAY_FILTER_USE_BOTH));
-            $overallPercentage = ($overallTotal / (float)$popaddress->customers_count) * 100.0;
+            $overallPercentage = $popaddress->customers_count? (($overallTotal / (float)$popaddress->customers_count) * 100.0): 0;
 
             return [
                     'S/N' => $key,
