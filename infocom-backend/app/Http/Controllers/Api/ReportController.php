@@ -88,7 +88,46 @@ class ReportController extends Controller {
 
     public function fetchServiceTimeLog() {
         $helptopics = HelpTopic::all();
+        $approvedcomplains = Complain::orderBy('approved_time')->whereBetween('approved_time', [$this->start, $this->end]);
+        if ($this->department_id !== '') {
+            $approvedcomplains = $approvedcomplains->where('department_id', $this->department_id);
+        }
+        $approvedcomplains = $approvedcomplains->get();
+        $durations = [
+            'Less than 2 hours' => [0, 2],
+            'Less than 4 hours' => [2, 4],
+            'Less than 8 hours' => [4, 8],
+            'Less than 24 hours' => [8, 24],
+            'Less than 48 hours' => [24, 48],
+            '48 hours plus' => [48, 2000],
+        ];
 
+        $topicServiceLog = $helptopics->map(function ($helptopic, $key) use ($approvedcomplains, $durations) {
+            $topicComplains = $approvedcomplains->filter(function ($complain) use ($helptopic) {
+                return $complain->helptopic_id == $helptopic->id;
+            });
+
+            $serviceHourCounts = [];
+            foreach ($durations as $key => $range) {
+                $count = $topicComplains->filter(function ($complain) use ($range) {
+                    $diff = $complain->approved_time->floatDiffInHours($complain->complain_time);
+                    return $diff > $range[0] && $diff <= $range[1];
+                })->count();
+                $serviceHourCounts[$key] = $count;
+            }
+
+            return [
+                    'S/N' => $key,
+                    'Help/Complaint Issue' => $helptopic->name,
+                    'Count' => array_sum($serviceHourCounts),
+                ] + $serviceHourCounts;
+        });
+
+        return response()->json([
+            'title' => ``,
+            'headers' => ($topicServiceLog->count()) ? array_keys($topicServiceLog[0]) : ['S\N', 'Help/Complaint Issue', 'Count'],
+            'rows' => $topicServiceLog
+        ]);
     }
 
     public function fetchPopLog() {
@@ -107,20 +146,26 @@ class ReportController extends Controller {
             });
 
             $weeklyComplainCounts = [];
-            foreach ($weeks as $idx=>$week) {
+            foreach ($weeks as $idx => $week) {
                 $count = $popComplains->filter(function ($complain) use ($week) {
                     return $complain->approved_time->between($week['start'], $week['end']);
                 })->count();
                 $weeklyComplainCounts['Week-' . $idx] = $count;
-                $weeklyComplainCounts['Column-' . $idx] = ($count/(float)$popaddress->customers_count) * 100.0;
+                $weeklyComplainCounts['Column-' . $idx] = ($count / (float)$popaddress->customers_count) * 100.0;
             }
 
             return [
-                'S/N' => $key,
-                'POP' => $popaddress->name,
-                'Client Number' => $popaddress->customers_count,
-                'Overall (%)' => ''
-            ] + $weeklyComplainCounts;
+                    'S/N' => $key,
+                    'POP' => $popaddress->name,
+                    'Client Number' => $popaddress->customers_count,
+                    'Overall (%)' => ''
+                ] + $weeklyComplainCounts;
         });
+
+        return response()->json([
+            'title' => ``,
+            'headers' => ($poplog->count()) ? array_keys($poplog[0]) : ['S\N', 'POP', 'Client Number', 'Overall (%)'],
+            'rows' => $poplog
+        ]);
     }
 }
