@@ -77,16 +77,48 @@ class ReportController extends Controller {
         ]);
     }
 
-    public function fetchComplainStatusLog() {
-
-    }
+//    public function fetchComplainStatusLog() {
+//
+//    }
 
     public function fetchTopicWisePopLog() {
         $helptopics = HelpTopic::all();
         $popaddresses = PopAddress::all();
+        $approvedcomplains = Complain::orderBy('approved_time')->whereBetween('approved_time', [$this->start, $this->end]);
+        if ($this->department_id !== '') {
+            $approvedcomplains = $approvedcomplains->where('department_id', $this->department_id);
+        }
+
+        $approvedcomplains = $approvedcomplains->with('customer')->get();
+        $topicWisePopLog = $helptopics->map(function ($helptopic, $key) use ($approvedcomplains, $popaddresses) {
+
+            $topicComplains = $approvedcomplains->filter(function ($complain) use ($helptopic) {
+                return $complain->customer->helptopic_id == $helptopic->id;
+            });
+
+            $popCounts = [];
+            foreach ($popaddresses as $popaddress) {
+                $count = $topicComplains->filter(function ($complain) use ($popaddress) {
+                    return $complain->customer->popaddress_id = $popaddress->id;
+                })->count();
+                $popCounts[$popaddress->name] = $count;
+            }
+
+            return [
+                    'S/N' => $key,
+                    'Help/Complaint Issue' => $helptopic->name,
+                    'Count' => array_sum($popCounts),
+                ] + $popCounts;
+        });
+        return response()->json([
+            'title' => ``,
+            'headers' => ($topicWisePopLog->count()) ? array_keys($topicWisePopLog[0]) : ['S\N', 'Help/Complaint Issue', 'Count'],
+            'rows' => $topicWisePopLog
+        ]);
     }
 
-    public function fetchServiceTimeLog() {
+    public
+    function fetchServiceTimeLog() {
         $helptopics = HelpTopic::all();
         $approvedcomplains = Complain::orderBy('approved_time')->whereBetween('approved_time', [$this->start, $this->end]);
         if ($this->department_id !== '') {
@@ -130,7 +162,8 @@ class ReportController extends Controller {
         ]);
     }
 
-    public function fetchPopLog() {
+    public
+    function fetchPopLog() {
         $popaddresses = PopAddress::withCount('customers')->get(); //customers_count
         $approvedcomplains = Complain::orderBy('approved_time')->whereBetween('approved_time', [$this->start, $this->end]);
         if ($this->department_id !== '') {
