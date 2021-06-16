@@ -15,7 +15,7 @@ class CreateComplainsTable extends Migration {
             $table->unsignedBigInteger('department_id')->nullable();
             $table->unsignedBigInteger('slaplan_id')->nullable();
             $table->string('code');
-            $table->enum('status', ['pending', 'assigned', 'working', 'finished', 'approved'])->default('pending');
+            $table->enum('status', ['pending', 'assigned', 'working', 'finished', 'approved', 'overdue'])->default('pending');
             $table->enum('ticket_source', ['customer', 'agent', 'email'])->default('customer');
             $table->text('complain_text');
             $table->string('complain_summary')->default('');

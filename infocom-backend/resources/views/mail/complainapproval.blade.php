@@ -22,7 +22,11 @@
     <p>Dear Sir,</p>
     <p>Thank you for staying with us.</p>
 
-    <p>This email is to notify you that we believe this ticket (TT#{{$complain->id}}) has been resolved.</p>
+    <p>This email is to notify you that we believe this ticket (TT#{{$complain->id}}) has been resolved. Please visit
+        the following link to provide your valuable feedback:<br/>
+        <a href="{{config('app.frontend_url')}}/#complain/{{$complain->code}}"
+           target="_blank">{{config('app.frontend_url')}}/#complain/{{$complain->code}}</a>
+    </p>
     <p>To receive prompt attention if this is not the case, please reply to this email within next two days./Please
         feel welcome to re-open this ticket or open a new one if you need any further assistance.
     </p>
