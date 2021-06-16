@@ -13,7 +13,7 @@ class ReportController extends Controller {
     private $department_id, $start, $end;
 
     public function __construct(Request $request) {
-        $this->middleware(['role:support_agent']);
+        $this->middleware(['auth:api']);
         $this->department_id = $request->query('department_id') ?? '';
         $this->start = $request->query('start') ?? '';
         $this->end = $request->query('end') ?? '';
@@ -71,7 +71,7 @@ class ReportController extends Controller {
 
 
         return response()->json([
-            'title' => `Activity log for ` . $this->start . ' - ' . $this->end,
+            'title' => 'Activity log for ' . $this->start . ' - ' . $this->end,
             'headers' => ($this->department_id != '' ? [] : ['Department']) + ['Time', 'Member', 'Task', 'Complain', 'Customer'],
             'rows' => $complains
         ]);
@@ -135,7 +135,7 @@ class ReportController extends Controller {
 
 
         return response()->json([
-            'title' => `Pop wise service report from ` . $this->start . ' - ' . $this->end,
+            'title' => 'Pop wise service report from ' . $this->start . ' - ' . $this->end,
             'headers' => ($topicWisePopLog->count()) ? array_keys($topicWisePopLog[0]) : ['S\N', 'Help/Complaint Issue', 'Count'],
             'rows' => $topicWisePopLog
         ]);
@@ -191,7 +191,7 @@ class ReportController extends Controller {
         ]));
 
         return response()->json([
-            'title' => `Report on Service Time ` . $this->start . ' - ' . $this->end,
+            'title' => 'Report on Service Time ' . $this->start . ' - ' . $this->end,
             'headers' => ($topicServiceLog->count()) ? array_keys($topicServiceLog[0]) : ['S\N', 'Help/Complaint Issue', 'Count'],
             'rows' => $topicServiceLog
         ]);
@@ -241,7 +241,7 @@ class ReportController extends Controller {
         ]));
 
         return response()->json([
-            'title' => `Report for ` . $this->start . ' - ' . $this->end,
+            'title' => 'Report for ' . $this->start . ' - ' . $this->end,
             'headers' => ($poplog->count()) ? array_keys($poplog[0]) : ['S\N', 'POP', 'Client Number', 'Overall (%)'],
             'rows' => $poplog
         ]);

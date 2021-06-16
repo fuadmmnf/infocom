@@ -79,12 +79,15 @@ class ComplainController extends Controller
                 $complain->load('customer', 'customer.user');
                 if ($complain->status == 'assigned') {
                     $complain->assigned_time = Carbon::now();
+
                     Mail::to($complain->customer->user->email)->queue(new CustomerComplainAcknowledge($complain));
                     $departmentTeam = SupportAgent::where('department_id', $complain->department_id)->with('user')->get();
                     foreach ($departmentTeam as $supportagent) {
                         Mail::to($supportagent->user->email)->queue(new ComplainStatusStaffAlert($complain));
                     }
                 }
+
+                $complain->save();
             }
 
 

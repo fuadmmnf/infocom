@@ -5,7 +5,7 @@
               subtitle="Department Activity Log">
         <template>
           <div class="flex flex-center items-center ">
-            <q-select class="col q-pr-xs " dense filled v-model.number="departmentLogRange.department_id"
+            <q-select class="col q-pr-xs " dense filled v-model.number="selectedDepartmentId"
                       :options="departments" option-label="name"
                       option-value="id" emit-value
                       map-options label="Department"
@@ -30,7 +30,7 @@
               subtitle="Complain Status Report">
         <template>
           <div class="flex flex-center items-center ">
-            <q-select class="col q-pr-xs " dense filled v-model.number="complainStatusRange.department_id"
+            <q-select class="col q-pr-xs " dense filled v-model.number="selectedDepartmentId"
                       :options="departments" option-label="name"
                       option-value="id" emit-value
                       map-options label="Department"
@@ -50,7 +50,7 @@
       <q-date class="col-3 q-ma-sm" v-model="topicStatusRange" range color="indigo" subtitle="POP/Topic Report">
         <template>
           <div class="flex flex-center items-center ">
-            <q-select class="col q-pr-xs " dense filled v-model.number="topicStatusRange.department_id"
+            <q-select class="col q-pr-xs " dense filled v-model.number="selectedDepartmentId"
                       :options="departments" option-label="name"
                       option-value="id" emit-value
                       map-options label="Department"
@@ -69,7 +69,7 @@
       <q-date class="col-3 q-ma-sm" v-model="serviceTimeRange" range color="blue-grey" subtitle="Service Time Report">
         <template>
           <div class="flex flex-center items-center ">
-            <q-select class="col q-pr-xs " dense filled v-model.number="serviceTimeRange.department_id"
+            <q-select class="col q-pr-xs " dense filled v-model.number="selectedDepartmentId"
                       :options="departments" option-label="name"
                       option-value="id" emit-value
                       map-options label="Department"
@@ -88,7 +88,7 @@
       <q-date class="col-3 q-ma-sm" v-model="popStatusRange" range color="purple-9" subtitle="POP Report">
         <template>
           <div class="flex flex-center items-center ">
-            <q-select class="col q-pr-xs " dense filled v-model.number="popStatusRange.department_id"
+            <q-select class="col q-pr-xs " dense filled v-model.number="selectedDepartmentId"
                       :options="departments" option-label="name"
                       option-value="id" emit-value
                       map-options label="Department"
@@ -114,36 +114,32 @@ import JsonExcel from "vue-json-excel";
 
 export default {
   name: 'DashboardReports',
-  components: {'downloadExcel': JsonExcel},
+  components: { 'downloadExcel': JsonExcel },
   data() {
     return {
       isSupportAgent: false,
       departments: [
-        {id: '', name: 'all depts'},
+        { id: '', name: 'all depts' },
         ...this.$store.getters.getDepartments
       ],
+      selectedDepartmentId: '',
       departmentLogRange: {
-        department_id: '',
         to: '',
         from: ''
       },
       complainStatusRange: {
-        department_id: '',
         to: '',
         from: ''
       },
       topicStatusRange: {
-        department_id: '',
         to: '',
         from: ''
       },
       serviceTimeRange: {
-        department_id: '',
         to: '',
         from: ''
       },
       popStatusRange: {
-        department_id: '',
         to: '',
         from: ''
       },
@@ -151,19 +147,19 @@ export default {
   },
   mounted() {
     this.isSupportAgent = this.$store.getters.getUser.support_agent !== undefined
-    const dept_id = this.isSupportAgent ? this.$store.getters.getUser.support_agent.id : ''
-    this.departmentLogRange.department_id = dept_id
-    this.complainStatusRange.department_id = dept_id
-    this.topicStatusRange.department_id = dept_id
-    this.serviceTimeRange.department_id = dept_id
-    this.popStatusRange.department_id = dept_id
+    this.selectedDepartmentId = this.isSupportAgent ? this.$store.getters.getUser.support_agent.id : ''
+    // this.departmentLogRange.department_id = dept_id
+    // this.complainStatusRange.department_id = dept_id
+    // this.topicStatusRange.department_id = dept_id
+    // this.serviceTimeRange.department_id = dept_id
+    // this.popStatusRange.department_id = dept_id
   },
   methods: {
     generateFileName(title, range) {
       return `${title}_${range.to}_${range.from}`
     },
     async fetchDataDepartmentLog() {
-      const response = await axios.get(`reports/departmentlog?department_id=${this.departmentLogRange.department_id}&start=${this.departmentLogRange.to}&end=${this.departmentLogRange.from}`)
+      const response = await this.$axios.get(`reports/departmentlog?department_id=${this.selectedDepartmentId}&start=${this.departmentLogRange.to}&end=${this.departmentLogRange.from}`)
       console.log(response.data)
       return response.data
     }
