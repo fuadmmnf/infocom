@@ -9,17 +9,20 @@ use App\Models\PopAddress;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 
-class ReportController extends Controller {
+class ReportController extends Controller
+{
     private $department_id, $start, $end;
 
-    public function __construct(Request $request) {
+    public function __construct(Request $request)
+    {
         $this->middleware(['auth:api']);
         $this->department_id = $request->query('department_id') ?? '';
         $this->start = $request->query('start') ?? '';
         $this->end = $request->query('end') ?? '';
     }
 
-    private function generateWeekDistribution() {
+    private function generateWeekDistribution()
+    {
         $period = CarbonPeriod::create($this->start, $this->end);
         $weekNumber = 1;
         $weeks = array();
@@ -35,7 +38,8 @@ class ReportController extends Controller {
         return $ranges;
     }
 
-    public function fetchDepartmentActivityLog() {
+    public function fetchDepartmentActivityLog()
+    {
         $assignedComplains = Complain::orderBy('assigned_time')->whereBetween('assigned_time', [$this->start, $this->end]);
         $finishedComplains = Complain::orderBy('finished_time')->whereBetween('finished_time', [$this->start, $this->end]);
         if ($this->department_id !== '') {
@@ -66,7 +70,15 @@ class ReportController extends Controller {
         });
 
         $complains = array_map(function ($c) {
-            return $c->activitylog();
+            return ($this->department_id != '' ? [] : [
+                    'Department' => $c->department->name
+                ]) + [
+                    'Time' => $c->time->format('Y-m-d H:i'),
+                    'Member' => "{$c->editor->user->name} ({$c->editor->user->phone})",
+                    'Task' => $c->type,
+                    'Complain' => "TT#{$c->id}",
+                    'Customer' => "{$c->customer->user->name} ({$c->customer->user->phone})"
+                ];
         }, $complains);
 
 
@@ -81,7 +93,8 @@ class ReportController extends Controller {
 //
 //    }
 
-    public function fetchTopicWisePopLog() {
+    public function fetchTopicWisePopLog()
+    {
         $helptopics = HelpTopic::all();
         $popaddresses = PopAddress::all();
         $approvedcomplains = Complain::orderBy('approved_time')->whereBetween('approved_time', [$this->start, $this->end]);
@@ -141,7 +154,8 @@ class ReportController extends Controller {
         ]);
     }
 
-    public function fetchServiceTimeLog() {
+    public function fetchServiceTimeLog()
+    {
         $helptopics = HelpTopic::all();
         $approvedcomplains = Complain::orderBy('approved_time')->whereBetween('approved_time', [$this->start, $this->end]);
         if ($this->department_id !== '') {
@@ -197,7 +211,8 @@ class ReportController extends Controller {
         ]);
     }
 
-    public function fetchPopLog() {
+    public function fetchPopLog()
+    {
         $popaddresses = PopAddress::withCount('customers')->get(); //customers_count
         $approvedcomplains = Complain::orderBy('approved_time')->whereBetween('approved_time', [$this->start, $this->end]);
         if ($this->department_id !== '') {
@@ -230,7 +245,7 @@ class ReportController extends Controller {
                     'S/N' => $key,
                     'POP' => $popaddress->name,
                     'Client Number' => $popaddress->customers_count,
-                    'Overall (%)' => `{$overallTotal} ({$overallPercentage}%)`
+                    'Overall (%)' => "{$overallTotal} ({$overallPercentage}%)"
                 ] + $weeklyComplainCounts;
         });
 

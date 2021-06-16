@@ -156,11 +156,10 @@ export default {
   },
   methods: {
     generateFileName(title, range) {
-      return `${title}_${range.to}_${range.from}`
+      return `${title}_${range.to.replaceAll('/', '-')}_${range.from.replaceAll('/', '-')}`
     },
     async fetchDataDepartmentLog() {
-      const response = await this.$axios.get(`reports/departmentlog?department_id=${this.selectedDepartmentId}&start=${this.departmentLogRange.to}&end=${this.departmentLogRange.from}`)
-      console.log(response.data)
+      const response = await this.$axios.get(`reports/departmentlog?department_id=${this.selectedDepartmentId}&start=${this.departmentLogRange.from.replaceAll('/', '-')}&end=${this.departmentLogRange.to.replaceAll('/', '-')}`)
       return response.data
     }
   }

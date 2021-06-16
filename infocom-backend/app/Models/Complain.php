@@ -10,6 +10,27 @@ class Complain extends Model
     use SoftDeletes;
 
     protected $guarded = [];
+    protected $casts= [
+        'complain_time' => 'datetime',
+        'assigned_time' => 'datetime',
+        'finished_time' => 'datetime',
+        'approved_time' => 'datetime',
+    ];
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    public function slaplan()
+    {
+        return $this->belongsTo(SlaPlan::class);
+    }
+
+    public function helptopic()
+    {
+        return $this->belongsTo(HelpTopic::class);
+    }
 
     public function customer()
     {
@@ -26,15 +47,4 @@ class Complain extends Model
         return $this->belongsTo(SupportAgent::class);
     }
 
-    public function activityLog(){
-        return ($this->department_id != '' ? [] : [
-            'department' => $this->department->name
-        ]) + [
-            'time' => $this->time->format('Y-m-d H:i'),
-            'member' => `{$this->editor->user->name} ({$this->editor->user->phone})`,
-            'task' => $this->type,
-            'complain' => `TT#{$this->id}`,
-            'customer' => `{$this->customer->user->name} ({$this->customer->user->phone})`
-        ];
-    }
 }
