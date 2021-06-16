@@ -110,6 +110,30 @@ class ReportController extends Controller {
                     'Count' => array_sum($popCounts),
                 ] + $popCounts;
         });
+
+        $totalCount = $topicWisePopLog->sum('Count');
+        $topicWisePopLog = $topicWisePopLog->merge(collect([
+                'S/N' => '',
+                'Help/Complaint Issue' => '',
+                'Count' => $totalCount,
+
+            ] + $popaddresses->map(function ($popaddress) use ($topicWisePopLog) {
+                return [$popaddress->name => $topicWisePopLog->sum($popaddress->name)];
+            })->all()
+        ));
+
+
+        $topicWisePopLog = $topicWisePopLog->merge(collect([
+                'S/N' => '',
+                'Help/Complaint Issue' => '',
+                'Count' => '',
+
+            ] + $popaddresses->map(function ($popaddress) use ($topicWisePopLog) {
+                return [$popaddress->name => ($topicWisePopLog->sum($popaddress->name) / (float)$totalCount) * 100.0];
+            })->all()
+        ));
+
+
         return response()->json([
             'title' => `Pop wise service report from ` . $this->start . ' - ' . $this->end,
             'headers' => ($topicWisePopLog->count()) ? array_keys($topicWisePopLog[0]) : ['S\N', 'Help/Complaint Issue', 'Count'],
