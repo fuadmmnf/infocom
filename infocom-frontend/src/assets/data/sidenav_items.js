@@ -47,7 +47,7 @@ export default function () {
       title: 'Reports',
       caption: '',
       icon: 'home',
-      permission: 'hasSupportAgentAccess',
+      permission: null,
       route: {name: 'dashboard-reports'}
     },
   ]

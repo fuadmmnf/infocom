@@ -7,7 +7,7 @@
       <div class="row justify-center q-my-md">
         <q-card flat bordered class="q-pa-lg" style="min-width: 80%">
           <q-card-section>
-            <complain-form :helptopics="helptopics"/>
+            <complain-form :helptopics="$store.getters.getHelpTopics"/>
           </q-card-section>
         </q-card>
       </div>

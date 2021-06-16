@@ -3,19 +3,19 @@
           class="q-gutter-md">
     <div class="row items-center" v-if="isAuthenticated && complain.status === undefined">
       <q-input class="col-md-3 col-xs-5  q-my-xs q-px-xs" filled v-model="search" label="Search Customer"></q-input>
-      <q-btn flat label="search" type="button" @click="searchCustomer" />
+      <q-btn flat label="search" type="button" @click="searchCustomer"/>
     </div>
 
     <div class="row">
       <q-input class="col-md-6 col-xs-12  q-my-xs q-px-xs" filled v-model="complain.name" label="Full Name"
-               :disable="statusIndex > 0" :readonly="isAuthenticated" />
+               :disable="statusIndex > 0" :readonly="isAuthenticated"/>
       <q-input class="col-md-6 col-xs-12  q-my-xs q-px-xs" filled v-model="complain.phone" label="Phone"
-               :disable="statusIndex > 0" :readonly="isAuthenticated" />
+               :disable="statusIndex > 0" :readonly="isAuthenticated"/>
     </div>
 
     <div class="row q-my-none">
       <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="complain.email" type="email"
-               label="Email" :disable="statusIndex > 0" :readonly="isAuthenticated" />
+               label="Email" :disable="statusIndex > 0" :readonly="isAuthenticated"/>
       <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model.number="complain.helptopic_id"
                 :options="$store.getters.getHelpTopics" option-label="name"
                 option-value="id" emit-value
@@ -97,18 +97,18 @@
 
     <!--    Action bar for complain according to status-->
     <div v-if="complain.status === undefined">
-      <q-btn class=" q-mr-sm" label="Reset" type="reset" />
+      <q-btn class=" q-mr-sm" label="Reset" type="reset"/>
       <q-btn class="bg-purple text-white" label="Submit" type="submit"
-             :disable="$store.getters.getActionRunningState" />
+             :disable="$store.getters.getActionRunningState"/>
     </div>
 
     <div v-else-if="statusIndex === 0">
       <q-btn class="bg-info text-white q-mr-sm" label="Save" type="button"
              @click="updateComplain(false)"
-             :disable="$store.getters.getActionRunningState" />
+             :disable="$store.getters.getActionRunningState"/>
 
       <q-btn class="bg-purple text-white" label="Submit" type="submit"
-             :disable="$store.getters.getActionRunningState" />
+             :disable="$store.getters.getActionRunningState"/>
     </div>
 
 
@@ -123,7 +123,7 @@
       />
 
       <q-btn class="bg-purple text-white" no-caps label="Confirm Ticket" type="submit"
-             :disable="$store.getters.getActionRunningState" />
+             :disable="$store.getters.getActionRunningState"/>
     </div>
 
     <div v-else-if="statusIndex === 2">
@@ -140,10 +140,10 @@
 
       <q-btn class="bg-info text-white q-mr-sm" label="Save" type="button"
              @click="updateComplain(false)"
-             :disable="$store.getters.getActionRunningState" />
+             :disable="$store.getters.getActionRunningState"/>
 
       <q-btn class="bg-purple text-white" label="Submit" type="submit"
-             :disable="$store.getters.getActionRunningState" />
+             :disable="$store.getters.getActionRunningState"/>
     </div>
 
 
@@ -154,7 +154,7 @@
 
 
       <q-btn class="bg-purple text-white" label="Approve" type="submit"
-             :disable="$store.getters.getActionRunningState" />
+             :disable="$store.getters.getActionRunningState"/>
     </div>
 
     <!--    Action bar for complain according to status-->
@@ -197,17 +197,17 @@ export default {
       return this.statusList.indexOf(this.complain.status)
     },
     isAuthenticated: function () {
-      return this.$store.getters.getUser.phone !== undefined
+      return this.$store.getters.getUser !== null && this.$store.getters.getUser.phone !== undefined
     },
     isComplainEditor: function () {
-      return (this.$store.getters.getUser.support_agent === undefined) ? false : this.complain.editor_id ===
-                                                                                 this.$store.getters.getUser.support_agent.id
+      return (this.$store.getters.getUser !== null && this.$store.getters.getUser.support_agent === undefined) ? false : this.complain.editor_id ===
+        this.$store.getters.getUser.support_agent.id
     },
     hasTeamLeaderPermission: function () {
-      return this.$store.getters.getUser.support_agent ===
-             undefined ? false : this.$store.getters.getDepartments.find((d) => (d.leader_id ===
-                                                                                 this.$store.getters.getUser.support_agent.id &&
-                                                                                 d.id === this.complain.department_id))
+      return (this.$store.getters.getUser !== null && this.$store.getters.getUser.support_agent ===
+        undefined) ? false : this.$store.getters.getDepartments.find((d) => (d.leader_id ===
+        this.$store.getters.getUser.support_agent.id &&
+        d.id === this.complain.department_id))
     }
   },
   mounted() {
@@ -222,7 +222,7 @@ export default {
       }
     }
 
-    if (this.$store.getters.getUser.support_agent !== undefined) {
+    if (this.$store.getters.getUser !== null && this.$store.getters.getUser.support_agent !== undefined) {
       this.complain.editor_id = this.$store.getters.getUser.support_agent.id
     }
   },
@@ -259,10 +259,10 @@ export default {
 
         if (this.complain.status === 'assigned') {
           this.complain.agent_id = (this.isAuthenticated && this.$store.getters.getUser.callcenter_agent !==
-                                    undefined) ? this.$store.getters.getUser.callcenter_agent.id : null
+            undefined) ? this.$store.getters.getUser.callcenter_agent.id : null
         }
         // if (this.complain.status === 'working') {
-          // this.complain.editor_id = this.selectedEditorId
+        // this.complain.editor_id = this.selectedEditorId
         // }
       }
 

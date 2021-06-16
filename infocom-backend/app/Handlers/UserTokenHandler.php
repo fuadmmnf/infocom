@@ -35,14 +35,14 @@ class UserTokenHandler {
         $customer->additional_technical_box = $info['additional_technical_box'] ?? '';
         $customer->billing_information = $info['billing_information'] ?? '';
         $customer->kam_name = $info['kam_name'] ?? '';
-        $customer->installation_date = Carbon::parse($info['installation_date']) ?? null;
+        $customer->installation_date = isset($info['installation_date']) ? Carbon::parse($info['installation_date']) : null;
         $customer->save();
         $user->assignRole('customer');
 
         return $customer;
     }
 
-    public function updateCustomer($customer_id, array $info){
+    public function updateCustomer($customer_id, array $info) {
         $customer = Customer::findOrFail($customer_id);
         $info['installation_date'] = Carbon::parse($info['installation_date']) ?? null;
         $customer->user->update(['name' => $info['name']]);

@@ -11,7 +11,10 @@
                       map-options label="Department"
                       :readonly="isSupportAgent"
             />
-            <download-excel class="col-2 q-mr-sm">
+            <download-excel class="col-2 q-mr-sm"
+                            :name="generateFileName('department_activity_log', departmentLogRange)"
+                            :header=" generateFileName('department_activity_log', departmentLogRange)"
+                            :fetch="fetchDataDepartmentLog">
               <q-btn
 
                 color="secondary"
@@ -111,12 +114,12 @@ import JsonExcel from "vue-json-excel";
 
 export default {
   name: 'DashboardReports',
-  components: { 'downloadExcel': JsonExcel },
+  components: {'downloadExcel': JsonExcel},
   data() {
     return {
       isSupportAgent: false,
       departments: [
-        { id: '', name: 'all depts' },
+        {id: '', name: 'all depts'},
         ...this.$store.getters.getDepartments
       ],
       departmentLogRange: {
@@ -154,6 +157,16 @@ export default {
     this.topicStatusRange.department_id = dept_id
     this.serviceTimeRange.department_id = dept_id
     this.popStatusRange.department_id = dept_id
+  },
+  methods: {
+    generateFileName(title, range) {
+      return `${title}_${range.to}_${range.from}`
+    },
+    async fetchDataDepartmentLog() {
+      const response = await axios.get(`reports/departmentlog?department_id=${this.departmentLogRange.department_id}&start=${this.departmentLogRange.to}&end=${this.departmentLogRange.from}`)
+      console.log(response.data)
+      return response.data
+    }
   }
 }
 </script>

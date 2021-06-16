@@ -126,9 +126,9 @@ class ReportController extends Controller {
         $topicWisePopLog = $topicWisePopLog->merge(collect([
                 'S/N' => '',
                 'Help/Complaint Issue' => '',
-                'Count' => '',
+                'Count' => 'Percentage',
 
-            ] + $popaddresses->map(function ($popaddress) use ($topicWisePopLog) {
+            ] + $popaddresses->map(function ($popaddress) use ($topicWisePopLog, $totalCount) {
                 return [$popaddress->name => ($topicWisePopLog->sum($popaddress->name) / (float)$totalCount) * 100.0];
             })->all()
         ));
