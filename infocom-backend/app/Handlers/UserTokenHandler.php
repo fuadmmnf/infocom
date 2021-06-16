@@ -44,7 +44,7 @@ class UserTokenHandler {
 
     public function updateCustomer($customer_id, array $info) {
         $customer = Customer::findOrFail($customer_id);
-        $info['installation_date'] = Carbon::parse($info['installation_date']) ?? null;
+        $info['installation_date'] = isset($info['installation_date']) ?  Carbon::parse($info['installation_date']): null;
         $customer->user->update(['name' => $info['name']]);
         unset($info['name']);
         $customer->update($info);
