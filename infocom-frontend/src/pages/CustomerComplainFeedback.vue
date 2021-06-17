@@ -1,6 +1,6 @@
 <template>
   <q-page class="flex flex-center">
-    <div v-if="complain.status === 'approved' && !feedbackStored" class="q-pa-md">
+    <div v-if="complain.status !==undefined && !feedbackStored" class="q-pa-md">
       <div class="q-gutter-y-md column">
         <q-form @submit="storeFeedback">
           <q-rating

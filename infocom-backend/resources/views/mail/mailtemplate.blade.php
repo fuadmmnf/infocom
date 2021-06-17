@@ -33,7 +33,7 @@
     <br/><br/>
     <span>Sincerely, <br/>
         Customer Service Department <br/>
-        <img src="/images/maillogo.png" alt="mail logo" width="190px"/><br/>
+        <img src="{{asset('images/maillogo.png')}}" alt="mail logo" width="190px"/><br/>
         A.K. Khan Telecom Limited
     </span>
 </div>

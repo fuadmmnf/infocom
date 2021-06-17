@@ -9,8 +9,8 @@ class UpdateCustomerFeedback extends FormRequest
     public function rules()
     {
         return [
-            'complain_rating' => 'required|nullable|integer',
-            'complain_review' => 'required|nullable',
+            'customer_rating' => 'required|nullable|integer',
+            'customer_review' => 'required|nullable',
         ];
     }
 

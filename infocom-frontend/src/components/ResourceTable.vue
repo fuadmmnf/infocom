@@ -105,7 +105,7 @@ export default {
         name: 'timelimits',
         align: 'center',
         label: 'Limit',
-        field: row =>  `${row.timelimit} hours`
+        field: row =>  row.timelimit !== null? `${row.timelimit} hours`: ''
       })
     }
     this.fetchResource()

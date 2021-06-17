@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,5 +19,5 @@ Route::get('/', function () {
 });
 
 Route::get('/mail', function (){
-    return view('mail.mailtemplate', ['complain'=> \App\Models\Complain::inRandomOrder()->first()]);
+    return view('mail.complainapproval', ['complain'=> \App\Models\Complain::inRandomOrder()->first()]);
 });
