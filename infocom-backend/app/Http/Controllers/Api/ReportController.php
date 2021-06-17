@@ -74,7 +74,7 @@ class ReportController extends Controller
                     'Department' => $c->department->name
                 ]) + [
                     'Time' => $c->time->format('Y-m-d H:i'),
-                    'Member' => "{$c->editor->user->name} ({$c->editor->user->phone})",
+                    'Member' => $c->editor == null? "" : "{$c->editor->user->name} ({$c->editor->user->phone})",
                     'Task' => $c->type,
                     'Complain' => "TT#{$c->id}",
                     'Customer' => "{$c->customer->user->name} ({$c->customer->user->phone})"
