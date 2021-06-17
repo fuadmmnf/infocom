@@ -134,7 +134,7 @@ class ComplainController extends Controller
 
     public function update(UpdateComplain $request)
     {
-        $complain = Complain::findOrFail($request->route('complain_id'));
+        $complain = Complain::where('id', $request->route('complain_id'))->where('status', '!=', 'overdue')->firstOrFail();
         $complain->load('customer', 'customer.user');
 
         \DB::beginTransaction();
