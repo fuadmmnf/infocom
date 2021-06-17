@@ -112,7 +112,7 @@ class ReportController extends Controller
             $popCounts = [];
             foreach ($popaddresses as $popaddress) {
                 $count = $topicComplains->filter(function ($complain) use ($popaddress) {
-                    return $complain->customer->popaddress_id = $popaddress->id;
+                    return $complain->customer->popaddress_id == $popaddress->id;
                 })->count();
                 $popCounts[$popaddress->name] = $count;
             }
@@ -125,24 +125,24 @@ class ReportController extends Controller
         });
 
         $totalCount = $topicWisePopLog->sum('Count');
-        $topicWisePopLog = $topicWisePopLog->merge(collect([
+        $topicWisePopLog = $topicWisePopLog->add(collect([
                 'S/N' => '',
                 'Help/Complaint Issue' => '',
                 'Count' => $totalCount,
 
-            ] + $popaddresses->map(function ($popaddress) use ($topicWisePopLog) {
+            ] + $popaddresses->mapWithKeys(function ($popaddress) use ($topicWisePopLog) {
                 return [$popaddress->name => $topicWisePopLog->sum($popaddress->name)];
             })->all()
         ));
 
 
-        $topicWisePopLog = $topicWisePopLog->merge(collect([
+        $topicWisePopLog = $topicWisePopLog->add(collect([
                 'S/N' => '',
                 'Help/Complaint Issue' => '',
                 'Count' => 'Percentage',
 
-            ] + $popaddresses->map(function ($popaddress) use ($topicWisePopLog, $totalCount) {
-                return [$popaddress->name => $totalCount? (($topicWisePopLog->sum($popaddress->name) / (float)$totalCount) * 100.0): 0];
+            ] + $popaddresses->mapWithKeys(function ($popaddress) use ($topicWisePopLog, $totalCount) {
+                return [$popaddress->name => $totalCount ? (($topicWisePopLog->sum($popaddress->name) / (float)$totalCount) * 100.0) : 0];
             })->all()
         ));
 
@@ -192,7 +192,7 @@ class ReportController extends Controller
                 ] + $serviceHourCounts;
         });
 
-        $topicServiceLog = $topicServiceLog->merge(collect([
+        $topicServiceLog = $topicServiceLog->add(collect([
             'S/N' => '',
             'Help/Complaint Issue' => '',
             'Count' => $topicServiceLog->sum('Count'),
@@ -233,13 +233,13 @@ class ReportController extends Controller
                     return $complain->approved_time->between($week['start'], $week['end']);
                 })->count();
                 $weeklyComplainCounts['Week-' . $idx] = $count;
-                $weeklyComplainCounts['Column-' . $idx] = $popaddress->customers_count? (($count / (float)$popaddress->customers_count) * 100.0) : 0;
+                $weeklyComplainCounts['Column-' . $idx] = $popaddress->customers_count ? (($count / (float)$popaddress->customers_count) * 100.0) : 0;
             }
 
             $overallTotal = array_sum(array_filter($weeklyComplainCounts, function ($v, $k) {
                 return str_starts_with($k, 'Week-');
             }, ARRAY_FILTER_USE_BOTH));
-            $overallPercentage = $popaddress->customers_count? (($overallTotal / (float)$popaddress->customers_count) * 100.0): 0;
+            $overallPercentage = $popaddress->customers_count ? (($overallTotal / (float)$popaddress->customers_count) * 100.0) : 0;
 
             return [
                     'S/N' => $key,
@@ -249,7 +249,7 @@ class ReportController extends Controller
                 ] + $weeklyComplainCounts;
         });
 
-        $poplog = $poplog->merge(collect([
+        $poplog = $poplog->add(collect([
             'S/N' => '',
             'POP' => '',
             'Client Number' => $poplog->sum('Client Number'),

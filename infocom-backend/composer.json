@@ -15,7 +15,8 @@
         "niklasravnsborg/laravel-pdf": "^4.1",
         "spatie/laravel-activitylog": "^3.17",
         "spatie/laravel-permission": "^4.2",
-      "ext-curl": "*"
+      "ext-curl": "*",
+      "ext-json": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
