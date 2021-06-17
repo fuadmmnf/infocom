@@ -6,7 +6,7 @@
       :data="customers"
       :columns="columns"
       row-key="id"
-      :rows-per-page-options="[0]"
+      :rows-per-page-options="[20]"
       :pagination.sync="pagination"
       @row-click="(e, row, idx) => {openCustomerModal(row)}"
       @update:pagination="({page}) => {fetchCustomers(page)}"

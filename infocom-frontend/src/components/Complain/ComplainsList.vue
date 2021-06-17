@@ -6,7 +6,7 @@
       :data="complains"
       :columns="columns"
       row-key="id"
-      :rows-per-page-options="[0]"
+      :rows-per-page-options="[20]"
       :pagination.sync="pagination"
       @update:pagination="({page}) => {fetchComplainsList(page)}"
       @row-click="(e, row, idx) => {

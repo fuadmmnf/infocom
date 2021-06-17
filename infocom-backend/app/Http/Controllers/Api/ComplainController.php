@@ -54,7 +54,9 @@ class ComplainController extends Controller
         \DB::beginTransaction();
         try {
             if (!isset($info['customer_id'])) {
-                $customer = User::where('email', $info['email'])->where('phone', $info['phone'])->first();
+                $user = User::where('email', $info['email'])->where('phone', $info['phone'])->first();
+                $customer = $user->customer;
+
                 if (!$customer) {
                     $info['password'] = $info['password'] ?? $info['phone'];
                     $userTokenHandler = new UserTokenHandler();
