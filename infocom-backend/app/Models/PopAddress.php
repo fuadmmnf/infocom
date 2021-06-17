@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class PopAddress extends Model {
     protected $guarded = [];
     public function customers(){
-        return $this->hasMany(Customer::class);
+        return $this->hasMany(Customer::class, 'popaddress_id');
     }
 }

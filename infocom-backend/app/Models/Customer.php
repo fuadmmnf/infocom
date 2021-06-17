@@ -7,15 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 class Customer extends Model
 {
     protected $guarded = [];
-    public function user(){
+
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function complains(){
+    public function complains()
+    {
         return $this->hasMany(Complain::class);
     }
 
-    public function popaddress(){
+    public function popaddress()
+    {
         return $this->belongsTo(PopAddress::class);
     }
 }

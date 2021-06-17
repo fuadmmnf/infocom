@@ -22,7 +22,7 @@ class CreateComplain extends FormRequest {
                     'slaplan_id' => 'sometimes|numeric',
                     'ticket_source' => 'required',
                     'complain_summary' => 'sometimes',
-                    'complain_time' => 'sometimes|date',
+//                    'complain_time' => 'sometimes|date',
                     'priority' => 'sometimes'
                 ]);
     }

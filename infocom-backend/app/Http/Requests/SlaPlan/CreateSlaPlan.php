@@ -9,7 +9,8 @@ class CreateSlaPlan extends FormRequest
 	public function rules()
 	{
 		return [
-			'name' => 'required|unique:sla_plans,name'
+			'name' => 'required|unique:sla_plans,name',
+			'timelimit' => 'required|nullable|numeric'
 		];
 	}
 

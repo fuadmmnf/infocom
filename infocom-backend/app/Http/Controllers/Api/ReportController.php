@@ -177,16 +177,16 @@ class ReportController extends Controller
             });
 
             $serviceHourCounts = [];
-            foreach ($durations as $key => $range) {
+            foreach ($durations as $duration => $range) {
                 $count = $topicComplains->filter(function ($complain) use ($range) {
                     $diff = $complain->approved_time->floatDiffInHours($complain->complain_time);
                     return $diff > $range[0] && $diff <= $range[1];
                 })->count();
-                $serviceHourCounts[$key] = $count;
+                $serviceHourCounts[$duration] = $count;
             }
 
             return [
-                    'S/N' => $key,
+                    'S/N' => $key + 1,
                     'Help/Complaint Issue' => $helptopic->name,
                     'Count' => array_sum($serviceHourCounts),
                 ] + $serviceHourCounts;
@@ -233,7 +233,7 @@ class ReportController extends Controller
                     return $complain->approved_time->between($week['start'], $week['end']);
                 })->count();
                 $weeklyComplainCounts['Week-' . $idx] = $count;
-                $weeklyComplainCounts['Column-' . $idx] = $popaddress->customers_count ? (($count / (float)$popaddress->customers_count) * 100.0) : 0;
+                $weeklyComplainCounts['Column-' . $idx] = ($popaddress->customers_count ? (($count / (float)$popaddress->customers_count) * 100.0) : 0) . '%';
             }
 
             $overallTotal = array_sum(array_filter($weeklyComplainCounts, function ($v, $k) {
@@ -242,7 +242,7 @@ class ReportController extends Controller
             $overallPercentage = $popaddress->customers_count ? (($overallTotal / (float)$popaddress->customers_count) * 100.0) : 0;
 
             return [
-                    'S/N' => $key,
+                    'S/N' => $key + 1,
                     'POP' => $popaddress->name,
                     'Client Number' => $popaddress->customers_count,
                     'Overall (%)' => "{$overallTotal} ({$overallPercentage}%)"

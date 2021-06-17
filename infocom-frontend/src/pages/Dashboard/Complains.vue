@@ -20,6 +20,7 @@
           <q-tab v-if="hasSupportAgentAccess" name="running" label="Running Complains" />
           <q-tab v-if="hasCallcenterAgentAccess" name="feedback" label="Feedback Complains" />
           <q-tab name="history" label="Complain History" />
+          <q-tab name="overdue" label="Overdue Complains" />
         </q-tabs>
 
         <q-separator />
@@ -55,6 +56,11 @@
           <q-tab-panel name="history">
             <div class="text-h6">Complain History</div>
             <complains-list status="approved" />
+          </q-tab-panel>
+
+          <q-tab-panel name="overdue">
+            <div class="text-h6">Overdue History</div>
+            <complains-list status="overdue" />
           </q-tab-panel>
         </q-tab-panels>
       </q-card>

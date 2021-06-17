@@ -100,6 +100,13 @@ export default {
         label: 'Leader',
         field: row => row.leader !== null ? `${row.leader.user.name} (${row.leader.user.phone})` : ''
       })
+    } else if(this.resource_url === 'slaplans'){
+      this.columns.push({
+        name: 'timelimits',
+        align: 'center',
+        label: 'Limit',
+        field: row =>  `${row.timelimit} hours`
+      })
     }
     this.fetchResource()
     this.$root.$on('resource-created', this.fetchResource)

@@ -27,6 +27,14 @@
                       label="Name"
                       :rules="[val => (!!val ) || 'Enter resource name']"
                     />
+
+                    <q-input
+                      v-if="resourceForm.type === 'slaplans'"
+                      filled
+                      v-model.number="resourceForm.timelimit"
+                      label="Time"
+                      :rules="[val => (!!val ) || 'Enter time limit']"
+                    />
                   </q-item-section>
                 </q-item>
               </q-list>
@@ -69,6 +77,7 @@ export default {
       resourceForm: {
         type: '',
         name: '',
+        timelimit: '',
       }
     }
   },
