@@ -13,11 +13,10 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/app');
 });
 
-Route::get('/mail', function (){
-    return view('mail.complainapproval', ['complain'=> \App\Models\Complain::inRandomOrder()->first()]);
+Route::get('/mail', function () {
+    return view('mail.complainapproval', ['complain' => \App\Models\Complain::inRandomOrder()->first()]);
 });
