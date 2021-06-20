@@ -6,6 +6,7 @@
 /public/fonts
 /public/icons
 /public/img
+/public/app.html
 /storage/*.key
 /vendor
 /public/app
