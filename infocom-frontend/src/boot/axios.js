@@ -3,7 +3,7 @@ import axios from 'axios'
 
 export default ({store, router}) => {
   // axios.defaults.baseURL = process.env.PROD ? 'http://221.120.96.121/api' : 'http://127.0.0.1:8000/api';
-  axios.defaults.baseURL = process.env.PROD ? 'http://127.0.0.1:8000/api' : 'http://127.0.0.1:8000/api';
+  axios.defaults.baseURL = process.env.PROD ? '/api' : 'http://127.0.0.1:8000/api';
 
 
   // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
