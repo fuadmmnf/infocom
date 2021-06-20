@@ -71,7 +71,7 @@ module.exports = function (ctx) {
         chain.plugin('eslint-webpack-plugin')
           .use(ESLintPlugin, [{ extensions: [ 'js', 'vue' ] }])
       },
-
+      htmlFilename: 'app.html',
       afterBuild({ quasarConf }) {
         if (ctx.mode.spa || ctx.mode.pwa) {
           const composeDistPath = src => path.join(quasarConf.build.distDir, src);
