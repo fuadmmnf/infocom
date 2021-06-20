@@ -7,8 +7,11 @@
 // https://v1.quasar.dev/quasar-cli/quasar-conf-js
 /* eslint-env node */
 const ESLintPlugin = require('eslint-webpack-plugin')
+const fs = require('fs')
+const fse = require('fs-extra')
+const path = require('path');
 
-module.exports = function (/* ctx */) {
+module.exports = function (ctx) {
   return {
     // https://v1.quasar.dev/quasar-cli/supporting-ts
     supportTS: false,
@@ -67,6 +70,20 @@ module.exports = function (/* ctx */) {
       chainWebpack (chain) {
         chain.plugin('eslint-webpack-plugin')
           .use(ESLintPlugin, [{ extensions: [ 'js', 'vue' ] }])
+      },
+
+      afterBuild({ quasarConf }) {
+        if (ctx.mode.spa || ctx.mode.pwa) {
+          const composeDistPath = src => path.join(quasarConf.build.distDir, src);
+
+          const composeServerPath = src =>
+            path.join(__dirname,'../infocom-backend/public', src);
+
+          for (const fileName of fs.readdirSync(quasarConf.build.distDir)) {
+            fse.removeSync(composeServerPath(fileName));
+            fse.copySync(composeDistPath(fileName), composeServerPath(fileName));
+          }
+        }
       },
     },
 
