@@ -50,7 +50,6 @@ class ComplainController extends Controller
     public function create(CreateComplain $request)
     {
         $info = $request->validated();
-
         \DB::beginTransaction();
         try {
             if (!isset($info['customer_id'])) {
@@ -92,7 +91,8 @@ class ComplainController extends Controller
                 $complain->save();
             }
 
-
+            $message = "We have acknowledged and forwarded your complain/requirement (TT#". $complain->id .") to our concern team for investigation. We aim to get back to you with an update at the shortest possible time.";
+            SMSHandler::sendSMS($complain->customer->user->phone, $message);
         } catch (\Exception $exception) {
             DB::rollBack();
             throw new \Exception($exception->getMessage());
@@ -122,8 +122,8 @@ class ComplainController extends Controller
                 }
             } else if ($after->status == 'approved') {
                 $after->approved_time = Carbon::now();
-                $message = '';
-//                SMSHandler::sendSMS($after->customer->user->phone, $message);
+                $message = "This sms is to notify you that we believe this ticket (TT#". $after->id .")  has been resolved.";
+                SMSHandler::sendSMS($after->customer->user->phone, $message);
                 Mail::to($after->customer->user->email)->queue(new CustomerComplainApproval($after));
             }
             $after->save();

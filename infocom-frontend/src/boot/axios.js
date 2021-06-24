@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import axios from 'axios'
+import {Notify} from 'quasar'
 
 export default ({store, router}) => {
   // axios.defaults.baseURL = process.env.PROD ? 'http://221.120.96.121/api' : 'http://127.0.0.1:8000/api';
-  axios.defaults.baseURL = process.env.PROD ? '/api' : 'http://127.0.0.1:8000/api';
+  axios.defaults.baseURL = process.env.PROD ? 'http://221.120.96.121/api' : 'http://127.0.0.1:8000/api';
 
 
   // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
@@ -28,6 +29,11 @@ export default ({store, router}) => {
       store.commit('storeUser', null)
       router.push({name: 'login'})
     }
+    this.$q.notify({
+      type: 'negative',
+      message: error,
+      position: 'top-right'
+    })
     return error
   })
 

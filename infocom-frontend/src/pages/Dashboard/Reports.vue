@@ -1,7 +1,7 @@
 <template>
   <q-page class="q-pa-md">
     <div class="row ">
-      <q-date class="col-3 q-ma-sm" v-model="departmentLogRange" range color="secondary"
+      <q-date class="col-3 q-ma-sm" v-model="departmentLogRange"  range color="secondary"
               subtitle="Department Activity Log">
         <template>
           <div class="flex flex-center items-center ">
@@ -181,11 +181,17 @@ export default {
   },
   methods: {
     generateFileName(title, range) {
+      if(range=== null){
+        return ''
+      }
       return `${title}_${range.to.replaceAll('/', '-')}_${range.from.replaceAll('/', '-')}`
     },
     async fetchDataDepartmentLog() {
-      const response = await this.$axios.get(`reports/departmentlog?department_id=${this.selectedDepartmentId}&start=${this.departmentLogRange.from.replaceAll('/', '-')}&end=${this.departmentLogRange.to.replaceAll('/', '-')}`)
-      return response.data.rows
+      if(this.departmentLogRange !== null){
+        const response = await this.$axios.get(`reports/departmentlog?department_id=${this.selectedDepartmentId}&start=${this.departmentLogRange.from.replaceAll('/', '-')}&end=${this.departmentLogRange.to.replaceAll('/', '-')}`)
+        return response.data.rows
+      }
+
     },
     // async fetchComplainStatusLog() {
     //   const response = await this.$axios.get(`reports/complainstatus?department_id=${this.selectedDepartmentId}&start=${this.departmentLogRange.from.replaceAll('/', '-')}&end=${this.departmentLogRange.to.replaceAll('/', '-')}`)
@@ -193,18 +199,25 @@ export default {
     // }
 
     async fetchDataTopicLog() {
-      const response = await this.$axios.get(`reports/topicwisepop?department_id=${this.selectedDepartmentId}&start=${this.topicStatusRange.from.replaceAll('/', '-')}&end=${this.topicStatusRange.to.replaceAll('/', '-')}`)
-      return response.data.rows
+      if(this.topicStatusRange !== null) {
+        const response = await this.$axios.get(`reports/topicwisepop?department_id=${this.selectedDepartmentId}&start=${this.topicStatusRange.from.replaceAll('/', '-')}&end=${this.topicStatusRange.to.replaceAll('/', '-')}`)
+        return response.data.rows
+      }
     },
 
     async fetchDataServiceLog() {
-      const response = await this.$axios.get(`reports/servicetime?department_id=${this.selectedDepartmentId}&start=${this.serviceTimeRange.from.replaceAll('/', '-')}&end=${this.serviceTimeRange.to.replaceAll('/', '-')}`)
-      return response.data.rows
+      if(this.serviceTimeRange!== null){
+        const response = await this.$axios.get(`reports/servicetime?department_id=${this.selectedDepartmentId}&start=${this.serviceTimeRange.from.replaceAll('/', '-')}&end=${this.serviceTimeRange.to.replaceAll('/', '-')}`)
+        return response.data.rows
+      }
+
     },
 
     async fetchDataPopLog() {
-      const response = await this.$axios.get(`reports/pop?department_id=${this.selectedDepartmentId}&start=${this.popStatusRange.from.replaceAll('/', '-')}&end=${this.popStatusRange.to.replaceAll('/', '-')}`)
-      return response.data.rows
+      if(this.popStatusRange!==null){
+        const response = await this.$axios.get(`reports/pop?department_id=${this.selectedDepartmentId}&start=${this.popStatusRange.from.replaceAll('/', '-')}&end=${this.popStatusRange.to.replaceAll('/', '-')}`)
+        return response.data.rows
+      }
     },
   }
 }

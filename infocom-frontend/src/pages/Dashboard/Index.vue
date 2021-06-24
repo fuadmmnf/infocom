@@ -3,7 +3,7 @@
     <img
       alt="logo"
       style="width: 200px; height: 200px"
-      src="~assets/logo.png"
+      src="~assets/logo1.png"
     >
   </q-page>
 </template>
