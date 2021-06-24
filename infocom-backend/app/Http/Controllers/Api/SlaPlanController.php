@@ -10,7 +10,7 @@ class SlaPlanController extends Controller
 {
     public function index()
     {
-        $slaplans = SlaPlan::all();
+        $slaplans = SlaPlan::with('helptopic')->get();
         return response()->json($slaplans);
     }
 

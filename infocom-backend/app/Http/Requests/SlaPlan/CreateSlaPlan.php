@@ -10,6 +10,7 @@ class CreateSlaPlan extends FormRequest
 	{
 		return [
 			'name' => 'required|unique:sla_plans,name',
+            'helptopic_id' => 'required|numeric|unique:sla_plans,helptopic_id',
 			'timelimit' => 'required|nullable|numeric'
 		];
 	}

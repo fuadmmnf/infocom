@@ -16,11 +16,16 @@
     <div class="row q-my-none">
       <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="complain.email" type="email"
                label="Email" :disable="statusIndex > 0" :readonly="isAuthenticated"/>
+
       <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model.number="complain.helptopic_id"
                 :options="$store.getters.getHelpTopics" option-label="name"
                 option-value="id" emit-value
                 map-options label="Help Topic"
                 :disable="statusIndex > 0"
+                @change="() => {
+                  let s = $store.getters.getSLAPlans.find((sla) => sla.helptopic_id === complain.helptopic_id)
+                  complain.slaplan_id = s !== undefined? s.id: ''
+                }"
       />
 
     </div>

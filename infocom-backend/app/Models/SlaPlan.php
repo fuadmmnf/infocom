@@ -12,4 +12,8 @@ class SlaPlan extends Model
     {
         return $this->hasMany(Complain::class, 'slaplan_id');
     }
+
+    public function helptopic(){
+        return $this->belongsTo(HelpTopic::class);
+    }
 }

@@ -100,12 +100,19 @@ export default {
         label: 'Leader',
         field: row => row.leader !== null ? `${row.leader.user.name} (${row.leader.user.phone})` : ''
       })
-    } else if(this.resource_url === 'slaplans'){
+    } else if (this.resource_url === 'slaplans') {
       this.columns.push({
         name: 'timelimits',
         align: 'center',
         label: 'Limit',
-        field: row =>  row.timelimit !== null? `${row.timelimit} hours`: ''
+        field: row => row.timelimit !== null ? `${row.timelimit} hours` : ''
+      })
+
+      this.columns.push({
+        name: 'Help Topic',
+        align: 'center',
+        label: 'Limit',
+        field: row => row.helptopic !== null ? `${row.helptopic.name}` : ''
       })
     }
     this.fetchResource()

@@ -65,6 +65,7 @@ export default {
       },
       complains: [],
       columns: [
+        {name: 'id', align: 'center', label: 'TT #', field: row => row.id},
         {name: 'name', align: 'center', label: 'Name', field: row => row.customer.user.name},
         {name: 'phone', align: 'center', label: 'Phone', field: row => row.customer.user.phone},
         {name: 'email', align: 'center', label: 'Email', field: row => row.customer.user.email},

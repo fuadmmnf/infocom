@@ -54,13 +54,14 @@ class ComplainController extends Controller
         try {
             if (!isset($info['customer_id'])) {
                 $user = User::where('email', $info['email'])->where('phone', $info['phone'])->first();
-                $customer = $user->customer;
 
-                if (!$customer) {
+                if (!$user) {
                     $info['password'] = $info['password'] ?? $info['phone'];
                     $userTokenHandler = new UserTokenHandler();
 
                     $customer = $userTokenHandler->createCustomer($info);
+                } else {
+                    $customer = $user->customer;
                 }
                 $info['customer_id'] = $customer->id;
                 $info['code'] = $this->generateCode();

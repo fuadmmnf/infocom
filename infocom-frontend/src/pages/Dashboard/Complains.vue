@@ -80,6 +80,7 @@ export default {
       tab: this.$store.getters.getUser.support_agent === undefined ? 'agent-complain' : 'assigned',
     }
   },
+
   mounted() {
     this.$root.$on('complain-created', (complain) => {
       this.$q.notify({
