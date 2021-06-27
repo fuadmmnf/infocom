@@ -16,7 +16,7 @@
             />
             <download-excel class="col-2 q-mr-sm" type="csv"
                             :name="generateFileName('department_activity_log', departmentLogRange)"
-                            :header="generateFileName('Department Activity Log', departmentLogRange).split('_')"
+                            :header="generateFileName('Department Activity Log', departmentLogRange).split('.')[0].replace('_', ' ')"
                             :fetch="fetchDataDepartmentLog"
             >
               <q-btn
@@ -68,7 +68,7 @@
             />
             <download-excel class="col-2 q-mr-sm" type="csv"
                             :name="generateFileName('pop_topic_log', topicStatusRange)"
-                            :header="generateFileName('Pop Topic Log', topicStatusRange).split('_')"
+                            :header="generateFileName('Pop Topic Log', topicStatusRange).split('.')[0].replace('_', ' ')"
                             :fetch="fetchDataTopicLog"
             >
               <q-btn
@@ -93,7 +93,7 @@
             />
             <download-excel class="col-2 q-mr-sm" type="csv"
                             :name="generateFileName('service_time_log', serviceTimeRange)"
-                            :header="generateFileName('Service Time Log', serviceTimeRange).split('_')"
+                            :header="generateFileName('Service Time Log', serviceTimeRange).split('.')[0].replace('_', ' ')"
                             :fetch="fetchDataServiceLog"
             >
               <q-btn
@@ -117,7 +117,7 @@
             />
             <download-excel class="col-2 q-mr-sm" type="csv"
                             :name="generateFileName('pop_log', popStatusRange)"
-                            :header="generateFileName('Pop Log', popStatusRange).split('_')"
+                            :header="generateFileName('Pop Log', popStatusRange).split('.')[0].replace('_', ' ')"
                             :fetch="fetchDataPopLog"
             >
               <q-btn
@@ -184,7 +184,7 @@ export default {
       if (range === null) {
         return ''
       }
-      return `${title}_${range.to.replaceAll('/', '-')}--${range.from.replaceAll('/', '-')}`
+      return `${title}_${range.to.replaceAll('/', '-')}--${range.from.replaceAll('/', '-')}.csv`
     },
     async fetchDataDepartmentLog() {
       if (this.departmentLogRange !== null) {

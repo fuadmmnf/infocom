@@ -125,6 +125,10 @@ class ReportController extends Controller
         });
 
         $totalCount = $topicWisePopLog->sum('Count');
+        $popWisePercentage = $popaddresses->mapWithKeys(function ($popaddress) use ($topicWisePopLog, $totalCount) {
+            return [$popaddress->name => $totalCount ? (($topicWisePopLog->sum($popaddress->name) / (float)$totalCount) * 100.0) : 0];
+        })->all();
+
         $topicWisePopLog = $topicWisePopLog->add(collect([
                 'S/N' => '',
                 'Help/Complaint Issue' => '',
@@ -141,9 +145,7 @@ class ReportController extends Controller
                 'Help/Complaint Issue' => '',
                 'Count' => 'Percentage',
 
-            ] + $popaddresses->mapWithKeys(function ($popaddress) use ($topicWisePopLog, $totalCount) {
-                return [$popaddress->name => $totalCount ? (($topicWisePopLog->sum($popaddress->name) / (float)$totalCount) * 100.0) : 0];
-            })->all()
+            ] + $popWisePercentage
         ));
 
 
