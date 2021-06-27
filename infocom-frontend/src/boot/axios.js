@@ -25,15 +25,26 @@ export default ({store, router}) => {
     return r
   }, error => {
     store.commit('changeActionRunningState', false)
-    if (error.status === 403 || error.status === 401) {
+
+    if(error.response.status === 422){
+      for (let key in error.response.data.errors) {
+        Notify.create({
+          type: 'negative',
+          message: error.response.data.errors[key][0],
+          position: 'top-right'
+        })
+      }
+    }
+
+    if (error.response.status === 403 || error.response.status === 401) {
       store.commit('storeUser', null)
       router.push({name: 'login'})
     }
-    this.$q.notify({
-      type: 'negative',
-      message: error,
-      position: 'top-right'
-    })
+    // this.$q.notify({
+    //   type: 'negative',
+    //   message: error,
+    //   position: 'top-right'
+    // })
     return error
   })
 
