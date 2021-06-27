@@ -111,7 +111,7 @@ export default {
       this.columns.push({
         name: 'Help Topic',
         align: 'center',
-        label: 'Limit',
+        label: 'Topic',
         field: row => row.helptopic !== null ? `${row.helptopic.name}` : ''
       })
     }

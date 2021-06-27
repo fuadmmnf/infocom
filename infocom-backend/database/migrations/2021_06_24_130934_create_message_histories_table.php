@@ -14,7 +14,7 @@ class CreateMessageHistoriesTable extends Migration {
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('popaddress_id')->references('id')->on('popaddresses');
+            $table->foreign('popaddress_id')->references('id')->on('pop_addresses');
         });
     }
 

@@ -16,7 +16,8 @@
     "core-js": "^3.6.5",
     "fs-extra": "^9.0.1",
     "quasar": "^1.0.0",
-    "vue-json-excel": "^0.3.0"
+    "vue-json-excel": "^0.3.0",
+    "vue-select": "^3.11.2"
   },
   "devDependencies": {
     "@quasar/app": "^2.0.0",

@@ -1,7 +1,7 @@
 <template>
   <q-page class="q-pa-md">
     <div class="row ">
-      <q-date class="col-3 q-ma-sm" v-model="departmentLogRange"  range color="secondary"
+      <q-date class="col-3 q-ma-sm" v-model="departmentLogRange" range color="secondary"
               subtitle="Department Activity Log">
         <template>
           <div class="flex flex-center items-center ">
@@ -16,7 +16,7 @@
             />
             <download-excel class="col-2 q-mr-sm"
                             :name="generateFileName('department_activity_log', departmentLogRange)"
-                            :header=" generateFileName('department_activity_log', departmentLogRange)"
+                            :header="generateFileName('Department Activity Log', departmentLogRange).split('_')"
                             :fetch="fetchDataDepartmentLog"
             >
               <q-btn
@@ -68,7 +68,7 @@
             />
             <download-excel class="col-2 q-mr-sm"
                             :name="generateFileName('pop_topic_log', topicStatusRange)"
-                            :header=" generateFileName('pop_topic_log', topicStatusRange)"
+                            :header="generateFileName('Pop Topic Log', topicStatusRange).split('_')"
                             :fetch="fetchDataTopicLog"
             >
               <q-btn
@@ -93,7 +93,7 @@
             />
             <download-excel class="col-2 q-mr-sm"
                             :name="generateFileName('service_time_log', serviceTimeRange)"
-                            :header=" generateFileName('service_time_log', serviceTimeRange)"
+                            :header="generateFileName('Service Time Log', serviceTimeRange).split('_')"
                             :fetch="fetchDataServiceLog"
             >
               <q-btn
@@ -117,7 +117,7 @@
             />
             <download-excel class="col-2 q-mr-sm"
                             :name="generateFileName('pop_log', popStatusRange)"
-                            :header=" generateFileName('pop_log', popStatusRange)"
+                            :header="generateFileName('Pop Log', popStatusRange).split('_')"
                             :fetch="fetchDataPopLog"
             >
               <q-btn
@@ -139,12 +139,12 @@ import JsonExcel from "vue-json-excel";
 
 export default {
   name: 'DashboardReports',
-  components: { 'downloadExcel': JsonExcel },
+  components: {'downloadExcel': JsonExcel},
   data() {
     return {
       isSupportAgent: false,
       departments: [
-        { id: '', name: 'all depts' },
+        {id: '', name: 'all depts'},
         ...this.$store.getters.getDepartments
       ],
       selectedDepartmentId: '',
@@ -181,13 +181,13 @@ export default {
   },
   methods: {
     generateFileName(title, range) {
-      if(range=== null){
+      if (range === null) {
         return ''
       }
-      return `${title}_${range.to.replaceAll('/', '-')}_${range.from.replaceAll('/', '-')}`
+      return `${title}_${range.to.replaceAll('/', '-')}--${range.from.replaceAll('/', '-')}`
     },
     async fetchDataDepartmentLog() {
-      if(this.departmentLogRange !== null){
+      if (this.departmentLogRange !== null) {
         const response = await this.$axios.get(`reports/departmentlog?department_id=${this.selectedDepartmentId}&start=${this.departmentLogRange.from.replaceAll('/', '-')}&end=${this.departmentLogRange.to.replaceAll('/', '-')}`)
         return response.data.rows
       }
@@ -199,14 +199,14 @@ export default {
     // }
 
     async fetchDataTopicLog() {
-      if(this.topicStatusRange !== null) {
+      if (this.topicStatusRange !== null) {
         const response = await this.$axios.get(`reports/topicwisepop?department_id=${this.selectedDepartmentId}&start=${this.topicStatusRange.from.replaceAll('/', '-')}&end=${this.topicStatusRange.to.replaceAll('/', '-')}`)
         return response.data.rows
       }
     },
 
     async fetchDataServiceLog() {
-      if(this.serviceTimeRange!== null){
+      if (this.serviceTimeRange !== null) {
         const response = await this.$axios.get(`reports/servicetime?department_id=${this.selectedDepartmentId}&start=${this.serviceTimeRange.from.replaceAll('/', '-')}&end=${this.serviceTimeRange.to.replaceAll('/', '-')}`)
         return response.data.rows
       }
@@ -214,7 +214,7 @@ export default {
     },
 
     async fetchDataPopLog() {
-      if(this.popStatusRange!==null){
+      if (this.popStatusRange !== null) {
         const response = await this.$axios.get(`reports/pop?department_id=${this.selectedDepartmentId}&start=${this.popStatusRange.from.replaceAll('/', '-')}&end=${this.popStatusRange.to.replaceAll('/', '-')}`)
         return response.data.rows
       }

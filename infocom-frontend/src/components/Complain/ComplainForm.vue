@@ -2,7 +2,8 @@
   <q-form @submit="complain.status === undefined? createComplain(): updateComplain(true)" @reset="complain = {}"
           class="q-gutter-md">
     <div class="row items-center" v-if="isAuthenticated && complain.status === undefined">
-      <q-input class="col-md-3 col-xs-5  q-my-xs q-px-xs" filled v-model="search" label="Search Customer"></q-input>
+      <v-select class="col-md-3 col-xs-5  q-my-xs q-px-xs" v-model="search" :options="customerCodes" ></v-select>
+<!--      <q-input class="col-md-3 col-xs-5  q-my-xs q-px-xs" filled v-model="search" label="Search Customer"></q-input>-->
       <q-btn flat label="search" type="button" @click="searchCustomer"/>
     </div>
 
@@ -168,8 +169,14 @@
 </template>
 
 <script>
+import vSelect from 'vue-select'
+import 'vue-select/dist/vue-select.css';
+
 export default {
   name: "ComplainForm",
+  components: {
+    vSelect
+  },
   props: {
     existingComplain: {
       type: Object,
@@ -187,6 +194,7 @@ export default {
   data() {
     return {
       statusList: ['pending', 'assigned', 'working', 'finished', 'approved'],
+      customerCodes: [],
       search: '',
       complain: {
         name: '',
@@ -230,8 +238,19 @@ export default {
     if (this.$store.getters.getUser !== null && this.$store.getters.getUser.support_agent !== undefined) {
       this.complain.editor_id = this.$store.getters.getUser.support_agent.id
     }
+
+    if(this.isAuthenticated){
+      this.fetchCustomerCodes()
+    }
   },
   methods: {
+    fetchCustomerCodes(){
+      this.$axios.get('customers/code')
+      .then((res) => {
+        this.customerCodes = res.data
+      })
+    },
+
     searchCustomer() {
       this.$axios.get(`customers/${this.search}`)
         .then((res) => {

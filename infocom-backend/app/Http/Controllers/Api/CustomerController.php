@@ -15,6 +15,11 @@ class CustomerController extends Controller {
         return response()->json($customers);
     }
 
+    public function getAllCustomerCode(){
+        $customerCodes = Customer::where('code', '!=', '')->pluck('code');
+        return response()->json($customerCodes);
+    }
+
     public function searchCustomer($customer_code){
         $customer = Customer::where('code', $customer_code)->firstOrFail();
         $customer->load('user', 'popaddress');
