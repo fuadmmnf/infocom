@@ -14,7 +14,7 @@
               map-options label="Department"
 
             />
-            <download-excel class="col-2 q-mr-sm"
+            <download-excel class="col-2 q-mr-sm" type="csv"
                             :name="generateFileName('department_activity_log', departmentLogRange)"
                             :header="generateFileName('Department Activity Log', departmentLogRange).split('_')"
                             :fetch="fetchDataDepartmentLog"
@@ -66,7 +66,7 @@
               map-options label="Department"
 
             />
-            <download-excel class="col-2 q-mr-sm"
+            <download-excel class="col-2 q-mr-sm" type="csv"
                             :name="generateFileName('pop_topic_log', topicStatusRange)"
                             :header="generateFileName('Pop Topic Log', topicStatusRange).split('_')"
                             :fetch="fetchDataTopicLog"
@@ -91,7 +91,7 @@
               map-options label="Department"
 
             />
-            <download-excel class="col-2 q-mr-sm"
+            <download-excel class="col-2 q-mr-sm" type="csv"
                             :name="generateFileName('service_time_log', serviceTimeRange)"
                             :header="generateFileName('Service Time Log', serviceTimeRange).split('_')"
                             :fetch="fetchDataServiceLog"
@@ -115,7 +115,7 @@
               option-value="id" emit-value
               map-options label="Department"
             />
-            <download-excel class="col-2 q-mr-sm"
+            <download-excel class="col-2 q-mr-sm" type="csv"
                             :name="generateFileName('pop_log', popStatusRange)"
                             :header="generateFileName('Pop Log', popStatusRange).split('_')"
                             :fetch="fetchDataPopLog"

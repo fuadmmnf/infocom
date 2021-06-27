@@ -123,7 +123,7 @@ class ComplainController extends Controller
                 }
             } else if ($after->status == 'approved') {
                 $after->approved_time = Carbon::now();
-                $message = "This sms is to notify you that we believe this ticket (TT#". $after->id .")  has been resolved.";
+                $message = "This SMS is to notify you that we believe this ticket (TT#". $after->id .")  has been resolved.";
                 SMSHandler::sendSMS($after->customer->user->phone, $message);
                 Mail::to($after->customer->user->email)->queue(new CustomerComplainApproval($after));
             }
