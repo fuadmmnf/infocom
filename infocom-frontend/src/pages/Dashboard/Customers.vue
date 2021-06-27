@@ -75,7 +75,7 @@
 
                 <div class="row q-my-none">
                   <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.technical_contact"
-                           :rules="[ val => !!val && val.replace(/\s/g,'').split(',').filter((v) => v.length !== 11).length === 0 || 'Please enter comma separated 11 digit phone numbers']"
+                           :rules="[ val => !!val || val.replace(/\s/g,'').split(',').filter((v) => v.length !== 11).length === 0 || 'Please enter comma separated 11 digit phone numbers']"
                            label="Technical Contact"/>
                   <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.management_contact"
                            label="Management Contact"/>
