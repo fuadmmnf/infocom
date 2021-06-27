@@ -23,9 +23,9 @@
                 option-value="id" emit-value
                 map-options label="Help Topic"
                 :disable="statusIndex > 0"
-                @change="() => {
+                @input="() => {
                   let s = $store.getters.getSLAPlans.find((sla) => sla.helptopic_id === complain.helptopic_id)
-                  complain.slaplan_id = s !== undefined? s.id: ''
+                  complain.slaplan_id = (s !== undefined? s.id: '')
                 }"
       />
 
