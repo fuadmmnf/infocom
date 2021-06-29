@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class CreateCustomer extends FormRequest {
     public function rules() {
         return [
-            'popaddress_id' => 'required|numeric',
+            'popaddress_id' => 'present',
             'name' => 'required',
             'phone' => 'required|unique:users,phone|size:11',
             'email' => 'required|unique:users,email',

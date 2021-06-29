@@ -50,6 +50,16 @@
 
                 <div class="row q-my-none">
                   <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
+                            v-model="customerForm.services" multiple
+                            :options="$store.getters.getServices" option-label="name"
+                            option-value="id" emit-value
+                            map-options label="Services"
+
+                  />
+                </div>
+
+                <div class="row q-my-none">
+                  <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
                             v-model.number="customerForm.popaddress_id"
                             :options="$store.getters.getPopAddresses" option-label="name"
                             option-value="id" emit-value
@@ -132,6 +142,7 @@ const customerFormTemplate = () => {
     email: '',
     phone: '',
     code: '',
+    services: [],
     popaddress_id: '',
     technical_contact: '',
     management_contact: '',

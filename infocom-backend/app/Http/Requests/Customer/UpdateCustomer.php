@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class UpdateCustomer extends FormRequest {
     public function rules() {
         return [
-            'popaddress_id' => 'required|numeric',
+            'popaddress_id' => 'present',
             'name' => 'required',
             'code' => 'present|nullable',
 //            'password' => 'required|confirmed',
