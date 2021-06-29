@@ -92,7 +92,7 @@ class ComplainController extends Controller
                 $complain->save();
             }
 
-            $message = "We have acknowledged and forwarded your complain/requirement (TT#". $complain->id .") to our concern team for investigation. We aim to get back to you with an update at the shortest possible time.";
+            $message = "Dear ". $complain->customer->user->name . ", we have acknowledged and forwarded your complain/requirement (TT#". $complain->id .") to our concern team for investigation. We aim to get back to you with an update at the shortest possible time. Best Regards, CMS Team, INFOCOM Limited";
             SMSHandler::sendSMS($complain->customer->user->phone, $message);
         } catch (\Exception $exception) {
             DB::rollBack();
@@ -116,6 +116,9 @@ class ComplainController extends Controller
                     Mail::to($supportagent->user->email)->queue(new ComplainStatusStaffAlert($after));
                 }
 
+                $message = "Dear ". $after->customer->user->name . ", we have acknowledged and forwarded your complain/requirement (TT#". $after->id .") to our concern team for investigation. We aim to get back to you with an update at the shortest possible time. Best Regards, CMS Team, INFOCOM Limited";
+                SMSHandler::sendSMS($after->customer->user->phone, $message);
+
             } else if ($after->status == 'finished') {
                 $after->finished_time = Carbon::now();
                 foreach (CallcenterAgent::with('user')->get() as $callcenteragent) {
@@ -123,7 +126,7 @@ class ComplainController extends Controller
                 }
             } else if ($after->status == 'approved') {
                 $after->approved_time = Carbon::now();
-                $message = "This SMS is to notify you that we believe this ticket (TT#". $after->id .")  has been resolved.";
+                $message = "Dear ". $after->customer->user->name . ", this SMS is to notify you that we believe this ticket (TT#". $after->id .")  has been resolved. Best Regards, CMS Team, INFOCOM Limited";
                 SMSHandler::sendSMS($after->customer->user->phone, $message);
                 Mail::to($after->customer->user->email)->queue(new CustomerComplainApproval($after));
             }

@@ -13,6 +13,7 @@ class CreateCustomer extends FormRequest {
             'email' => 'required|unique:users,email',
             'code' => 'present',
 //            'password' => 'required|confirmed',
+            'services' => 'array',
             'technical_contact' => 'present',
             'management_contact' => 'present',
             'connection_package' => 'present',

@@ -11,6 +11,7 @@ class UpdateCustomer extends FormRequest {
             'name' => 'required',
             'code' => 'present|nullable',
 //            'password' => 'required|confirmed',
+            'services' => 'array',
             'technical_contact' => 'present|nullable',
             'management_contact' => 'present|nullable',
             'connection_package' => 'present|nullable',
