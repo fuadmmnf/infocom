@@ -19,11 +19,16 @@ Route::post('login', [\App\Http\Controllers\Api\UserController::class, 'login'])
 
 //helptopics
 Route::get('helptopics', [\App\Http\Controllers\Api\HelpTopicController::class, 'index']);
+
+//complains
 Route::post('complains', [\App\Http\Controllers\Api\ComplainController::class, 'create']);
+
+
 
 Route::middleware(['auth:api'])->group(function () {
     //help topics
     Route::post('helptopics', [\App\Http\Controllers\Api\HelpTopicController::class, 'create']);
+    Route::put('helptopics/{helptopic_id}', [\App\Http\Controllers\Api\HelpTopicController::class, 'update']);
 
     //departments
     Route::get('departments', [\App\Http\Controllers\Api\DepartmentController::class, 'index']);
@@ -33,11 +38,17 @@ Route::middleware(['auth:api'])->group(function () {
     //slaplans
     Route::get('slaplans', [\App\Http\Controllers\Api\SlaPlanController::class, 'index']);
     Route::post('slaplans', [\App\Http\Controllers\Api\SlaPlanController::class, 'create']);
+    Route::put('slaplans/{slaplan_id}', [\App\Http\Controllers\Api\SlaPlanController::class, 'update']);
 
     //popaddresses
     Route::get('popaddresses', [\App\Http\Controllers\Api\PopAddressController::class, 'index']);
     Route::post('popaddresses', [\App\Http\Controllers\Api\PopAddressController::class, 'create']);
+    Route::put('popaddresses/{popaddress_id}', [\App\Http\Controllers\Api\PopAddressController::class, 'update']);
 
+    //services
+    Route::get('services', [\App\Http\Controllers\Api\ServicesController::class, 'index']);
+    Route::post('services', [\App\Http\Controllers\Api\ServicesController::class, 'create']);
+    Route::put('services/{service_id}', [\App\Http\Controllers\Api\ServicesController::class, 'update']);
 
     //callcenteragents
     Route::get('callcenteragents', [\App\Http\Controllers\Api\CallcenterAgentController::class, 'index']);

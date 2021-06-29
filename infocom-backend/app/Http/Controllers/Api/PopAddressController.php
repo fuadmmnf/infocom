@@ -16,4 +16,10 @@ class PopAddressController extends Controller {
         $popaddress = PopAddress::create($request->validated());
         return response()->json($popaddress, 201);
     }
+
+    public function update( $request){
+        $popaddress = PopAddress::findOrFail($request['popaddress_id']);
+        $popaddress->update($request->validated());
+        return response()->noContent();
+    }
 }

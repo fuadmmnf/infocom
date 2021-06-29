@@ -7,6 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class UpdateDepartment extends FormRequest {
 	public function rules() {
 		return [
+		    'name' => 'required',
             'leader_id' => 'required|numeric'
 		];
 	}

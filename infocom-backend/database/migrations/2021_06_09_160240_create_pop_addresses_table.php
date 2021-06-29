@@ -9,6 +9,7 @@ class CreatePopAddressesTable extends Migration {
 		Schema::create('pop_addresses', function (Blueprint $table) {
 			$table->bigIncrements('id');
 			$table->string('name');
+            $table->softDeletes();
 			$table->timestamps();
 		});
 	}

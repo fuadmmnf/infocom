@@ -9,8 +9,9 @@ class CreateSlaPlansTable extends Migration {
         Schema::create('sla_plans', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('helptopic_id');
-            $table->string('name')->unique();
+            $table->string('name');
             $table->double('timelimit')->nullable();
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('helptopic_id')->references('id')->on('help_topics');

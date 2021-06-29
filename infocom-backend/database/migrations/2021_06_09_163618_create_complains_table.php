@@ -27,7 +27,7 @@ class CreateComplainsTable extends Migration {
             $table->dateTimeTz('assigned_time')->nullable();
             $table->dateTimeTz('finished_time')->nullable();
             $table->dateTimeTz('approved_time')->nullable();
-            $table->dateTimeTz('deleted_at')->nullable();
+            $table->softDeletes();
             $table->timestamps();
 
 

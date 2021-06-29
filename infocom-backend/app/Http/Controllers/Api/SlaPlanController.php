@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SlaPlan\CreateSlaPlan;
+use App\Http\Requests\SlaPlan\UpdatePlanRequest;
 use App\Models\SlaPlan;
 
 class SlaPlanController extends Controller
@@ -18,5 +19,11 @@ class SlaPlanController extends Controller
     {
         $slaplan = SlaPlan::create($request->validated());
         return response()->json($slaplan, 201);
+    }
+
+    public function update(UpdatePlanRequest $request){
+        $slaplan = SlaPlan::findOrFail($request['slaplan_id']);
+        $slaplan->update($request->validated());
+        return response()->noContent();
     }
 }

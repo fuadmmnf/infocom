@@ -12,6 +12,7 @@ class CreateSupportAgentsTable extends Migration
 			$table->id();
 			$table->unsignedBigInteger('user_id');
 			$table->unsignedBigInteger('department_id');
+            $table->softDeletes();
 			$table->timestamps();
 
 

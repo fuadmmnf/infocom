@@ -23,6 +23,7 @@ class CreateCustomersTable extends Migration {
             $table->string('billing_information')->default('');
             $table->string('kam_name')->default('');
             $table->dateTimeTz('installation_date')->nullable();
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
