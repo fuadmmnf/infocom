@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 class CreateSlaPlansTable extends Migration {
     public function up() {
         Schema::create('sla_plans', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->unsignedBigInteger('helptopic_id');
             $table->string('name');
             $table->double('timelimit')->nullable();

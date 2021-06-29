@@ -9,7 +9,7 @@ class CreateCallcenterAgentsTable extends Migration
 	public function up()
 	{
 		Schema::create('callcenter_agents', function (Blueprint $table) {
-			$table->bigIncrements('id');
+			$table->id();
             $table->unsignedBigInteger('user_id');
             $table->softDeletes();
             $table->timestamps();

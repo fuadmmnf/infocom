@@ -9,7 +9,7 @@ class CreateHelpTopicsTable extends Migration
 	public function up()
 	{
 		Schema::create('help_topics', function (Blueprint $table) {
-			$table->bigIncrements('id');
+			$table->id();
 			$table->string('name');
             $table->softDeletes();
 			$table->timestamps();

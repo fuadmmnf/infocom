@@ -117,6 +117,10 @@
 
                   <q-card-actions align="right" class="text-primary">
                     <q-btn type="button" flat label="Close" v-close-popup />
+                    <q-btn v-if="resourceForm.id !== undefined" type="button" flat color="negative"
+                           label="Delete" @click="deleteResource"
+                    />
+
                     <q-btn type="submit" flat :disable="resourceForm.type === '' || resourceForm.name ===''"
                            label="Confirm"
                     />
@@ -284,6 +288,23 @@ export default {
             this.$q.notify({
               type: 'positive',
               message: `Resource Updated Successfully`,
+              position: 'top-right'
+            })
+
+          }
+
+        })
+    },
+    deleteResource() {
+      this.$axios.delete(`${this.resourceForm.type}/${this.resourceForm.id}`)
+        .then((res) => {
+          if (res.status === 204) {
+            this.showResourceForm = false
+            this.fetchResource()
+            this.resourceForm = resourceFormTemplate()
+            this.$q.notify({
+              type: 'positive',
+              message: `Resource Deleted Successfully`,
               position: 'top-right'
             })
 

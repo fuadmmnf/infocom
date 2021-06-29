@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Department\CreateDepartment;
 use App\Http\Requests\Department\UpdateDepartment;
 use App\Models\Department;
+use Illuminate\Http\Request;
 
 class DepartmentController extends Controller {
     public function index() {
@@ -23,6 +24,12 @@ class DepartmentController extends Controller {
         $info = $request->validated();
         $department = Department::findOrFail($request->route('department_id'));
         $department->update($info);
+        return response()->noContent();
+    }
+
+    public function destroy(Request $request){
+        $department = Department::findOrFail($request->route('department_id'));
+        $department->delete();
         return response()->noContent();
     }
 }

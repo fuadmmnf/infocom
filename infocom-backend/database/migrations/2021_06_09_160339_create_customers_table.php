@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\Schema;
 class CreateCustomersTable extends Migration {
     public function up() {
         Schema::create('customers', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('popaddress_id')->nullable();
-            $table->json('services')->default('[]');
+            $table->json('services')->nullable();
             $table->string('code')->nullable();
             $table->string('address')->default('');
             $table->string('technical_contact')->default('');

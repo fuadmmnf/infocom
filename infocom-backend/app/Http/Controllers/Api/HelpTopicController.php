@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\HelpTopic\CreateHelpTopic;
 use App\Http\Requests\HelpTopic\UpdateTopic;
 use App\Models\HelpTopic;
+use Illuminate\Http\Request;
 
 class HelpTopicController extends Controller
 {
@@ -24,6 +25,12 @@ class HelpTopicController extends Controller
     public function update(UpdateTopic $request){
         $topic = HelpTopic::findOrFail($request->route('helptopic_id'));
         $topic->update($request->validated());
+        return response()->noContent();
+    }
+
+    public function destroy(Request $request){
+        $topic = HelpTopic::findOrFail($request->route('helptopic_id'));
+        $topic->delete();
         return response()->noContent();
     }
 }

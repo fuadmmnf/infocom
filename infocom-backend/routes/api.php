@@ -29,26 +29,31 @@ Route::middleware(['auth:api'])->group(function () {
     //help topics
     Route::post('helptopics', [\App\Http\Controllers\Api\HelpTopicController::class, 'create']);
     Route::put('helptopics/{helptopic_id}', [\App\Http\Controllers\Api\HelpTopicController::class, 'update']);
+    Route::delete('helptopics/{helptopic_id}', [\App\Http\Controllers\Api\HelpTopicController::class, 'destroy'])->middleware('role:super_admin');
 
     //departments
     Route::get('departments', [\App\Http\Controllers\Api\DepartmentController::class, 'index']);
     Route::post('departments', [\App\Http\Controllers\Api\DepartmentController::class, 'create']);
     Route::put('departments/{department_id}', [\App\Http\Controllers\Api\DepartmentController::class, 'update']);
+    Route::delete('departments/{department_id}', [\App\Http\Controllers\Api\DepartmentController::class, 'destroy'])->middleware('role:super_admin');
 
     //slaplans
     Route::get('slaplans', [\App\Http\Controllers\Api\SlaPlanController::class, 'index']);
     Route::post('slaplans', [\App\Http\Controllers\Api\SlaPlanController::class, 'create']);
     Route::put('slaplans/{slaplan_id}', [\App\Http\Controllers\Api\SlaPlanController::class, 'update']);
+    Route::delete('slaplans/{slaplan_id}', [\App\Http\Controllers\Api\SlaPlanController::class, 'destroy'])->middleware('role:super_admin');
 
     //popaddresses
     Route::get('popaddresses', [\App\Http\Controllers\Api\PopAddressController::class, 'index']);
     Route::post('popaddresses', [\App\Http\Controllers\Api\PopAddressController::class, 'create']);
     Route::put('popaddresses/{popaddress_id}', [\App\Http\Controllers\Api\PopAddressController::class, 'update']);
+    Route::delete('popaddresses/{popaddress_id}', [\App\Http\Controllers\Api\PopAddressController::class, 'destroy'])->middleware('role:super_admin');
 
     //services
     Route::get('services', [\App\Http\Controllers\Api\ServicesController::class, 'index']);
     Route::post('services', [\App\Http\Controllers\Api\ServicesController::class, 'create']);
     Route::put('services/{service_id}', [\App\Http\Controllers\Api\ServicesController::class, 'update']);
+    Route::delete('services/{service_id}', [\App\Http\Controllers\Api\ServicesController::class, 'destroy'])->middleware('role:super_admin');
 
     //callcenteragents
     Route::get('callcenteragents', [\App\Http\Controllers\Api\CallcenterAgentController::class, 'index']);
