@@ -5,7 +5,6 @@
       :data="data"
       :columns="columns"
       row-key="id"
-      table-style="width: 40vh"
       :rows-per-page-options="[0]"
       :pagination.sync="pagination"
       hide-bottom
@@ -179,6 +178,7 @@ export default {
       resourceForm: resourceFormTemplate(),
       supportagents: [],
       departmentLeaderForm: {
+        name: '',
         department_id: '',
         leader_id: '',
       }
@@ -240,10 +240,12 @@ export default {
         })
     },
     createDepartmentLeader() {
+      this.departmentLeaderForm.name = this.$store.getters.getDepartments.find((d) => d.id === this.departmentLeaderForm.department_id).name
       this.$axios.put(`departments/${this.departmentLeaderForm.department_id}`, this.departmentLeaderForm)
         .then((res) => {
           this.showLeaderAssignForm = false
           this.departmentLeaderForm = {
+            name: '',
             department_id: '',
             leader_id: ''
           }

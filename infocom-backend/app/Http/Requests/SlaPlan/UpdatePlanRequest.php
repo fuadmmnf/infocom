@@ -10,6 +10,7 @@ class UpdatePlanRequest extends FormRequest
     {
         return [
             'name' => 'required',
+            'helptopic_id' => 'required|numeric',
             'timelimit' => 'required|nullable|numeric'
         ];
     }
