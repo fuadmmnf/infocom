@@ -3,6 +3,7 @@ export const state = () => ({
   popaddresses: [],
   departments: [],
   helptopics: [],
+  services: [],
 })
 
 export const getters = {
@@ -10,6 +11,7 @@ export const getters = {
   getPopAddresses: (state) => state.popaddresses,
   getDepartments: (state) => state.departments,
   getHelpTopics: (state) => state.helptopics,
+  getServices: (state) => state.services,
 }
 export const mutations = {
   setSLAPlans(state, plans) {
@@ -23,6 +25,10 @@ export const mutations = {
   },
   setHelpTopics(state, topics) {
     state.helptopics = topics
+  },
+
+  setServices(state, services) {
+    state.services = services
   },
 }
 

@@ -76,6 +76,7 @@ export default {
     this.fetchDepartments()
     this.fetchHelpTopics()
     this.fetchSlaPlans()
+    this.fetchServices()
   },
   methods: {
     fetchPopAddresses(){
@@ -102,6 +103,14 @@ export default {
           this.$store.commit('setHelpTopics', res.data)
         })
     },
+
+    fetchServices(){
+      this.$axios.get('services')
+      .then((res) => {
+        this.$store.commit('setServices', res.data)
+      })
+    },
+
     logout(){
       this.$store.commit('storeUser', null)
       this.$router.replace({name: 'home'})

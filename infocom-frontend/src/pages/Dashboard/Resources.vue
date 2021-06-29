@@ -1,71 +1,47 @@
 <template>
   <q-page class=" q-ma-md">
-    <div v-if="$store.getters.hasAdminAccess" class="row justify-end">
-      <q-btn label="Create" @click="showResourceForm = true">
-        <q-dialog v-model="showResourceForm" persistent>
-          <q-card style="min-width: 350px">
 
-            <q-card-section class="q-pa-xs">
+      <div class="q-gutter-y-md q-pa-sm">
+          <q-tabs
+            v-model="tab"
+            dense
+            class="text-grey"
+            active-color="primary"
+            indicator-color="primary"
+            narrow-indicator
+          >
+            <q-tab name="helptopics" label="Help Topics" />
+            <q-tab name="slaplans" label="SLA Plans" />
+            <q-tab name="popaddresses" label="Pop Addresses" />
+            <q-tab name="departments" label="Departments" />
+            <q-tab name="services" label="Services" />
+          </q-tabs>
 
-              <q-list bordered padding>
-                <q-item-label header>Create New Resource</q-item-label>
+          <q-separator />
 
-                <q-item>
-                  <q-item-section>
-                    <q-select
-                      filled
-                      :options="resourceOptions"
-                      v-model="resourceForm.type"
-                      label="Type"
-                      emit-value
-                      :rules="[val => (!!val ) || 'Select resource type']"
-                    />
+          <q-tab-panels v-model="tab" animated >
+            <q-tab-panel name="helptopics">
+              <resource-table class="" title="Help Topics" resource_url="helptopics"/>
+            </q-tab-panel>
 
-                    <q-input
-                      filled
-                      v-model="resourceForm.name"
-                      label="Name"
-                      :rules="[val => (!!val ) || 'Enter resource name']"
-                    />
+            <q-tab-panel name="slaplans">
+              <resource-table class="q-px-md" title="SLA Plans" resource_url="slaplans"/>
+            </q-tab-panel>
 
-                    <q-input
-                      v-if="resourceForm.type === 'slaplans'"
-                      filled
-                      v-model.number="resourceForm.timelimit"
-                      label="Time"
-                      :rules="[val => (!!val ) || 'Enter time limit']"
-                    />
+            <q-tab-panel name="popaddresses">
+              <resource-table class="q-px-md" title="Pop Addresses" resource_url="popaddresses"/>
+            </q-tab-panel>
 
-                    <q-select class="q-mb-md" filled
-                              v-if="resourceForm.type === 'slaplans'"
-                              v-model.number="resourceForm.helptopic_id"
-                              :options="$store.getters.getHelpTopics"
-                              option-label="name"
-                              option-value="id" emit-value
-                              :rules="[val => (!!val ) || 'Enter topic']"
-                              map-options label="Help Topic"/>
+            <q-tab-panel name="departments">
+              <resource-table class="q-px-md" title="Departments" resource_url="departments"/>
+            </q-tab-panel>
 
-                  </q-item-section>
-                </q-item>
-              </q-list>
-            </q-card-section>
+            <q-tab-panel name="services">
+              <resource-table class="q-px-md" title="Services" resource_url="services"/>
+            </q-tab-panel>
 
-            <q-card-actions align="right" class="text-primary">
-              <q-btn flat label="Close" v-close-popup/>
-              <q-btn flat :disable="resourceForm.type === '' || resourceForm.name ===''" label="Confirm"
-                     @click="createResource"/>
-            </q-card-actions>
-          </q-card>
-        </q-dialog>
-      </q-btn>
-    </div>
-    <br/>
-    <div class="row">
-      <resource-table class="q-px-md" title="Help Topics" resource_url="helptopics"/>
-      <resource-table class="q-px-md" title="SLA Plans" resource_url="slaplans"/>
-      <resource-table class="q-px-md" title="Pop Addresses" resource_url="popaddresses"/>
-      <resource-table class="q-px-md" title="Departments" resource_url="departments"/>
-    </div>
+          </q-tab-panels>
+      </div>
   </q-page>
 </template>
 
@@ -77,37 +53,12 @@ export default {
   components: {ResourceTable},
   data() {
     return {
-      showResourceForm: false,
-      resourceOptions: [
-        {label: 'Help Topic', value: 'helptopics'},
-        {label: 'Pop Address', value: 'popaddresses'},
-        {label: 'Department', value: 'departments'},
-        {label: 'SLA Plan', value: 'slaplans'},
-      ],
-      resourceForm: {
-        type: '',
-        name: '',
-        timelimit: '',
-        helptopic_id: '',
-      }
+      tab: 'helptopics',
+
     }
   },
   methods: {
-    createResource() {
-      this.$axios.post(this.resourceForm.type, this.resourceForm)
-        .then((res) => {
-          if (res.status === 201) {
-            this.showResourceForm = false
-            this.resourceForm = {}
-            this.$root.$emit('resource-created')
-            this.$q.notify({
-              type: 'positive',
-              message: `Resource Created Successfully`,
-              position: 'top-right'
-            })
-          }
-        })
-    }
+
   }
 }
 </script>
