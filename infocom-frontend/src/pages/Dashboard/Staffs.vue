@@ -36,7 +36,7 @@
                           v-model="staffForm.phone"
                           label="Phone"
                           type="tel"
-                          :rules="[val => (!!val ) || 'Enter staff phone number']"
+                          :rules="[val => (!!val && val.length === 11) || 'Enter 11 digit staff phone number']"
                         />
 
                         <q-input
@@ -44,7 +44,7 @@
                           v-model="staffForm.email"
                           label="Email"
                           type="email"
-                          :rules="[val => (!!val ) || 'Enter staff email']"
+                          :rules="[val => (!!val ) || 'Enter valid email']"
                         />
 
                         <q-select class="q-mb-md" v-if="$route.params.type === 'supportagents'" filled clearable

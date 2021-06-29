@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Customer extends Model
 {
     protected $guarded = [];
-
+    protected $casts = [
+        'services' => 'array'
+    ];
     public function user()
     {
         return $this->belongsTo(User::class);

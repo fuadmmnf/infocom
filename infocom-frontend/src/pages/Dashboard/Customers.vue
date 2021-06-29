@@ -109,7 +109,7 @@
                   <!--             @click="updateComplain(false)"-->
                   <!--             :disable="this.$store.getters.getActionRunningState"/>-->
 
-                  <q-btn class=" q-mr-sm" label="Reset" type="reset"/>
+<!--                  <q-btn class=" q-mr-sm" label="Reset" type="reset"/>-->
 
                   <q-btn class="bg-purple text-white" label="Submit" type="submit"
                          :disable="$store.getters.getActionRunningState"/>

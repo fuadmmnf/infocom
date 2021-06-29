@@ -31,7 +31,7 @@
 
     </div>
 
-    <div v-if="$store.getters.getDepartments.length" class="row q-my-none">
+    <div v-if="isAuthenticated" class="row q-my-none">
 
       <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="complain.ticket_source"
                 :options="[
@@ -53,7 +53,7 @@
     </div>
 
 
-    <div v-if="$store.getters.getSLAPlans.length" class="row q-my-none">
+    <div v-if="isAuthenticated" class="row q-my-none">
 
       <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model.number="complain.slaplan_id"
                 :options="$store.getters.getSLAPlans"
@@ -80,7 +80,7 @@
     </div>
 
 
-    <q-input v-if="$store.getters.getDepartments.length" class=" q-my-xs q-px-xs" filled
+    <q-input v-if="isAuthenticated" class=" q-my-xs q-px-xs" filled
              v-model="complain.complain_summary"
              type="textarea" autogrow
              label="Complain Summary"

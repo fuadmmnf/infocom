@@ -19,7 +19,7 @@
 </head>
 <body class="antialiased">
 <div class="relative  items-top min-h-screen bg-gray-100 dark:bg-gray-900  py-4 sm:pt-0">
-    <p>Dear Sir,</p>
+    <p>Dear {{$complain->customer->user->name}},</p>
     <p>Greetings from Infocom. Thank you for writing to us.</p>
 
     <p>We have acknowledged and forwarded your complain/requirement (TT#{{$complain->id}}) to our

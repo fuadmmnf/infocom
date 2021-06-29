@@ -9,7 +9,7 @@ class CreateCustomer extends FormRequest {
         return [
             'popaddress_id' => 'required|numeric',
             'name' => 'required',
-            'phone' => 'required|unique:users,phone',
+            'phone' => 'required|unique:users,phone|size:11',
             'email' => 'required|unique:users,email',
             'code' => 'present',
 //            'password' => 'required|confirmed',

@@ -13,7 +13,7 @@ class CreateComplain extends FormRequest {
             ] + (($user == null) ? [
                 'name' => 'required',
                 'email' => 'required',
-                'phone' => 'required',
+                'phone' => 'required|size:11',
             ] :
                 [
                     'customer_id' => 'required|numeric',

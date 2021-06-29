@@ -13,8 +13,7 @@ class CheckComplainTimeLimitExceed
         foreach ($unfinishedComplains as $complain) {
             $limit = $complain->slaplan->timelimit;
             if ($limit > 0) {
-                $diff = Carbon::now()->diffInMinutes($complain->complain_time->addHours($limit), false);
-                if ($diff <= 0) {
+                if (Carbon::now()->gt($complain->complain_time->addHours($limit))) {
                     $complain->update([
                         'status' => 'overdue'
                     ]);

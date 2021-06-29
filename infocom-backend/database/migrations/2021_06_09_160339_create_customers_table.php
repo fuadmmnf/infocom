@@ -10,6 +10,8 @@ class CreateCustomersTable extends Migration {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('popaddress_id')->nullable();
+            $table->unsignedBigInteger('popaddress_id')->nullable();
+            $table->json('services')->default('[]');
             $table->string('code')->nullable();
             $table->string('address')->default('');
             $table->string('technical_contact')->default('');
