@@ -64,18 +64,19 @@
 
 
             <q-dialog v-model="showResourceForm" persistent>
+
               <q-card style="min-width: 350px">
+                <q-form @submit="resourceForm.id === undefined? createResource(): updateResource()"
+                        @reset="resourceForm = {}"
+                        class="q-gutter-md">
+                  <q-card-section class="q-pa-xs">
 
-                <q-card-section class="q-pa-xs">
+                    <q-list bordered padding>
+                      <q-item-label header>Create New Resource</q-item-label>
 
-                  <q-list bordered padding>
-                    <q-item-label header>Create New Resource</q-item-label>
+                      <q-item>
+                        <q-item-section>
 
-                    <q-item>
-                      <q-item-section>
-                        <q-form @submit="resourceForm.id === undefined? createResource(): updateResource()"
-                                @reset="resourceForm = {}"
-                                class="q-gutter-md">
 
                           <q-select
                             filled
@@ -110,17 +111,19 @@
                                     :rules="[val => (!!val ) || 'Enter topic']"
                                     map-options label="Help Topic" />
 
-                        </q-form>
-                      </q-item-section>
-                    </q-item>
-                  </q-list>
-                </q-card-section>
+                        </q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-card-section>
 
-                <q-card-actions align="right" class="text-primary">
-                  <q-btn flat label="Close" v-close-popup />
-                  <q-btn flat :disable="resourceForm.type === '' || resourceForm.name ===''" label="Confirm"
-                         @click="createResource" />
-                </q-card-actions>
+                  <q-card-actions align="right" class="text-primary">
+                    <q-btn type="button" flat label="Close" v-close-popup />
+                    <q-btn type="submit" flat :disable="resourceForm.type === '' || resourceForm.name ===''"
+                           label="Confirm"
+                    />
+                  </q-card-actions>
+                </q-form>
+
               </q-card>
             </q-dialog>
           </q-btn>
@@ -269,7 +272,7 @@ export default {
           }
         })
     },
-    updateResource(){
+    updateResource() {
       this.$axios.put(`${this.resourceForm.type}/${this.resourceForm.id}`, this.resourceForm)
         .then((res) => {
           if (res.status === 204) {

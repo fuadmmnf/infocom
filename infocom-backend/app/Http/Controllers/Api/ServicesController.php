@@ -19,7 +19,7 @@ class ServicesController extends Controller {
     }
 
     public function update(UpdateServiceRequest $request){
-        $service = Service::findOrFail($request['service_id']);
+        $service = Service::findOrFail($request->route('service_id'));
         $service->update($request->validated());
         return response()->noContent();
     }

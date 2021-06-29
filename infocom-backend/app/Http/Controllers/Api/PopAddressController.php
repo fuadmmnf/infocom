@@ -18,7 +18,7 @@ class PopAddressController extends Controller {
     }
 
     public function update( $request){
-        $popaddress = PopAddress::findOrFail($request['popaddress_id']);
+        $popaddress = PopAddress::findOrFail($request->route('popaddress_id'));
         $popaddress->update($request->validated());
         return response()->noContent();
     }

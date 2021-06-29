@@ -22,7 +22,7 @@ class SlaPlanController extends Controller
     }
 
     public function update(UpdatePlanRequest $request){
-        $slaplan = SlaPlan::findOrFail($request['slaplan_id']);
+        $slaplan = SlaPlan::findOrFail($request->route('slaplan_id'));
         $slaplan->update($request->validated());
         return response()->noContent();
     }

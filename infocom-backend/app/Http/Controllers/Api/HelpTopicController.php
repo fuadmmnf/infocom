@@ -22,7 +22,7 @@ class HelpTopicController extends Controller
     }
 
     public function update(UpdateTopic $request){
-        $topic = HelpTopic::findOrFail($request['helptopic_id']);
+        $topic = HelpTopic::findOrFail($request->route('helptopic_id'));
         $topic->update($request->validated());
         return response()->noContent();
     }
