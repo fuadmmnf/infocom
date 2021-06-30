@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Handlers\UserTokenHandler;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SupportAgent\CreateSupportAgent;
+use App\Http\Requests\SupportAgent\UpdateSupportAgentRequest;
 use App\Models\Department;
 use App\Models\SupportAgent;
 use Illuminate\Database\Eloquent\Model;
@@ -34,7 +35,7 @@ class SupportAgentController extends Controller
         return response()->json($supportagent, 201);
     }
 
-    public function update( $request){
+    public function update(UpdateSupportAgentRequest $request){
         $supportagent = SupportAgent::findOrFail($request->route('supportagent_id'));
 
         $info = $request->validated();
