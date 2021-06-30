@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Handlers\UserTokenHandler;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CallcenterAgent\CreateCallcenterAgent;
+use App\Http\Requests\CallcenterAgent\UpdateAgentRequest;
 use App\Models\CallcenterAgent;
 
 class CallcenterAgentController extends Controller {
@@ -25,5 +26,12 @@ class CallcenterAgentController extends Controller {
 
         return response()->json($callcenterAgent, 201);
 
+    }
+
+    public function update(UpdateAgentRequest $request){
+        $callcenteragent = CallcenterAgent::findOrFail($request->route('callcenteragent_id'));
+        $userTokenHandler = new UserTokenHandler();
+        $userTokenHandler->updateUser($callcenteragent->user_id, $request->validated());
+        return response()->noContent();
     }
 }

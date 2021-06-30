@@ -4,14 +4,14 @@ namespace App\Http\Requests\SupportAgent;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateSupportAgent extends FormRequest {
+class UpdateSupportAgentRequest extends FormRequest
+{
     public function rules() {
         return [
             'department_id' => 'required|numeric',
             'name' => 'required',
-            'phone' => 'required|unique:users,phone|size:11',
-            'email' => 'required|unique:users,email|email',
-            'password' => 'required|confirmed',
+            'phone' => 'required|size:11',
+            'email' => 'required|email',
         ];
     }
 

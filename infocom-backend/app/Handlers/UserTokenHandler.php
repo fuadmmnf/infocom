@@ -9,8 +9,10 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 
-class UserTokenHandler {
-    public function createUser($name, $phone, $email, $password): User {
+class UserTokenHandler
+{
+    public function createUser($name, $phone, $email, $password): User
+    {
         $newUser = new User();
         $newUser->email = $email;
         $newUser->name = $name;
@@ -21,7 +23,21 @@ class UserTokenHandler {
         return $newUser;
     }
 
-    public function createCustomer(array $info) {
+    public function updateUser($user_id, array $info): User
+    {
+        $user = User::findOrFail($user_id);
+        $user->email = $info['email'];
+        $user->name = $info['name'];
+        $user->phone = $info['phone'];
+        if (isset($info['password'])) {
+            $user->password = Hash::make($info['password']);
+        }
+        $user->save();
+        return $user;
+    }
+
+    public function createCustomer(array $info)
+    {
         $user = $this->createUser($info['name'], $info['phone'], $info['email'], $info['phone']);
         $customer = new Customer();
         $customer->user_id = $user->id;
@@ -43,9 +59,10 @@ class UserTokenHandler {
         return $customer;
     }
 
-    public function updateCustomer($customer_id, array $info) {
+    public function updateCustomer($customer_id, array $info)
+    {
         $customer = Customer::findOrFail($customer_id);
-        $info['installation_date'] = isset($info['installation_date']) ?  Carbon::parse($info['installation_date']): null;
+        $info['installation_date'] = isset($info['installation_date']) ? Carbon::parse($info['installation_date']) : null;
         $customer->user->update(['name' => $info['name']]);
         unset($info['name']);
         $customer->update($info);
@@ -53,13 +70,15 @@ class UserTokenHandler {
         return $customer;
     }
 
-    public function regenerateUserToken(User $user) {
+    public function regenerateUserToken(User $user)
+    {
 //        $user->tokens()->delete();
         $user->token = $user->createToken($user->email . $user->phone)->accessToken;
         return $user;
     }
 
-    public function revokeTokens(User $user) {
+    public function revokeTokens(User $user)
+    {
         $user->tokens()->delete();
     }
 }

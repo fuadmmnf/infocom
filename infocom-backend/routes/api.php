@@ -58,10 +58,12 @@ Route::middleware(['auth:api'])->group(function () {
     //callcenteragents
     Route::get('callcenteragents', [\App\Http\Controllers\Api\CallcenterAgentController::class, 'index']);
     Route::post('callcenteragents', [\App\Http\Controllers\Api\CallcenterAgentController::class, 'create']);
+    Route::put('callcenteragents/{callcenteragent_id}', [\App\Http\Controllers\Api\CallcenterAgentController::class, 'update']);
 
     //supportagents
     Route::get('supportagents', [\App\Http\Controllers\Api\SupportAgentController::class, 'index']);
     Route::post('supportagents', [\App\Http\Controllers\Api\SupportAgentController::class, 'create']);
+    Route::put('supportagents/{supportagent_id}', [\App\Http\Controllers\Api\SupportAgentController::class, 'update']);
 
     //customers
     Route::get('customers', [\App\Http\Controllers\Api\CustomerController::class, 'index']);
