@@ -23,6 +23,7 @@ const routes = [
       {path: 'resources', name: 'dashboard-resources', component: () => import('pages/Dashboard/Resources.vue')},
       {path: 'complains', name: 'dashboard-complains', component: () => import('pages/Dashboard/Complains.vue')},
       {path: 'reports', name: 'dashboard-reports', component: () => import('pages/Dashboard/Reports.vue')},
+      {path: 'profile', name: 'dashboard-profile', component: () => import('pages/Dashboard/Profile.vue')},
     ]
   },
 

@@ -15,6 +15,7 @@
           Infocom CMS Dashboard
         </q-toolbar-title>
         <div>
+          <q-btn :to="{name: 'dashboard-profile'}" flat label="profile"/>
           <q-btn @click="logout" flat label="logout"/>
         </div>
       </q-toolbar>

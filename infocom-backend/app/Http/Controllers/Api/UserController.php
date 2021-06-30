@@ -73,7 +73,7 @@ class UserController extends Controller
     public function changePassword(ChangePasswordRequest $request)
     {
         $userTokenHandler = new UserTokenHandler();
-        $userTokenHandler->changePassword($request->validated());
+        $userTokenHandler->changePassword($request->user('api')->id, $request->validated());
 
         return response()->noContent();
     }

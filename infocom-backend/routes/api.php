@@ -27,6 +27,9 @@ Route::post('complains', [\App\Http\Controllers\Api\ComplainController::class, '
 
 
 Route::middleware(['auth:api'])->group(function () {
+    //users
+    Route::put('users/password', [\App\Http\Controllers\Api\UserController::class, 'changePassword']);
+
     //help topics
     Route::post('helptopics', [\App\Http\Controllers\Api\HelpTopicController::class, 'create']);
     Route::put('helptopics/{helptopic_id}', [\App\Http\Controllers\Api\HelpTopicController::class, 'update']);

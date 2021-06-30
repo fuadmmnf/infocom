@@ -36,8 +36,8 @@ class UserTokenHandler
         return $user;
     }
 
-    public function changePassword(array $info){
-        $user = User::where('phone', $info['phone'])->where('email', $info['email'])->firstOrFail();
+    public function changePassword($user_id, array $info){
+        $user = User::findOrFail($user_id);
         if(!$user || !Hash::check($info['old_password'], $user->password)){
             return null;
         }
