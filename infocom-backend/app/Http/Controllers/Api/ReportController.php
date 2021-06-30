@@ -46,8 +46,8 @@ class ReportController extends Controller
             $assignedComplains = $assignedComplains->where('department_id', $this->department_id);
             $finishedComplains = $finishedComplains->where('department_id', $this->department_id);
         }
-        $assignedComplains = $assignedComplains->get();
-        $finishedComplains = $finishedComplains->get();
+        $assignedComplains = $assignedComplains->withTrashed()->get();
+        $finishedComplains = $finishedComplains->withTrashed()->get();
 
         $assignedComplains->load('customer', 'customer.user', 'department', 'editor', 'editor.user');
         $finishedComplains->load('customer', 'customer.user', 'department', 'editor', 'editor.user');
@@ -102,7 +102,7 @@ class ReportController extends Controller
             $approvedcomplains = $approvedcomplains->where('department_id', $this->department_id);
         }
 
-        $approvedcomplains = $approvedcomplains->with('customer')->get();
+        $approvedcomplains = $approvedcomplains->with('customer')->withTrashed()->get();
         $topicWisePopLog = $helptopics->map(function ($helptopic, $key) use ($approvedcomplains, $popaddresses) {
 
             $topicComplains = $approvedcomplains->filter(function ($complain) use ($helptopic) {
@@ -163,7 +163,7 @@ class ReportController extends Controller
         if ($this->department_id !== '') {
             $approvedcomplains = $approvedcomplains->where('department_id', $this->department_id);
         }
-        $approvedcomplains = $approvedcomplains->get();
+        $approvedcomplains = $approvedcomplains->withTrashed()->get();
         $durations = [
             'Less than 2 hours' => [0, 2],
             'Less than 4 hours' => [2, 4],
@@ -221,7 +221,7 @@ class ReportController extends Controller
             $approvedcomplains = $approvedcomplains->where('department_id', $this->department_id);
         }
 
-        $approvedcomplains = $approvedcomplains->with('customer')->get();
+        $approvedcomplains = $approvedcomplains->with('customer')->withTrashed()->get();
         $weeks = $this->generateWeekDistribution();
 
         $poplog = $popaddresses->map(function ($popaddress, $key) use ($approvedcomplains, $weeks) {

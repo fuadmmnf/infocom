@@ -14,10 +14,10 @@
                          label="Password" />
               </div>
               <div class="row q-px-xs ">
-                <q-btn class="bg-purple text-white" label="Submit" type="submit"
+                <q-btn class="col q-mx-md bg-purple text-white" label="Submit" type="submit"
                        :disable="this.$store.getters.getActionRunningState" />
 
-                <q-btn class="" label="Forgot Password" type="button"
+                <q-btn class="col q-mx-md" label="Forgot Password" type="button"
                        :disable="this.$store.getters.getActionRunningState" @click="forgotPassword" />
 
               </div>

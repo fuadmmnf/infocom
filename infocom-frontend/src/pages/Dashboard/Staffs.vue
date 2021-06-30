@@ -86,7 +86,7 @@
                          label="Delete" @click="deleteStaff"
                   />
                   <q-btn flat
-                         :disable="(staffForm.id !== undefined || staffForm.password !== staffForm.password_confirmation) || staffForm.name ==='' || staffForm.phone === '' || staffForm.email === ''"
+                         :disable="(staffForm.id !== undefined || staffForm.password !== staffForm.password_confirmation) && ( staffForm.name ==='' || staffForm.phone === '' || staffForm.email === '')"
                          label="Confirm"
                          type="submit" />
                 </q-card-actions>
@@ -131,7 +131,7 @@ export default {
           name: 'department',
           align: 'center',
           label: 'Department',
-          field: row => row.department.name,
+          field: row => row.department === null? '': row.department.name,
           sortable: true
         }] : []
       )
@@ -151,7 +151,8 @@ export default {
           ...staff,
           name: staff.user.name,
           phone: staff.user.phone,
-          email: staff.user.email
+          email: staff.user.email,
+          department_id: staff.department === null || staff.department === undefined? '': staff.department_id
         }
       }
 
@@ -200,7 +201,7 @@ export default {
           }
         })
     },
-    deleteStaff(){
+    deleteStaff() {
       this.$axios.delete(`${this.$route.params.type}/${this.staffForm.id}`)
         .then((res) => {
           if (res.status === 204) {
@@ -209,7 +210,7 @@ export default {
             this.staffForm = staffFormTemplate()
             this.$q.notify({
               type: 'positive',
-              message: `Staff Updated Successfully`,
+              message: `Staff Deleted Successfully`,
               position: 'top-right'
             })
           }

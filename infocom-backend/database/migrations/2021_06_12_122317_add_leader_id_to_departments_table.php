@@ -14,7 +14,7 @@ class AddLeaderIdToDepartmentsTable extends Migration {
         Schema::table('departments', function (Blueprint $table) {
             $table->unsignedBigInteger('leader_id')->after('id')->nullable();
 
-            $table->foreign('leader_id')->references('id')->on('support_agents');
+            $table->foreign('leader_id')->references('id')->on('support_agents')->nullOnDelete();
         });
     }
 

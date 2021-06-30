@@ -11,13 +11,13 @@ class CreateSupportAgentsTable extends Migration
 		Schema::create('support_agents', function (Blueprint $table) {
 			$table->id();
 			$table->unsignedBigInteger('user_id');
-			$table->unsignedBigInteger('department_id');
+			$table->unsignedBigInteger('department_id')->nullable();
             $table->softDeletes();
 			$table->timestamps();
 
 
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
-            $table->foreign('department_id')->references('id')->on('departments')->cascadeOnDelete();
+            $table->foreign('department_id')->references('id')->on('departments')->nullOnDelete();
 		});
 	}
 

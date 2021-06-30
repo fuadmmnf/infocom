@@ -14,7 +14,7 @@ class CreateSlaPlansTable extends Migration {
             $table->softDeletes();
             $table->timestamps();
 
-            $table->foreign('helptopic_id')->references('id')->on('help_topics');
+            $table->foreign('helptopic_id')->references('id')->on('help_topics')->cascadeOnDelete();
         });
     }
 
