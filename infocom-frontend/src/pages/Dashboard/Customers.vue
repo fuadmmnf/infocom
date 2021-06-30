@@ -49,7 +49,7 @@
                 </div>
 
                 <div class="row q-my-none">
-                  <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
+                  <q-select class="col-md-12 col-xs-12 q-my-xs q-px-xs" filled
                             v-model="customerForm.services" multiple
                             :options="$store.getters.getServices" option-label="name"
                             option-value="id" emit-value
@@ -191,12 +191,15 @@ export default {
       if (customer === null) {
         this.customerForm = customerFormTemplate()
       } else {
+        const serviceIds = this.$store.getters.getServices.map((s) => s.id)
         this.customerForm = {
           ...customerFormTemplate(),
           ...customer,
           name: customer.user.name,
           phone: customer.user.phone,
-          email: customer.user.email
+          email: customer.user.email,
+          popaddress_id: customer.popaddress === null ? '' : customer.popaddress_id,
+          services: customer.services.filter((s) => { return serviceIds.includes(s)})
         }
       }
 
