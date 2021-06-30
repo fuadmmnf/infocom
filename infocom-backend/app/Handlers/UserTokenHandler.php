@@ -36,6 +36,19 @@ class UserTokenHandler
         return $user;
     }
 
+    public function changePassword(array $info){
+        $user = User::where('phone', $info['phone'])->where('email', $info['email'])->firstOrFail();
+        if(!$user || !Hash::check($info['old_password'], $user->password)){
+            return null;
+        }
+
+        $user->password = Hash::make($info['password']);
+        $user->save();
+
+
+        return $user;
+    }
+
     public function createCustomer(array $info)
     {
         $user = $this->createUser($info['name'], $info['phone'], $info['email'], $info['phone']);

@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Handlers\SMSHandler;
 use App\Handlers\UserTokenHandler;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\ChangePasswordRequest;
+use App\Http\Requests\User\ForgetPasswordRequest;
 use App\Http\Requests\User\LoginRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -31,21 +34,37 @@ class UserController extends Controller {
         return response()->json('Invalid Credentials', 401);
     }
 
-//    public function changePassword(array $request)
-//    {
-//        $user = User::where('phone', $request['phone'])->firstOrFail();
-//        if(!$user || !Hash::check($request['old_password'], $user->password)){
-//            return null;
-//        }
-//
-//        $user->password = Hash::make($request['password']);
-//        $user->save();
-//
-//        $userTokenHandler = new UserTokenHandler();
-//        $userTokenHandler->revokeTokens($user);
-//
-//        return $user;
-//    }
+    private function generatePassword()
+    {
+        $pool = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+        $random_string = substr(str_shuffle(str_repeat($pool, 20)), 0, 8);
+        return $random_string;
+    }
+
+
+    public function forgetPassword(ForgetPasswordRequest $request){
+        $info = $request->validated();
+        $user = User::where('email', $info['email'])->firstOrFail();
+        $info['name'] = $user->name;
+        $info['phone'] = $user->phone;
+        $info['password'] = $this->generatePassword();
+        $userTokenHandler = new UserTokenHandler();
+        $userTokenHandler->updateUser($user->id, $info);
+
+        $message = "Your Infocom CMS password is " . $info['password'];
+        SMSHandler::sendSMS($user->phone, $message);
+
+
+        return response()->noContent();
+    }
+
+    public function changePassword(ChangePasswordRequest $request)
+    {
+        $userTokenHandler = new UserTokenHandler();
+        $userTokenHandler->changePassword($request->validated());
+
+        return response()->noContent();
+    }
 
 
 //    public function fetchUserById($user_id)

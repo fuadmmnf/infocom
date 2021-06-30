@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 //users
 Route::post('login', [\App\Http\Controllers\Api\UserController::class, 'login']);
+Route::post('login/forget', [\App\Http\Controllers\Api\UserController::class, 'forgetPassword']);
 
 //helptopics
 Route::get('helptopics', [\App\Http\Controllers\Api\HelpTopicController::class, 'index']);

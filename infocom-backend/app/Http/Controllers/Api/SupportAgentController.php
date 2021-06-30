@@ -35,16 +35,17 @@ class SupportAgentController extends Controller
         return response()->json($supportagent, 201);
     }
 
-    public function update(UpdateSupportAgentRequest $request){
+    public function update(UpdateSupportAgentRequest $request)
+    {
         $supportagent = SupportAgent::findOrFail($request->route('supportagent_id'));
 
         $info = $request->validated();
         $userTokenHandler = new UserTokenHandler();
         $userTokenHandler->updateUser($supportagent->user_id, $info);
 
-       $supportagent->update([
-           'department_id' => $info['department_id']
-       ]);
+        $supportagent->update([
+            'department_id' => $info['department_id']
+        ]);
 
         return response()->noContent();
     }
