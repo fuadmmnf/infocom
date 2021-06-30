@@ -9,12 +9,16 @@
           <q-card-section>
             <q-form @submit="login" class="q-gutter-md">
               <div class="row">
-                <q-input class="col-12 q-my-xs q-px-xs" filled  type="email" v-model="loginForm.email" label="Email"/>
-                <q-input class="col-12  q-my-xs q-px-xs" filled  v-model="loginForm.password" type="password" label="Password"/>
+                <q-input class="col-12 q-my-xs q-px-xs" filled type="email" v-model="loginForm.email" label="Email" />
+                <q-input class="col-12  q-my-xs q-px-xs" filled v-model="loginForm.password" type="password"
+                         label="Password" />
               </div>
               <div class="row q-px-xs ">
-                <q-btn class="bg-purple text-white" label="Submit" type="login"
-                       :disable="this.$store.getters.getActionRunningState"/>
+                <q-btn class="bg-purple text-white" label="Submit" type="submit"
+                       :disable="this.$store.getters.getActionRunningState" />
+
+                <q-btn class="" label="Forgot Password" type="button"
+                       :disable="this.$store.getters.getActionRunningState" @click="forgotPassword" />
 
               </div>
             </q-form>
@@ -37,13 +41,32 @@ export default {
     }
   },
   methods: {
-    login(){
+    login() {
       this.$axios.post('login', this.loginForm)
-      .then((res) => {
-        if(res.status === 200){
-          this.$store.commit('storeUser', res.data)
-          this.$router.replace({name: 'dashboard-home'})
-        }
+        .then((res) => {
+          if (res.status === 200) {
+            this.$store.commit('storeUser', res.data)
+            this.$router.replace({ name: 'dashboard-home' })
+          }
+        })
+    },
+
+    forgotPassword() {
+      this.$axios.put('login/forget', this.loginForm)
+        .then((res) => {
+          if (res.status === 204) {
+            this.$q.notify({
+              type: 'positive',
+              message: `Password sent to user phone number via SMS`,
+              position: 'top-right'
+            })
+          }
+        }).catch((e) => {
+        this.$q.notify({
+          type: 'negative',
+          message: `Enter valid email`,
+          position: 'top-right'
+        })
       })
     }
   }

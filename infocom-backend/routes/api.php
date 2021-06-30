@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 //users
 Route::post('login', [\App\Http\Controllers\Api\UserController::class, 'login']);
-Route::post('login/forget', [\App\Http\Controllers\Api\UserController::class, 'forgetPassword']);
+Route::put('login/forget', [\App\Http\Controllers\Api\UserController::class, 'forgetPassword']);
 
 //helptopics
 Route::get('helptopics', [\App\Http\Controllers\Api\HelpTopicController::class, 'index']);
@@ -60,11 +60,13 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('callcenteragents', [\App\Http\Controllers\Api\CallcenterAgentController::class, 'index']);
     Route::post('callcenteragents', [\App\Http\Controllers\Api\CallcenterAgentController::class, 'create']);
     Route::put('callcenteragents/{callcenteragent_id}', [\App\Http\Controllers\Api\CallcenterAgentController::class, 'update']);
+    Route::delete('callcenteragents/{callcenteragent_id}', [\App\Http\Controllers\Api\CallcenterAgentController::class, 'destroy'])->middleware('role:super_admin');
 
     //supportagents
     Route::get('supportagents', [\App\Http\Controllers\Api\SupportAgentController::class, 'index']);
     Route::post('supportagents', [\App\Http\Controllers\Api\SupportAgentController::class, 'create']);
     Route::put('supportagents/{supportagent_id}', [\App\Http\Controllers\Api\SupportAgentController::class, 'update']);
+    Route::delete('supportagents/{supportagent_id}', [\App\Http\Controllers\Api\SupportAgentController::class, 'destroy'])->middleware('role:super_admin');
 
     //customers
     Route::get('customers', [\App\Http\Controllers\Api\CustomerController::class, 'index']);

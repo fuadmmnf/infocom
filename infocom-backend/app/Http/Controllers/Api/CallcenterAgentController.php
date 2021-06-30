@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CallcenterAgent\CreateCallcenterAgent;
 use App\Http\Requests\CallcenterAgent\UpdateAgentRequest;
 use App\Models\CallcenterAgent;
+use Illuminate\Http\Request;
 
 class CallcenterAgentController extends Controller {
     public function index() {
@@ -32,6 +33,14 @@ class CallcenterAgentController extends Controller {
         $callcenteragent = CallcenterAgent::findOrFail($request->route('callcenteragent_id'));
         $userTokenHandler = new UserTokenHandler();
         $userTokenHandler->updateUser($callcenteragent->user_id, $request->validated());
+        return response()->noContent();
+    }
+
+    public function destroy(Request $request){
+        $callcenteragent = CallcenterAgent::findOrFail($request->route('callcenteragent_id'));
+        $user = $callcenteragent->user;
+        $user->delete();
+
         return response()->noContent();
     }
 }

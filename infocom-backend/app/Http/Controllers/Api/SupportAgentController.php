@@ -9,6 +9,7 @@ use App\Http\Requests\SupportAgent\UpdateSupportAgentRequest;
 use App\Models\Department;
 use App\Models\SupportAgent;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 
 class SupportAgentController extends Controller
 {
@@ -46,6 +47,14 @@ class SupportAgentController extends Controller
         $supportagent->update([
             'department_id' => $info['department_id']
         ]);
+
+        return response()->noContent();
+    }
+
+    public function destroy(Request $request){
+        $supportagent = SupportAgent::findOrFail($request->route('supportagent_id'));
+        $user = $supportagent->user;
+        $user->delete();
 
         return response()->noContent();
     }

@@ -25,8 +25,8 @@ class CreateCustomersTable extends Migration {
             $table->softDeletes();
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('popaddress_id')->references('id')->on('pop_addresses');
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
+            $table->foreign('popaddress_id')->references('id')->on('pop_addresses')->cascadeOnDelete();
         });
     }
 

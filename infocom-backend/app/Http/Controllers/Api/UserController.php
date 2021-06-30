@@ -9,13 +9,15 @@ use App\Http\Requests\User\ChangePasswordRequest;
 use App\Http\Requests\User\ForgetPasswordRequest;
 use App\Http\Requests\User\LoginRequest;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-class UserController extends Controller {
+class UserController extends Controller
+{
     private function getUserType(User $user)
     {
         $roles = $user->getRoleNames();
-        if($roles->count()){
+        if ($roles->count()) {
             $user->load($roles[0]);
         }
         return $user;
@@ -25,7 +27,7 @@ class UserController extends Controller {
     {
         $info = $request->validated();
         $user = User::where('email', $info['email'])->firstOrFail();
-        if($user && Hash::check($info['password'], $user->password)){
+        if ($user && Hash::check($info['password'], $user->password)) {
             $userTokenHandler = new UserTokenHandler();
             $user = $this->getUserType($userTokenHandler->regenerateUserToken($user));
             return response()->json($user);
@@ -42,18 +44,28 @@ class UserController extends Controller {
     }
 
 
-    public function forgetPassword(ForgetPasswordRequest $request){
+    public function forgetPassword(ForgetPasswordRequest $request)
+    {
         $info = $request->validated();
         $user = User::where('email', $info['email'])->firstOrFail();
         $info['name'] = $user->name;
         $info['phone'] = $user->phone;
         $info['password'] = $this->generatePassword();
-        $userTokenHandler = new UserTokenHandler();
-        $userTokenHandler->updateUser($user->id, $info);
 
-        $message = "Your Infocom CMS password is " . $info['password'];
-        SMSHandler::sendSMS($user->phone, $message);
+        \DB::beginTransaction();
+        try {
+            $userTokenHandler = new UserTokenHandler();
+            $userTokenHandler->updateUser($user->id, $info);
 
+            $message = "Your Infocom CMS password is " . $info['password'];
+            SMSHandler::sendSMS($user->phone, $message);
+        } catch
+        (\Exception $exception) {
+            DB::rollBack();
+            throw new \Exception($exception->getMessage());
+        }
+
+        DB::commit();
 
         return response()->noContent();
     }

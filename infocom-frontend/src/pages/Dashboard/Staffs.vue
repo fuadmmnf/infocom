@@ -9,12 +9,13 @@
       :rows-per-page-options="[0]"
       :pagination.sync="pagination"
       hide-bottom
+      @row-click="(e, row, idx) => {openStaffModal(row)}"
     >
       <template v-slot:top-right>
-        <q-btn label="Create" @click="showStaffForm = true">
+        <q-btn label="Create" @click="openStaffModal(null)">
           <q-dialog v-model="showStaffForm" persistent>
             <q-card style="min-width: 350px">
-              <q-form @submit.prevent.stop="createStaff">
+              <q-form @submit.prevent.stop="staffForm.id === undefined? createStaff(): updateStaff()">
 
                 <q-card-section class="q-pa-xs">
                   <q-list bordered padding>
@@ -47,14 +48,15 @@
                           :rules="[val => (!!val ) || 'Enter valid email']"
                         />
 
-                        <q-select class="q-mb-md" v-if="$route.params.type === 'supportagents'" filled clearable
+                        <q-select class="q-mb-md" v-if="$route.params.type === 'supportagents'" filled
                                   v-model.number="staffForm.department_id"
                                   :options="departments" option-label="name"
                                   option-value="id" emit-value
-                                  map-options label="Department"/>
+                                  map-options label="Department" />
 
                         <q-input
                           filled
+                          v-if="staffForm.id === undefined"
                           v-model="staffForm.password"
                           label="Password"
                           type="password"
@@ -63,6 +65,7 @@
 
                         <q-input
                           filled
+                          v-if="staffForm.id === undefined"
                           v-model="staffForm.password_confirmation"
                           label="Password Confirmation"
                           type="password"
@@ -78,11 +81,14 @@
                 </q-card-section>
 
                 <q-card-actions align="right" class="text-primary">
-                  <q-btn flat label="Close" v-close-popup/>
+                  <q-btn flat label="Close" v-close-popup />
+                  <q-btn v-if="staffForm.id !== undefined" type="button" flat color="negative"
+                         label="Delete" @click="deleteStaff"
+                  />
                   <q-btn flat
-                         :disable="staffForm.password !== staffForm.password_confirmation || staffForm.name ==='' || staffForm.phone === '' || staffForm.email === ''"
+                         :disable="(staffForm.id !== undefined || staffForm.password !== staffForm.password_confirmation) || staffForm.name ==='' || staffForm.phone === '' || staffForm.email === ''"
                          label="Confirm"
-                         type="submit"/>
+                         type="submit" />
                 </q-card-actions>
               </q-form>
             </q-card>
@@ -94,6 +100,16 @@
 </template>
 
 <script>
+const staffFormTemplate = () => {
+  return {
+    name: '',
+    email: '',
+    phone: '',
+    department_id: '',
+    password: '',
+    password_confirmation: '',
+  }
+}
 export default {
   name: 'DashboardStaffs',
   data() {
@@ -105,18 +121,11 @@ export default {
       },
       departments: [],
       staffs: [],
-      staffForm: {
-        name: '',
-        email: '',
-        phone: '',
-        department_id: '',
-        password: '',
-        password_confirmation: '',
-      },
+      staffForm: staffFormTemplate(),
       columns: [
-        {name: 'name', align: 'center', label: 'Name', field: row => row.user.name, sortable: true},
-        {name: 'phone', align: 'center', label: 'Phone', field: row => row.user.phone},
-        {name: 'email', align: 'center', label: 'Email', field: row => row.user.email},
+        { name: 'name', align: 'center', label: 'Name', field: row => row.user.name, sortable: true },
+        { name: 'phone', align: 'center', label: 'Phone', field: row => row.user.phone },
+        { name: 'email', align: 'center', label: 'Email', field: row => row.user.email },
       ].concat(this.$route.params.type === 'supportagents' ?
         [{
           name: 'department',
@@ -133,6 +142,21 @@ export default {
     this.fetchStaffs()
   },
   methods: {
+    openStaffModal(staff) {
+      if (staff === null) {
+        this.staffForm = staffFormTemplate()
+      } else {
+        this.staffForm = {
+          ...staffFormTemplate(),
+          ...staff,
+          name: staff.user.name,
+          phone: staff.user.phone,
+          email: staff.user.email
+        }
+      }
+
+      this.showStaffForm = true
+    },
     fetchDepartments() {
       this.$axios.get('departments')
         .then((res) => {
@@ -151,10 +175,41 @@ export default {
           if (res.status === 201) {
             this.showStaffForm = false
             this.fetchStaffs()
-            this.staffForm = {}
+            this.staffForm = staffFormTemplate()
             this.$q.notify({
               type: 'positive',
               message: `Staff Created Successfully`,
+              position: 'top-right'
+            })
+          }
+        })
+    },
+
+    updateStaff() {
+      this.$axios.put(`${this.$route.params.type}/${this.staffForm.id}`, this.staffForm)
+        .then((res) => {
+          if (res.status === 204) {
+            this.showStaffForm = false
+            this.fetchStaffs()
+            this.staffForm = staffFormTemplate()
+            this.$q.notify({
+              type: 'positive',
+              message: `Staff Updated Successfully`,
+              position: 'top-right'
+            })
+          }
+        })
+    },
+    deleteStaff(){
+      this.$axios.delete(`${this.$route.params.type}/${this.staffForm.id}`)
+        .then((res) => {
+          if (res.status === 204) {
+            this.showStaffForm = false
+            this.fetchStaffs()
+            this.staffForm = staffFormTemplate()
+            this.$q.notify({
+              type: 'positive',
+              message: `Staff Updated Successfully`,
               position: 'top-right'
             })
           }
