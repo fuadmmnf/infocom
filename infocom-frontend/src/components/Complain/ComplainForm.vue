@@ -224,8 +224,6 @@ export default {
     }
   },
   mounted() {
-
-
     if (this.existingComplain.status !== undefined) {
       this.complain = {
         ...this.existingComplain,

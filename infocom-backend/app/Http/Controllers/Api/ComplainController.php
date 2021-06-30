@@ -90,10 +90,10 @@ class ComplainController extends Controller
                 }
 
                 $complain->save();
+                $message = "Dear ". $complain->customer->user->name . ", we have acknowledged and forwarded your complain/requirement (TT#". $complain->id .") to our concern team for investigation. We aim to get back to you with an update at the shortest possible time. Best Regards, CMS Team, INFOCOM Limited";
+                SMSHandler::sendSMS($complain->customer->user->phone, $message);
             }
 
-            $message = "Dear ". $complain->customer->user->name . ", we have acknowledged and forwarded your complain/requirement (TT#". $complain->id .") to our concern team for investigation. We aim to get back to you with an update at the shortest possible time. Best Regards, CMS Team, INFOCOM Limited";
-            SMSHandler::sendSMS($complain->customer->user->phone, $message);
         } catch (\Exception $exception) {
             DB::rollBack();
             throw new \Exception($exception->getMessage());
