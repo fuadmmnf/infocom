@@ -155,7 +155,6 @@ export default {
           department_id: staff.department === null || staff.department === undefined? '': staff.department_id
         }
       }
-
       this.showStaffForm = true
     },
     fetchDepartments() {
