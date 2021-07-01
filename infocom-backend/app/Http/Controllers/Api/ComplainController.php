@@ -52,6 +52,7 @@ class ComplainController extends Controller
         $info = $request->validated();
         \DB::beginTransaction();
         try {
+            $info['complain_time'] = Carbon::now();
             if (!isset($info['customer_id'])) {
                 $user = User::where('email', $info['email'])->where('phone', $info['phone'])->first();
 
@@ -77,6 +78,7 @@ class ComplainController extends Controller
             } else {
                 $info['code'] = $this->generateCode();
                 $info['status'] = 'assigned'; // as customer_id only set when agent makes the request
+                 // as customer_id only set when agent makes the request
                 $complain = Complain::create($info);
                 $complain->load('customer', 'customer.user');
                 if ($complain->status == 'assigned') {

@@ -25,7 +25,7 @@ class CreateComplainsTable extends Migration
             $table->enum('priority', ['low', 'medium', 'high', 'urgent'])->nullable();
             $table->string('customer_review')->default('');
             $table->integer('customer_rating')->nullable();
-            $table->dateTimeTz('complain_time')->useCurrent();
+            $table->dateTimeTz('complain_time');
             $table->dateTimeTz('assigned_time')->nullable();
             $table->dateTimeTz('finished_time')->nullable();
             $table->dateTimeTz('approved_time')->nullable();
