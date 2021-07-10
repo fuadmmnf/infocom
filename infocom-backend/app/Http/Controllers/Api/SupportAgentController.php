@@ -26,7 +26,7 @@ class SupportAgentController extends Controller
         $department = Department::findOrFail($info['department_id']);
 
         $userTokenHandler = new UserTokenHandler();
-        $user = $userTokenHandler->createUser($info['name'], $info['phone'], $info['email'], $info['password']);
+        $user = $userTokenHandler->createUser($info['name'], $info['phone'], $info['code'], $info['email'], $info['password']);
         $supportagent = new SupportAgent();
         $supportagent->user_id = $user->id;
         $supportagent->department_id = $department->id;

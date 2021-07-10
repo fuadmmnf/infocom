@@ -20,14 +20,14 @@
         <q-bar>
           <div>Complain Details</div>
 
-          <q-space/>
+          <q-space />
 
           <q-btn dense flat icon="close" v-close-popup>
             <q-tooltip>Close</q-tooltip>
           </q-btn>
         </q-bar>
         <q-card-section class="q-pa-xs">
-          <complain-form :existing-complain="selectedComplain" :supportagents="supportagents"/>
+          <complain-form :existing-complain="selectedComplain" :supportagents="supportagents" />
         </q-card-section>
 
         <q-card-actions align="right" class="text-primary">
@@ -41,12 +41,12 @@
 </template>
 
 <script>
-import {date} from 'quasar'
+import { date } from 'quasar'
 import ComplainForm from "components/Complain/ComplainForm";
 
 export default {
   name: "ComplainsList",
-  components: {ComplainForm},
+  components: { ComplainForm },
   props: {
     status: {
       type: String,
@@ -57,7 +57,8 @@ export default {
     return {
       showComplainDetailModal: false,
       selectedComplain: null,
-      selectedDepartmentId: this.$store.getters.getUser.support_agent === undefined ? '' : this.$store.getters.getUser.support_agent.department_id,
+      selectedDepartmentId: this.$store.getters.getUser.support_agent ===
+                            undefined ? '' : this.$store.getters.getUser.support_agent.department_id,
       supportagents: [],
       pagination: {
         page: 1,
@@ -65,11 +66,11 @@ export default {
       },
       complains: [],
       columns: [
-        {name: 'id', align: 'center', label: 'TT #', field: row => row.id},
-        {name: 'name', align: 'center', label: 'Name', field: row => row.customer.user.name},
-        {name: 'phone', align: 'center', label: 'Phone', field: row => row.customer.user.phone},
-        {name: 'email', align: 'center', label: 'Email', field: row => row.customer.user.email},
-        {name: 'priority', align: 'center', label: 'Priority', field: row => row.priority},
+        { name: 'id', align: 'center', label: 'TT #', field: row => row.id },
+        { name: 'name', align: 'center', label: 'Name', field: row => row.customer.user.name },
+        { name: 'phone', align: 'center', label: 'Phone', field: row => row.customer.user.phone },
+        { name: 'email', align: 'center', label: 'Email', field: row => row.customer.user.email },
+        { name: 'priority', align: 'center', label: 'Priority', field: row => row.priority },
         {
           name: 'complain_time',
           align: 'center',
@@ -80,10 +81,19 @@ export default {
     }
   },
   mounted() {
-    // this.fetchComplainsList()
     if (this.status === 'assigned') {
       this.fetchSupportAgent()
     }
+
+    if (this.status === 'approved') {
+      this.columns.push({
+        name: 'rating',
+        align: 'center',
+        label: 'Rating',
+        field: row => (row === null ? '' : row.customer_rating)
+      })
+    }
+
     this.fetchSupportAgent()
     this.$root.$on('complain-updated', (data) => {
       this.showComplainDetailModal = false
@@ -98,7 +108,8 @@ export default {
   },
   methods: {
     fetchComplainsList(page = 1) {
-      this.$axios.get(`complains?status=${this.status}${this.selectedDepartmentId === '' ? '' : ('&department_id=' + this.selectedDepartmentId)}&page=${page}`)
+      this.$axios.get(`complains?status=${this.status}${this.selectedDepartmentId === '' ? '' : ('&department_id=' +
+                                                                                                 this.selectedDepartmentId)}&page=${page}`)
         .then((res) => {
           this.complains = res.data.data
         })

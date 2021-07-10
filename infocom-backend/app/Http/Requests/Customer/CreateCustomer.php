@@ -14,6 +14,7 @@ class CreateCustomer extends FormRequest {
             'code' => 'present',
 //            'password' => 'required|confirmed',
             'services' => 'array',
+            'address' => 'present',
             'technical_contact' => 'present',
             'management_contact' => 'present',
             'connection_package' => 'present',

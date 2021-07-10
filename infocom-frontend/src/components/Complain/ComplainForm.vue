@@ -97,7 +97,7 @@
              v-model="complain.complain_feedback"
              type="textarea" autogrow
              label="Complain Feedback"
-             :disable="statusIndex>3 || !isComplainEditor"
+             :disable="statusIndex<3 || !isComplainEditor"
     />
 
 

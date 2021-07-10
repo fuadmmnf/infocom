@@ -41,7 +41,7 @@ class AuthorizationSeeder extends Seeder
 
 
         $userTokenHandler = new UserTokenHandler();
-        $user = $userTokenHandler->createUser( 'superadmin', '00000000000', 'admin@infocom.com', 'admin123');
+        $user = $userTokenHandler->createUser('superadmin', '00000000000', 'admin@infocom.com', 'admin@infocom.com', 'admin123');
         $superadmin = new Admin();
         $superadmin->user_id = $user->id;
         $superadmin->save();

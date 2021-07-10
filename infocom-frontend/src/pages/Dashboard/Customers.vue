@@ -22,7 +22,7 @@
               <q-bar>
                 <div>Create Customer</div>
 
-                <q-space/>
+                <q-space />
 
                 <q-btn dense flat icon="close" v-close-popup>
                   <q-tooltip>Close</q-tooltip>
@@ -34,7 +34,7 @@
                       class="q-gutter-md">
                 <div class="row">
                   <q-input class="col-md-6 col-xs-12  q-my-xs q-px-xs" filled v-model="customerForm.name"
-                           label="Full Name"/>
+                           label="Full Name" />
                   <q-input class="col-md-6 col-xs-12  q-my-xs q-px-xs" filled v-model="customerForm.phone" label="Phone"
                            :rules="[ val => !!val && val.length === 11 || 'Please enter 11 digit phone number']"
                   />
@@ -42,8 +42,8 @@
 
                 <div class="row q-my-none">
                   <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.email" type="email"
-                           label="Email"/>
-                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.code" label="Code"/>
+                           label="Email" />
+                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.code" label="Code" />
 
 
                 </div>
@@ -74,7 +74,7 @@
                         <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
                           <q-date v-model="customerForm.installation_date">
                             <div class="row items-center justify-end">
-                              <q-btn v-close-popup label="Close" color="primary" flat/>
+                              <q-btn v-close-popup label="Close" color="primary" flat />
                             </div>
                           </q-date>
                         </q-popup-proxy>
@@ -84,33 +84,39 @@
                 </div>
 
                 <div class="row q-my-none">
-                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.technical_contact"
-                           :rules="[ val => (val===undefined || val === '' || val.replace(/\s/g,'').split(',').filter((v) => v.length !== 11).length === 0) || 'Please enter comma separated 11 digit phone numbers']"
-                           label="Technical Contact"/>
-                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.management_contact"
-                           label="Management Contact"/>
+                  <q-input class="col-md-12 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.address"
+                           label="Address" />
+                </div>
+                <div class="row q-my-none">
+                  <q-input class="col-md-12 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.technical_contact"
+                           label="Technical Contact" />
+                </div>
+
+                <div class="row q-my-none">
+                  <q-input class="col-md-12 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.management_contact"
+                           label="Management Contact" />
                 </div>
 
                 <div class="row q-my-none">
                   <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.connection_package"
-                           label="Connection Package"/>
+                           label="Connection Package" />
                   <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.connection_details"
-                           label="Connection Details"/>
+                           label="Connection Details" />
                 </div>
 
                 <div class="row q-my-none">
                   <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.other_services"
-                           label="Other Services"/>
+                           label="Other Services" />
                   <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
                            v-model="customerForm.additional_technical_box"
-                           label="Additional Technical Box"/>
+                           label="Additional Technical Box" />
                 </div>
 
                 <div class="row q-my-none">
                   <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.billing_information"
-                           label="Billing Information"/>
+                           label="Billing Information" />
                   <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.kam_name"
-                           label="KAM Name"/>
+                           label="KAM Name" />
                 </div>
 
 
@@ -119,10 +125,10 @@
                   <!--             @click="updateComplain(false)"-->
                   <!--             :disable="this.$store.getters.getActionRunningState"/>-->
 
-<!--                  <q-btn class=" q-mr-sm" label="Reset" type="reset"/>-->
+                  <!--                  <q-btn class=" q-mr-sm" label="Reset" type="reset"/>-->
 
                   <q-btn class="bg-purple text-white" label="Submit" type="submit"
-                         :disable="$store.getters.getActionRunningState"/>
+                         :disable="$store.getters.getActionRunningState" />
                 </div>
 
               </q-form>
@@ -143,6 +149,7 @@ const customerFormTemplate = () => {
     phone: '',
     code: '',
     services: [],
+    address: '',
     popaddress_id: '',
     technical_contact: '',
     management_contact: '',
@@ -170,10 +177,10 @@ export default {
       customers: [],
       customerForm: customerFormTemplate(),
       columns: [
-        {name: 'name', align: 'center', label: 'Name', field: row => row.user.name, sortable: true},
-        {name: 'phone', align: 'center', label: 'Phone', field: row => row.user.phone},
-        {name: 'email', align: 'center', label: 'Email', field: row => row.user.email},
-        {name: 'code', align: 'center', label: 'Code', field: row => row.code},
+        { name: 'name', align: 'center', label: 'Name', field: row => row.user.name, sortable: true },
+        { name: 'phone', align: 'center', label: 'Phone', field: row => row.user.phone },
+        { name: 'email', align: 'center', label: 'Email', field: row => row.user.email },
+        { name: 'code', align: 'center', label: 'Code', field: row => row.code },
         {
           name: 'popaddress',
           align: 'center',
