@@ -7,10 +7,21 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Customer\CreateCustomer;
 use App\Http\Requests\Customer\UpdateCustomer;
 use App\Models\Customer;
+use Illuminate\Http\Request;
 
 class CustomerController extends Controller {
-    public function index() {
-        $customers = Customer::orderByDesc('created_at')->paginate(20);
+    public function index(Request $request) {
+        $customers = Customer::orderByDesc('created_at');
+
+        $query = $request->query('query');
+        if($query){
+            $customers = $customers->where('code', $query)
+                ->orWhere('mobile', $query)
+                ->orWhere('email', $query)
+                ->orWhere('address', 'like', '%' . $query . '%');
+        }
+
+        $customers = $customers->paginate(20);
         $customers->load('user', 'popaddress');
         return response()->json($customers);
     }
@@ -20,11 +31,6 @@ class CustomerController extends Controller {
         return response()->json($customerCodes);
     }
 
-    public function searchCustomer($customer_code){
-        $customer = Customer::where('code', $customer_code)->firstOrFail();
-        $customer->load('user', 'popaddress');
-        return response()->json($customer);
-    }
 
     public function create(CreateCustomer $request) {
         $userTokenHandler = new UserTokenHandler();
