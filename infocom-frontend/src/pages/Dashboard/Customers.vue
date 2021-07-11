@@ -7,14 +7,14 @@
       row-key="id"
       :rows-per-page-options="[20]"
       :pagination.sync="pagination"
-      @row-click="(e, row, idx) => {openCustomerModal(row)}"
+      @row-click="(e, row, idx) => {$router.push({name: 'dashboard-customer-detail', params: {customer_id: row.id}})}"
       @update:pagination="({page}) => {fetchCustomers(page)}"
     >
       <template v-slot:top-left>
         <div class="row items-center">
           <span class="text-h5 q-mr-md">Customers</span>
           <q-btn label="Create" @click="() => {
-          openCustomerModal(null)
+          openCustomerModal()
         }">
 
 
@@ -30,7 +30,7 @@
                   </q-btn>
                 </q-bar>
 
-                <q-form @submit="customerForm.id === undefined? createCustomer(): updateCustomer()"
+                <q-form @submit="createCustomer()"
                         @reset="customerForm = {}"
                         class="q-gutter-md">
                   <div class="row">
@@ -226,22 +226,8 @@ export default {
   mounted() {
   },
   methods: {
-    openCustomerModal(customer) {
-      if (customer === null) {
-        this.customerForm = customerFormTemplate()
-      } else {
-        const serviceIds = this.$store.getters.getServices.map((s) => s.id)
-        this.customerForm = {
-          ...customerFormTemplate(),
-          ...customer,
-          name: customer.user.name,
-          phone: customer.user.phone,
-          email: customer.user.email,
-          popaddress_id: customer.popaddress === null ? '' : customer.popaddress_id,
-          services: customer.services.filter((s) => { return serviceIds.includes(s)})
-        }
-      }
-
+    openCustomerModal() {
+      this.customerForm = customerFormTemplate()
       this.showCustomerForm = true
     },
     fetchCustomers(page = 1) {
@@ -269,23 +255,7 @@ export default {
           }
         })
     },
-    updateCustomer() {
-      this.$axios.put(`customers/${this.customerForm.id}`, this.customerForm)
-        .then((res) => {
-          if (res.status === 204) {
-            this.showCustomerForm = false
-            this.fetchCustomers()
-            this.customerForm = customerFormTemplate()
-            this.$q.notify({
-              type: 'positive',
-              message: `Customer Updated Successfully`,
-              position: 'top-right'
-            })
 
-          }
-
-        })
-    }
   }
 }
 </script>
