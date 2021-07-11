@@ -14,8 +14,13 @@ class CustomerController extends Controller
     public function index(Request $request)
     {
         $customers = Customer::with('user')->orderByDesc('created_at');
-
         $query = $request->query('query');
+        $queryService = $request->query('service');
+
+        if($queryService && $queryService != ''){
+            $customers->whereJsonContains('services', intval($queryService));
+        }
+
         if ($query) {
             $customers->where('code', $query)
                 ->orWhereHas('user', function ($q) use ($query) {
@@ -23,6 +28,9 @@ class CustomerController extends Controller
                 })
                 ->orWhere('address', 'like', '%' . strtolower($query) . '%');
         }
+
+
+
 
         $customers = $customers->paginate(20);
         $customers->load('popaddress');
