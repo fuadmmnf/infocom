@@ -103,7 +103,7 @@ export default {
         name: 'rating',
         align: 'center',
         label: 'Rating',
-        field: row => (row === null ? '' : row.customer_rating)
+        field: row => ((row === null ? '' : row.customer_rating) + ((row === null || row.approve_time !== null) ? '' : ' (Overdue)'))
       })
     }
 

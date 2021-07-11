@@ -55,7 +55,7 @@
       <!--      </q-date>-->
 
 
-      <q-date class="col-3 q-ma-sm" v-model="topicStatusRange" range color="indigo" subtitle="POP/Topic Report">
+      <q-date class="col-3 q-ma-sm" v-model="topicStatusRange" range color="indigo" subtitle="Topic/POP Report">
         <template>
           <div class="flex flex-center items-center ">
             <q-select
@@ -105,7 +105,7 @@
         </template>
       </q-date>
 
-      <q-date class="col-3 q-ma-sm" v-model="popStatusRange" range color="purple-9" subtitle="POP Report">
+      <q-date class="col-3 q-ma-sm" v-model="popStatusRange" range color="secondary" subtitle="POP Report">
         <template>
           <div class="flex flex-center items-center ">
             <q-select
@@ -119,6 +119,31 @@
                             :name="generateFileName('pop_log', popStatusRange)"
                             :header="generateFileName('Pop Log', popStatusRange).split('.')[0].replace('_', ' ')"
                             :fetch="fetchDataPopLog"
+            >
+              <q-btn
+                color="purple-9"
+                icon="text_snippet"
+              />
+            </download-excel>
+          </div>
+        </template>
+      </q-date
+      >
+
+      <q-date class="col-3 q-ma-sm" v-model="servicepopStatusRange" range color="indigo" subtitle="Service/POP Report">
+        <template>
+          <div class="flex flex-center items-center ">
+            <q-select
+              v-if="!isSupportAgent"
+              class="col q-pr-xs " dense filled v-model.number="selectedDepartmentId"
+              :options="departments" option-label="name"
+              option-value="id" emit-value
+              map-options label="Department"
+            />
+            <download-excel class="col-2 q-mr-sm" type="csv"
+                            :name="generateFileName('servicewisepop_log', servicepopStatusRange)"
+                            :header="generateFileName('Service/Pop Log', servicepopStatusRange).split('.')[0].replace('_', ' ')"
+                            :fetch="fetchDataServiceWisePopLog"
             >
               <q-btn
                 color="purple-9"
@@ -165,6 +190,10 @@ export default {
         from: ''
       },
       popStatusRange: {
+        to: '',
+        from: ''
+      },
+      servicepopStatusRange: {
         to: '',
         from: ''
       },
@@ -216,6 +245,13 @@ export default {
     async fetchDataPopLog() {
       if (this.popStatusRange !== null) {
         const response = await this.$axios.get(`reports/pop?department_id=${this.selectedDepartmentId}&start=${this.popStatusRange.from.replaceAll('/', '-')}&end=${this.popStatusRange.to.replaceAll('/', '-')}`)
+        return response.data.rows
+      }
+    },
+
+    async fetchDataServiceWisePopLog() {
+      if (this.servicepopStatusRange !== null) {
+        const response = await this.$axios.get(`reports/servicewisepop?department_id=${this.selectedDepartmentId}&start=${this.servicepopStatusRange.from.replaceAll('/', '-')}&end=${this.servicepopStatusRange.to.replaceAll('/', '-')}`)
         return response.data.rows
       }
     },

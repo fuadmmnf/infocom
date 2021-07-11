@@ -9,9 +9,10 @@ class CreateCallcenterAgent extends FormRequest
 	public function rules()
 	{
 		return [
+            'code' => 'required|unique:users,code',
             'name' => 'required',
             'phone' => 'required|unique:users,phone|size:11',
-            'email' => 'required|unique:users,email|email',
+            'email' => 'required|email',
             'password' => 'required|confirmed',
 		];
 	}
