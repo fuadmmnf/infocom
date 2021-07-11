@@ -18,8 +18,8 @@ class CustomerController extends Controller
         $query = $request->query('query');
         if ($query) {
             $customers->where('code', $query)
-                ->whereHas('user', function ($q) use ($query) {
-                    $q->orWhere('phone', $query)->orWhere('email', $query);
+                ->orWhereHas('user', function ($q) use ($query) {
+                    $q->where('phone', $query)->orWhere('email', $query);
                 })
                 ->orWhere('address', 'like', '%' . strtolower($query) . '%');
         }
