@@ -32,7 +32,7 @@ class ComplainController extends Controller
         }
 
         if($request->query('status') == 'approved'){
-            $complainsQuery->orWhere('status', 'overdue')->whereNotNull('approve_time');
+            $complainsQuery->orWhere('status', 'overdue')->whereNotNull('approved_time');
             if ($request->query('customer_code')) {
                 $customer = Customer::where('code', $request->query('customer_code'))->firstOrFail();
                 $complainsQuery->where('customer_id', $customer->id);
@@ -44,7 +44,7 @@ class ComplainController extends Controller
                 $complainsQuery->whereBetween('complain_time', [$start, $end]);
             }
         } else if($request->query('status') == 'overdue'){
-            $complainsQuery->whereNull('approve_time');
+            $complainsQuery->whereNull('approved_time');
         }
 
         $complains = $complainsQuery->paginate(20);

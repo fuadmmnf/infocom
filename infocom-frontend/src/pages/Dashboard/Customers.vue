@@ -156,8 +156,8 @@
 
           <q-input class="col-6 q-ml-xs" borderless dense v-model="query" placeholder="Search">
             <template v-slot:append>
-              <q-icon name="search" @click="() => {fetchCustomers()}" />
-              <q-icon name="close" @click="() => {
+              <q-icon class="cursor-pointer" name="search" @click="() => {fetchCustomers()}" />
+              <q-icon class="cursor-pointer" name="close" @click="() => {
               query = ''
               queryServices = ''
               fetchCustomers()

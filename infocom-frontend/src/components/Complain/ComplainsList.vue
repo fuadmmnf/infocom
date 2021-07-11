@@ -37,11 +37,32 @@
       </q-dialog>
 
       <template v-slot:top-right>
-        <q-input borderless dense v-model="query" placeholder="Search">
-          <template v-slot:append>
-            <q-icon name="search" @click="fetchComplainsList" />
-          </template>
-        </q-input>
+        <div class="row items-center" v-if="status === 'approved'">
+
+          <q-icon size="25px" name="event" class="col-3 cursor-pointer">
+            <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+              <q-date v-model="dateRangeQuery" range>
+                <div class="row items-center justify-end">
+                  <q-btn v-close-popup label="Close" color="primary" flat />
+                </div>
+              </q-date>
+            </q-popup-proxy>
+          </q-icon>
+
+          <q-input class="col-8 q-ml-xs" borderless dense v-model="query" placeholder="Search">
+            <template v-slot:append>
+              <q-icon name="search" @click="() => {fetchComplainsList()}" />
+              <q-icon name="close" @click="() => {
+              query = ''
+              dateRangeQuery = {
+                from: null,
+                to: null
+              }
+              fetchComplainsList()
+            }" />
+            </template>
+          </q-input>
+        </div>
       </template>
     </q-table>
 
@@ -103,7 +124,8 @@ export default {
         name: 'rating',
         align: 'center',
         label: 'Rating',
-        field: row => ((row === null ? '' : row.customer_rating) + ((row === null || row.approve_time !== null) ? '' : ' (Overdue)'))
+        field: row => ((row === null ? '' : row.customer_rating) +
+                       ((row === null || row.approve_time !== null) ? '' : ' (Overdue)'))
       })
     }
 
@@ -123,14 +145,20 @@ export default {
     fetchComplainsList(page = 1) {
       const deptQuery = this.selectedDepartmentId === '' ? '' : ('&department_id=' + this.selectedDepartmentId)
       const customerQuery = this.query === '' ? '' : ('&customer_code=' + this.query)
-      const daterangeQuery = (this.dateRangeQuery.from !== null && this.dateRangeQuery.to !== null) ? '' :
+      const daterangeQuery = ((this.dateRangeQuery.from === null || this.dateRangeQuery.to === null) ? '' :
         ('&start_date=' + this.dateRangeQuery.from.replaceAll('/', '-') + '&end_date=' +
-         ths.dateRangeQuery.to.replaceAll('/', '-'))
+         this.dateRangeQuery.to.replaceAll('/', '-')))
 
       this.$axios.get(`complains?status=${this.status}${deptQuery}${customerQuery}${daterangeQuery}&page=${page}`)
         .then((res) => {
           this.complains = res.data.data
+        }).catch((e) => {
+        this.$q.notify({
+          type: 'negative',
+          message: 'Customer code invalid',
+          position: 'top-right'
         })
+      })
     },
 
     fetchSupportAgent() {
