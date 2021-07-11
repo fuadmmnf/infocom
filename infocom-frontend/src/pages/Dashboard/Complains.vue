@@ -17,7 +17,7 @@
 
           <q-tab v-if="hasSupportAgentAccess" name="assigned" label="Assigned Complains" />
 
-          <q-tab v-if="hasSupportAgentAccess" name="running" label="Running Complains" />
+          <q-tab v-if="hasSupportAgentAccess || hasCallcenterAgentAccess" name="running" label="Running Complains" />
           <q-tab v-if="hasCallcenterAgentAccess" name="feedback" label="Feedback Complains" />
           <q-tab name="history" label="Complain History" />
           <q-tab name="overdue" label="Overdue Complains" />
@@ -41,7 +41,7 @@
             <complains-list status="assigned" />
           </q-tab-panel>
 
-          <q-tab-panel v-if="hasSupportAgentAccess" name="running">
+          <q-tab-panel v-if="hasSupportAgentAccess || hasCallcenterAgentAccess" name="running">
             <div class="text-h6">Running Complains</div>
             <complains-list status="working" />
           </q-tab-panel>
