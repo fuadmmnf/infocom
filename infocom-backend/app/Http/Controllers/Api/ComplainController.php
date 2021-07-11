@@ -14,6 +14,7 @@ use App\Mail\CustomerComplainAcknowledge;
 use App\Mail\CustomerComplainApproval;
 use App\Models\CallcenterAgent;
 use App\Models\Complain;
+use App\Models\Customer;
 use App\Models\SupportAgent;
 use App\Models\User;
 use Carbon\Carbon;
@@ -29,6 +30,20 @@ class ComplainController extends Controller
         if ($request->query('department_id') !== null) {
             $complainsQuery->where('department_id', $request->query('department_id'));
         }
+
+        if($request->query('status') == 'approved'){
+            if ($request->query('customer_code')) {
+                $customer = Customer::where('code', $request->query('customer_code'))->firstOrFail();
+                $complainsQuery->where('customer_id', $customer->id);
+            }
+
+            if ($request->query('start_date') && $request->query('end_date')) {
+                $start = Carbon::parse($request->query('start_date'));
+                $end = Carbon::parse($request->query('end_date'));
+                $complainsQuery->whereBetween('complain_time', [$start, $end]);
+            }
+        }
+
         $complains = $complainsQuery->paginate(20);
         $complains->load('customer', 'customer.user', 'editor', 'editor.user');
         return response()->json($complains);
@@ -78,7 +93,7 @@ class ComplainController extends Controller
             } else {
                 $info['code'] = $this->generateCode();
                 $info['status'] = 'assigned'; // as customer_id only set when agent makes the request
-                 // as customer_id only set when agent makes the request
+                // as customer_id only set when agent makes the request
                 $complain = Complain::create($info);
                 $complain->load('customer', 'customer.user');
                 if ($complain->status == 'assigned') {
@@ -92,7 +107,7 @@ class ComplainController extends Controller
                 }
 
                 $complain->save();
-                $message = "Dear ". $complain->customer->user->name . ", we have acknowledged and forwarded your complain/requirement (TT#". $complain->id .") to our concern team for investigation. We aim to get back to you with an update at the shortest possible time. Best Regards, CMS Team, INFOCOM Limited";
+                $message = "Dear " . $complain->customer->user->name . ", we have acknowledged and forwarded your complain/requirement (TT#" . $complain->id . ") to our concern team for investigation. We aim to get back to you with an update at the shortest possible time. Best Regards, CMS Team, INFOCOM Limited";
                 SMSHandler::sendSMS($complain->customer->user->phone, $message);
             }
 
@@ -118,7 +133,7 @@ class ComplainController extends Controller
                     Mail::to($supportagent->user->email)->queue(new ComplainStatusStaffAlert($after));
                 }
 
-                $message = "Dear ". $after->customer->user->name . ", we have acknowledged and forwarded your complain/requirement (TT#". $after->id .") to our concern team for investigation. We aim to get back to you with an update at the shortest possible time. Best Regards, CMS Team, INFOCOM Limited";
+                $message = "Dear " . $after->customer->user->name . ", we have acknowledged and forwarded your complain/requirement (TT#" . $after->id . ") to our concern team for investigation. We aim to get back to you with an update at the shortest possible time. Best Regards, CMS Team, INFOCOM Limited";
                 SMSHandler::sendSMS($after->customer->user->phone, $message);
 
             } else if ($after->status == 'finished') {
@@ -128,7 +143,7 @@ class ComplainController extends Controller
                 }
             } else if ($after->status == 'approved') {
                 $after->approved_time = Carbon::now();
-                $message = "Dear ". $after->customer->user->name . ", this SMS is to notify you that we believe this ticket (TT#". $after->id .")  has been resolved. Best Regards, CMS Team, INFOCOM Limited";
+                $message = "Dear " . $after->customer->user->name . ", this SMS is to notify you that we believe this ticket (TT#" . $after->id . ")  has been resolved. Best Regards, CMS Team, INFOCOM Limited";
                 SMSHandler::sendSMS($after->customer->user->phone, $message);
                 Mail::to($after->customer->user->email)->queue(new CustomerComplainApproval($after));
             }

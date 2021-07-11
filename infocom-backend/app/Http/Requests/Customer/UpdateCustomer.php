@@ -9,7 +9,7 @@ class UpdateCustomer extends FormRequest {
         return [
             'popaddress_id' => 'present',
             'name' => 'required',
-            'code' => 'present|nullable',
+//            'code' => 'required',
 //            'password' => 'required|confirmed',
             'services' => 'array',
             'address' => 'present|nullable',

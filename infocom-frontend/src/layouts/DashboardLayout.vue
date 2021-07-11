@@ -15,8 +15,8 @@
           Infocom CMS Dashboard
         </q-toolbar-title>
         <div>
-          <q-btn :to="{name: 'dashboard-profile'}" flat label="profile"/>
-          <q-btn @click="logout" flat label="logout"/>
+          <q-btn :to="{name: 'dashboard-profile'}" flat :label="$store.getters.getUser.name" />
+          <q-btn @click="logout" flat label="logout" />
         </div>
       </q-toolbar>
     </q-header>
@@ -35,7 +35,7 @@
           <q-item>
             <q-item-section side>
               <q-avatar rounded size="70px">
-                <img alt="logo" src="~assets/logo.png"/>
+                <img alt="logo" src="~assets/logo.png" />
               </q-avatar>
             </q-item-section>
             <q-item-section>
@@ -54,7 +54,7 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view :key="$route.fullPath"/>
+      <router-view :key="$route.fullPath" />
     </q-page-container>
   </q-layout>
 </template>
@@ -65,7 +65,7 @@ import sidenavdata from "assets/data/sidenav_items";
 
 export default {
   name: 'DashboardLayout',
-  components: {EssentialLink},
+  components: { EssentialLink },
   data() {
     return {
       leftDrawerOpen: false,
@@ -80,7 +80,7 @@ export default {
     this.fetchServices()
   },
   methods: {
-    fetchPopAddresses(){
+    fetchPopAddresses() {
       this.$axios.get('popaddresses')
         .then((res) => {
           this.$store.commit('setPopAddresses', res.data)
@@ -105,16 +105,16 @@ export default {
         })
     },
 
-    fetchServices(){
+    fetchServices() {
       this.$axios.get('services')
-      .then((res) => {
-        this.$store.commit('setServices', res.data)
-      })
+        .then((res) => {
+          this.$store.commit('setServices', res.data)
+        })
     },
 
-    logout(){
+    logout() {
       this.$store.commit('storeUser', null)
-      this.$router.replace({name: 'home'})
+      this.$router.replace({ name: 'home' })
     }
   }
 }

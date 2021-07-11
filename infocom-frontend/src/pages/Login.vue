@@ -9,7 +9,7 @@
           <q-card-section>
             <q-form @submit="login" class="q-gutter-md">
               <div class="row">
-                <q-input class="col-12 q-my-xs q-px-xs" filled type="email" v-model="loginForm.email" label="Email" />
+                <q-input class="col-12 q-my-xs q-px-xs" filled type="text" v-model="loginForm.code" label="user code" />
                 <q-input class="col-12  q-my-xs q-px-xs" filled v-model="loginForm.password" type="password"
                          label="Password" />
               </div>
@@ -35,7 +35,7 @@ export default {
   data() {
     return {
       loginForm: {
-        email: '',
+        code: '',
         password: ''
       }
     }

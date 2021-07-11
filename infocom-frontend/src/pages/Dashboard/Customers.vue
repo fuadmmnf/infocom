@@ -136,6 +136,12 @@
             </q-card>
           </q-dialog>
         </q-btn>
+
+        <q-input class="q-ml-md" borderless dense v-model="query" placeholder="Search">
+          <template v-slot:append>
+            <q-icon name="search" @click="() => {fetchCustomers()}" />
+          </template>
+        </q-input>
       </template>
     </q-table>
   </q-page>
@@ -175,12 +181,13 @@ export default {
       },
       departments: [],
       customers: [],
+      query: '',
       customerForm: customerFormTemplate(),
       columns: [
+        { name: 'code', align: 'center', label: 'Client ID', field: row => row.code },
         { name: 'name', align: 'center', label: 'Name', field: row => row.user.name, sortable: true },
         { name: 'phone', align: 'center', label: 'Phone', field: row => row.user.phone },
         { name: 'email', align: 'center', label: 'Email', field: row => row.user.email },
-        { name: 'code', align: 'center', label: 'Code', field: row => row.code },
         {
           name: 'popaddress',
           align: 'center',
@@ -213,7 +220,8 @@ export default {
       this.showCustomerForm = true
     },
     fetchCustomers(page = 1) {
-      this.$axios.get(`customers?page=${page}`)
+      const searchQuery = (this.query === '' || this.query === undefined) ? '' : ('&query=' + this.query)
+      this.$axios.get(`customers?page=${page}${searchQuery}`)
         .then((res) => {
           this.customers = res.data.data
 

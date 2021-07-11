@@ -13,29 +13,37 @@
         selectedComplain = row
         showComplainDetailModal = true
       }"
-    />
+    >
+      <q-dialog v-model="showComplainDetailModal" persistent @hide="(e) => {selectedComplain = null}">
+        <q-card style="min-width: 70%">
+          <q-bar>
+            <div>Complain Details</div>
 
-    <q-dialog v-model="showComplainDetailModal" persistent @hide="(e) => {selectedComplain = null}">
-      <q-card style="min-width: 70%">
-        <q-bar>
-          <div>Complain Details</div>
+            <q-space />
 
-          <q-space />
+            <q-btn dense flat icon="close" v-close-popup>
+              <q-tooltip>Close</q-tooltip>
+            </q-btn>
+          </q-bar>
+          <q-card-section class="q-pa-xs">
+            <complain-form :existing-complain="selectedComplain" :supportagents="supportagents" />
+          </q-card-section>
 
-          <q-btn dense flat icon="close" v-close-popup>
-            <q-tooltip>Close</q-tooltip>
-          </q-btn>
-        </q-bar>
-        <q-card-section class="q-pa-xs">
-          <complain-form :existing-complain="selectedComplain" :supportagents="supportagents" />
-        </q-card-section>
+          <q-card-actions align="right" class="text-primary">
+            <!--          <q-btn flat label="Close" v-close-popup/>-->
+            <!--          <q-btn flat/>-->
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
 
-        <q-card-actions align="right" class="text-primary">
-          <!--          <q-btn flat label="Close" v-close-popup/>-->
-          <!--          <q-btn flat/>-->
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+      <template v-slot:top-right>
+        <q-input borderless dense v-model="query" placeholder="Search">
+          <template v-slot:append>
+            <q-icon name="search" @click="fetchComplainsList" />
+          </template>
+        </q-input>
+      </template>
+    </q-table>
 
   </div>
 </template>
@@ -63,6 +71,11 @@ export default {
       pagination: {
         page: 1,
         rowsPerPage: 20
+      },
+      query: '',
+      dateRangeQuery: {
+        to: null,
+        from: null
       },
       complains: [],
       columns: [
@@ -108,8 +121,13 @@ export default {
   },
   methods: {
     fetchComplainsList(page = 1) {
-      this.$axios.get(`complains?status=${this.status}${this.selectedDepartmentId === '' ? '' : ('&department_id=' +
-                                                                                                 this.selectedDepartmentId)}&page=${page}`)
+      const deptQuery = this.selectedDepartmentId === '' ? '' : ('&department_id=' + this.selectedDepartmentId)
+      const customerQuery = this.query === '' ? '' : ('&customer_code=' + this.query)
+      const daterangeQuery = (this.dateRangeQuery.from !== null && this.dateRangeQuery.to !== null) ? '' :
+        ('&start_date=' + this.dateRangeQuery.from.replaceAll('/', '-') + '&end_date=' +
+         ths.dateRangeQuery.to.replaceAll('/', '-'))
+
+      this.$axios.get(`complains?status=${this.status}${deptQuery}${customerQuery}${daterangeQuery}&page=${page}`)
         .then((res) => {
           this.complains = res.data.data
         })
