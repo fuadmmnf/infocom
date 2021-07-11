@@ -163,6 +163,14 @@
              :disable="$store.getters.getActionRunningState"/>
     </div>
 
+    <div v-if="complain.status === 'overdue'">
+      <q-btn class="bg-purple text-white" label="Approve" type="submit"
+             :disable="$store.getters.getActionRunningState"/>
+
+      <q-btn class="bg-purple text-white" label="Reopen" type="submit"
+             :disable="$store.getters.getActionRunningState"/>
+    </div>
+
     <!--    Action bar for complain according to status-->
 
   </q-form>
@@ -273,19 +281,19 @@ export default {
 
     },
 
-    updateComplain(isStatusPromoted) {
+    updateComplain(isStatusChanged) {
+      const prevStatus = this.complain.status
+      if (isStatusChanged) {
+        if(prevStatus === 'overdue') {
+          this.complain.status = 'pending'
+        }else {
+          this.complain.status = this.statusList[this.statusList.indexOf(this.complain.status) + 1]
 
-      if (isStatusPromoted) {
-
-        this.complain.status = this.statusList[this.statusList.indexOf(this.complain.status) + 1]
-
-        if (this.complain.status === 'assigned') {
-          this.complain.agent_id = (this.isAuthenticated && this.$store.getters.getUser.callcenter_agent !==
-            undefined) ? this.$store.getters.getUser.callcenter_agent.id : null
+          if (this.complain.status === 'assigned') {
+            this.complain.agent_id = (this.isAuthenticated && this.$store.getters.getUser.callcenter_agent !==
+                                      undefined) ? this.$store.getters.getUser.callcenter_agent.id : null
+          }
         }
-        // if (this.complain.status === 'working') {
-        // this.complain.editor_id = this.selectedEditorId
-        // }
       }
 
 
@@ -293,8 +301,8 @@ export default {
         .then((res) => {
           this.$root.$emit('complain-updated', res.data)
         }).catch((e) => {
-        if (isStatusPromoted) {
-          this.complain.status = this.statusList[this.statusList.indexOf(this.complain.status) - 1]
+        if (isStatusChanged) {
+          this.complain.status = prevStatus
         }
       })
 

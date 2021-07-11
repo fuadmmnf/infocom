@@ -127,7 +127,13 @@ class ComplainController extends Controller
     private function handleComplainChange(Complain $before, Complain $after)
     {
         if ($before->status != $after->status) {
-            if ($after->status == 'assigned') {
+            if($after->status == 'pending'){
+              $after->complain_time = Carbon::now();
+              $after->assigned_time = null;
+              $after->finished_time = null;
+              $after->approved_time = null;
+
+            } else if ($after->status == 'assigned') {
                 $after->assigned_time = Carbon::now();
                 Mail::to($after->customer->user->email)->queue(new CustomerComplainAcknowledge($after));
 
@@ -149,6 +155,8 @@ class ComplainController extends Controller
                 $message = "Dear " . $after->customer->user->name . ", this SMS is to notify you that we believe this ticket (TT#" . $after->id . ")  has been resolved. Best Regards, CMS Team, INFOCOM Limited";
                 SMSHandler::sendSMS($after->customer->user->phone, $message);
                 Mail::to($after->customer->user->email)->queue(new CustomerComplainApproval($after));
+            } else if ($after->status == 'overdue'){
+                $after->approved_time = Carbon::now();
             }
             $after->save();
         } else if ($before->status == $after->status && $before->editor_id != $after->editor_id) {
@@ -160,7 +168,7 @@ class ComplainController extends Controller
 
     public function update(UpdateComplain $request)
     {
-        $complain = Complain::where('id', $request->route('complain_id'))->where('status', '!=', 'overdue')->firstOrFail();
+        $complain = Complain::where('id', $request->route('complain_id'))->firstOrFail();
         $complain->load('customer', 'customer.user');
 
         \DB::beginTransaction();
