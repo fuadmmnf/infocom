@@ -9,14 +9,14 @@
 
     <div class="row">
       <q-input class="col-md-6 col-xs-12  q-my-xs q-px-xs" filled v-model="complain.name" label="Full Name"
-               :disable="statusIndex > 0" :readonly="isAuthenticated" />
+               :disable="statusIndex > 0" readonly />
       <q-input class="col-md-6 col-xs-12  q-my-xs q-px-xs" filled v-model="complain.phone" label="Phone"
-               :disable="statusIndex > 0" :readonly="isAuthenticated" />
+               :disable="statusIndex > 0" readonly />
     </div>
 
     <div class="row q-my-none">
       <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="complain.email" type="email"
-               label="Email" :disable="statusIndex > 0" :readonly="isAuthenticated" />
+               label="Email" :disable="statusIndex > 0" readonly />
 
       <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model.number="complain.helptopic_id"
                 :options="$store.getters.getHelpTopics" option-label="name"
@@ -28,7 +28,7 @@
 
     </div>
 
-    <div v-if="isAuthenticated" class="row q-my-none">
+    <div v-if="$store.getters.hasCallcenterAccess" class="row q-my-none">
 
       <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="complain.ticket_source"
                 :options="[
@@ -50,7 +50,7 @@
     </div>
 
 
-    <div v-if="isAuthenticated" class="row q-my-none">
+    <div v-if="$store.getters.hasCallcenterAccess" class="row q-my-none">
 
       <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled :value="selectSlaPlan"
                 label="SLA Plan"
@@ -73,7 +73,7 @@
     </div>
 
 
-    <q-input v-if="isAuthenticated" class=" q-my-xs q-px-xs" filled
+    <q-input v-if="$store.getters.hasCallcenterAccess" class=" q-my-xs q-px-xs" filled
              v-model="complain.complain_summary"
              type="textarea" autogrow
              label="Complain Summary"
@@ -86,7 +86,7 @@
     />
 
 
-    <q-input v-if="statusIndex > 1" class=" q-my-xs q-px-xs" filled
+    <q-input v-if="$store.getters.hasAuthorityAccess && statusIndex > 1" class=" q-my-xs q-px-xs" filled
              v-model="complain.complain_feedback"
              type="textarea" autogrow
              label="Complain Feedback"
@@ -215,9 +215,7 @@ export default {
       customerCodes: [],
       search: '',
       complain: {
-        name: '',
-        phone: '',
-        email: '',
+        customer_id: '',
         helptopic_id: '',
         complain_text: '',
       }
@@ -242,8 +240,9 @@ export default {
                                                                                    d.id ===
                                                                                    this.complain.department_id))
     },
-    selectSlaPlan(){
-      return (this.complain.helptopic_id === ''? '': this.$store.getters.getSLAPlans.find((s) => s.id === this.complain.slaplan_id).name)
+    selectSlaPlan() {
+      return (this.complain.helptopic_id === '' ? '' : this.$store.getters.getSLAPlans.find((s) => s.id ===
+                                                                                                   this.complain.slaplan_id).name)
     }
   },
   mounted() {
@@ -259,9 +258,14 @@ export default {
 
     if (this.$store.getters.getUser !== null && this.$store.getters.getUser.support_agent !== undefined) {
       this.complain.editor_id = this.$store.getters.getUser.support_agent.id
+    } else if (this.$store.getters.getUser !== null && this.$store.getters.getUser.customer !== undefined) {
+      this.complain.customer_id = this.$store.getters.getUser.customer.id
+      this.complain.name = this.$store.getters.getUser.name
+      this.complain.phone = this.$store.getters.getUser.phone
+      this.complain.email = this.$store.getters.getUser.email
     }
 
-    if (this.isAuthenticated) {
+    if (this.$store.getters.hasAuthorityAccess) {
       this.fetchCustomerCodes()
     }
   },

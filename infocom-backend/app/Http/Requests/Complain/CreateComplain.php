@@ -4,30 +4,29 @@ namespace App\Http\Requests\Complain;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateComplain extends FormRequest {
-    public function rules() {
+class CreateComplain extends FormRequest
+{
+    public function rules()
+    {
         $user = $this->user('api');
         return [
                 'helptopic_id' => 'required|numeric',
                 'complain_text' => 'required',
-            ] + (($user == null) ? [
-                'name' => 'required',
-                'email' => 'required',
-                'phone' => 'required|size:11',
-            ] :
-                [
-                    'customer_id' => 'required|numeric',
-                    'agent_id' => 'required|numeric',
-                    'department_id' => 'sometimes|numeric',
-                    'slaplan_id' => 'sometimes|numeric',
-                    'ticket_source' => 'required',
-                    'complain_summary' => 'sometimes',
+                'customer_id' => 'required|numeric',
+            ] + (($user->can('crud:callcenter')) ? [
+                'agent_id' => 'required|numeric',
+                'department_id' => 'required|numeric',
+                'slaplan_id' => 'required|numeric',
+                'ticket_source' => 'required',
+                'complain_summary' => 'sometimes',
 //                    'complain_time' => 'sometimes|date',
-                    'priority' => 'sometimes'
-                ]);
+                'priority' => 'sometimes'
+            ] : []);
     }
 
-    public function authorize() {
-        return true;
+    public function authorize()
+    {
+        $user = $this->user('api');
+        return $user != null;
     }
 }

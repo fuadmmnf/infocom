@@ -104,7 +104,13 @@ export default {
         { name: 'name', align: 'center', label: 'Name', field: row => row.customer.user.name },
         { name: 'phone', align: 'center', label: 'Phone', field: row => row.customer.user.phone },
         { name: 'email', align: 'center', label: 'Email', field: row => row.customer.user.email },
-        { name: 'priority', align: 'center', label: 'Priority', field: row => row.priority },
+        {
+          name: 'Topic',
+          align: 'center',
+          label: 'Topic',
+          field: row => row.helptopic_id === null ? '' : this.$store.getters.getHelpTopics.find((h) => h.id ===
+                                                                                                       row.helptopic_id).name
+        },
         {
           name: 'complain_time',
           align: 'center',

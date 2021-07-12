@@ -31,7 +31,7 @@ class ComplainController extends Controller
             $complainsQuery->where('department_id', $request->query('department_id'));
         }
 
-        if($request->query('status') == 'approved'){
+        if ($request->query('status') == 'approved') {
             $complainsQuery->orWhere('status', 'overdue')->whereNotNull('approved_time');
             if ($request->query('customer_code')) {
                 $customer = Customer::where('code', $request->query('customer_code'))->firstOrFail();
@@ -43,7 +43,7 @@ class ComplainController extends Controller
                 $end = Carbon::parse($request->query('end_date'));
                 $complainsQuery->whereBetween('complain_time', [$start, $end]);
             }
-        } else if($request->query('status') == 'overdue'){
+        } else if ($request->query('status') == 'overdue') {
             $complainsQuery->whereNull('approved_time');
         }
 
@@ -71,48 +71,25 @@ class ComplainController extends Controller
         \DB::beginTransaction();
         try {
             $info['complain_time'] = Carbon::now();
-            if (!isset($info['customer_id'])) {
-                $user = User::where('email', $info['email'])->where('phone', $info['phone'])->first();
+            $info['code'] = $this->generateCode();
+            $info['status'] = isset($info['department_id']) ? 'assigned' : 'pending'; // as customer_id only set when agent makes the request
+            // as customer_id only set when agent makes the request
+            $complain = Complain::create($info);
+            $complain->load('customer', 'customer.user');
+            if ($complain->status == 'assigned') {
+                $complain->assigned_time = Carbon::now();
 
-                if (!$user) {
-                    $info['password'] = $info['password'] ?? $info['phone'];
-                    $userTokenHandler = new UserTokenHandler();
-
-                    $customer = $userTokenHandler->createCustomer($info);
-                } else {
-                    $customer = $user->customer;
+                Mail::to($complain->customer->user->email)->queue(new CustomerComplainAcknowledge($complain));
+                $departmentTeam = SupportAgent::where('department_id', $complain->department_id)->with('user')->get();
+                foreach ($departmentTeam as $supportagent) {
+                    Mail::to($supportagent->user->email)->queue(new ComplainStatusStaffAlert($complain));
                 }
-                $info['customer_id'] = $customer->id;
-                $info['code'] = $this->generateCode();
-                $complain = Complain::create(array_diff_key($info, array_flip(['name', 'phone', 'email', 'password'])));
-
-                if ($complain->status == 'pending') {
-                    foreach (CallcenterAgent::with('user')->get() as $callcenteragent) {
-                        Mail::to($callcenteragent->user->email)->queue(new ComplainStatusStaffAlert($complain));
-                    }
-                }
-
-
-            } else {
-                $info['code'] = $this->generateCode();
-                $info['status'] = 'assigned'; // as customer_id only set when agent makes the request
-                // as customer_id only set when agent makes the request
-                $complain = Complain::create($info);
-                $complain->load('customer', 'customer.user');
-                if ($complain->status == 'assigned') {
-                    $complain->assigned_time = Carbon::now();
-
-                    Mail::to($complain->customer->user->email)->queue(new CustomerComplainAcknowledge($complain));
-                    $departmentTeam = SupportAgent::where('department_id', $complain->department_id)->with('user')->get();
-                    foreach ($departmentTeam as $supportagent) {
-                        Mail::to($supportagent->user->email)->queue(new ComplainStatusStaffAlert($complain));
-                    }
-                }
-
-                $complain->save();
-                $message = "Dear " . $complain->customer->user->name . ", we have acknowledged and forwarded your complain/requirement (TT#" . $complain->id . ") to our concern team for investigation. We aim to get back to you with an update at the shortest possible time. Best Regards, CMS Team, INFOCOM Limited";
-                SMSHandler::sendSMS($complain->customer->user->phone, $message);
             }
+
+            $complain->save();
+            $message = "Dear " . $complain->customer->user->name . ", we have acknowledged and forwarded your complain/requirement (TT#" . $complain->id . ") to our concern team for investigation. We aim to get back to you with an update at the shortest possible time. Best Regards, CMS Team, INFOCOM Limited";
+            SMSHandler::sendSMS($complain->customer->user->phone, $message);
+
 
         } catch (\Exception $exception) {
             DB::rollBack();
@@ -127,11 +104,11 @@ class ComplainController extends Controller
     private function handleComplainChange(Complain $before, Complain $after)
     {
         if ($before->status != $after->status) {
-            if($after->status == 'pending'){
-              $after->complain_time = Carbon::now();
-              $after->assigned_time = null;
-              $after->finished_time = null;
-              $after->approved_time = null;
+            if ($after->status == 'pending') {
+                $after->complain_time = Carbon::now();
+                $after->assigned_time = null;
+                $after->finished_time = null;
+                $after->approved_time = null;
 
             } else if ($after->status == 'assigned') {
                 $after->assigned_time = Carbon::now();
@@ -155,7 +132,7 @@ class ComplainController extends Controller
                 $message = "Dear " . $after->customer->user->name . ", this SMS is to notify you that we believe this ticket (TT#" . $after->id . ")  has been resolved. Best Regards, CMS Team, INFOCOM Limited";
                 SMSHandler::sendSMS($after->customer->user->phone, $message);
                 Mail::to($after->customer->user->email)->queue(new CustomerComplainApproval($after));
-            } else if ($after->status == 'overdue'){
+            } else if ($after->status == 'overdue') {
                 $after->approved_time = Carbon::now();
             }
             $after->save();
