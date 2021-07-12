@@ -26,11 +26,13 @@ export default function ({ store } ) {
 
   Router.beforeEach((to, from, next) => {
     const currentUser = store.getters.getUser
-    const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-    if (requiresAuth && currentUser === null) {
-      next('/login')
-    }
-    else if( currentUser!==null && ['login','register'].includes(to.name)){
+    if (currentUser === null) {
+      if(['login','register', 'complain-feedback'].includes(to.name)){
+        next()
+      } else {
+        next('/login')
+      }
+    } else if( ['login', 'register'].includes(to.name)){
       next('/')
     }
     else {
