@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Customer\CreateCustomer;
 use App\Http\Requests\Customer\SendCustomerMessage;
 use App\Http\Requests\Customer\UpdateCustomer;
+use App\Jobs\SendSMSJob;
 use App\Mail\CustomerCustomMessage;
 use App\Models\Customer;
 use App\Models\CustomerMessage;
@@ -91,9 +92,8 @@ class CustomerController extends Controller
                 'customers' => array_column($customers, 'id'),
                 'message' => $info['message']
             ]);
-            SMSHandler::sendSMS($customer['phone'], $info['message']);
+            SendSMSJob::dispatch(['receiver' => $customer['phone'], 'message' => $info['message']]);
             Mail::to($customer['email'])->queue(new CustomerCustomMessage($customermessage));
-
         }
 
         return response()->noContent();
