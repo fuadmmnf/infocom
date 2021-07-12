@@ -21,6 +21,7 @@ const routes = [
       {path: 'customers', name: 'dashboard-customers', component: () => import('pages/Dashboard/Customers.vue')},
       {path: 'customers/:customer_id', name: 'dashboard-customer-detail', component: () => import('pages/Dashboard/CustomerDetail.vue')},
       {path: 'resources', name: 'dashboard-resources', component: () => import('pages/Dashboard/Resources.vue')},
+      {path: 'notices', name: 'dashboard-notices', component: () => import('pages/Dashboard/Notices.vue')},
       {path: 'complains', name: 'dashboard-complains', component: () => import('pages/Dashboard/Complains.vue')},
       {path: 'reports', name: 'dashboard-reports', component: () => import('pages/Dashboard/Reports.vue')},
       {path: 'profile', name: 'dashboard-profile', component: () => import('pages/Dashboard/Profile.vue')},
