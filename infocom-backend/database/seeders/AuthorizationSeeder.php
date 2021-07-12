@@ -33,8 +33,8 @@ class AuthorizationSeeder extends Seeder
 
         $callcenterAgentCreatePermission->syncRoles([$superAdminRole]);
         $supportAgentCreatePermission->syncRoles([$superAdminRole]);
-        $customerCreatePermission->syncRoles([$superAdminRole]);
         $departmentPermission->syncRoles([$superAdminRole]);
+        $customerCreatePermission->syncRoles([$superAdminRole, $callcenterAgentRole]);
         $callcenterPermission->syncRoles([$superAdminRole, $callcenterAgentRole]);
         $supportPermission->syncRoles([$superAdminRole, $supportAgentRole]);
         $complainPermission->syncRoles([$superAdminRole, $callcenterAgentRole, $supportAgentRole, $customerRole]);

@@ -10,7 +10,7 @@ class CreateCustomerMessagesTable extends Migration
     {
         Schema::create('customer_messages', function (Blueprint $table) {
             $table->id();
-            $table->enum('type', ['individual', 'popaddreess', 'total']);
+            $table->enum('type', ['individual', 'popaddreess', 'service', 'total']);
             $table->json('customers');
             $table->text('message');
             $table->timestamps();
