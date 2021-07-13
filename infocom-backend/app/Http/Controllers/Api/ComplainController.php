@@ -7,6 +7,7 @@ use App\Http\Requests\Complain\CreateComplain;
 use App\Http\Requests\Complain\DestroyComplain;
 use App\Http\Requests\Complain\UpdateComplain;
 use App\Http\Requests\Complain\UpdateCustomerFeedback;
+use App\Http\Requests\Complain\UploadFileRequest;
 use App\Jobs\SendSMSJob;
 use App\Mail\ComplainStatusStaffAlert;
 use App\Mail\CustomerComplainAcknowledge;
@@ -162,12 +163,33 @@ class ComplainController extends Controller
         return response()->noContent();
     }
 
+    public function uploadComplainFile(UploadFileRequest $request){
+        $complain = Complain::findOrFail($request->route('complain_id'));
+        if($request->hasFile('customer_file')){
+            $file = $request->file('customer_file');
+            $filename = 'complain_' . $complain->id . '_customer' . $this->generateCode() . '.' . $file->getClientOriginalExtension();
+            $file->storePubliclyAs('images/complain/customer', $filename);
+            $complain->customer_file = 'images/complain/customer' . $filename;
+        }
+
+        if($request->hasFile('feedback_file')){
+            $file = $request->file('feedback_file');
+            $filename = 'complain_' . $complain->id . '_feedback' . $this->generateCode() . '.' . $file->getClientOriginalExtension();
+            $file->storePubliclyAs('images/complain/feedback', $filename);
+            $complain->feedback_file = 'images/complain/feedback' . $filename;
+        }
+        $complain->save();
+
+        return response()->noContent();
+    }
+
     public function storeFeedback(UpdateCustomerFeedback $request)
     {
         $complain = Complain::where('code', $request->route('complain_code'))->firstOrFail();
         $complain->update($request->validated());
         return response()->noContent();
     }
+
 
     public function destroy(DestroyComplain $request)
     {

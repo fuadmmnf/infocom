@@ -27,7 +27,7 @@ class AuthorizationSeeder extends Seeder
         $supportAgentCreatePermission = Permission::create(['name' => 'crud:support_agent']);
         $customerCreatePermission = Permission::create(['name' => 'crud:customer']);
         $callcenterPermission = Permission::create(['name' => 'crud:callcenter']);
-        $supportPermission = Permission::create(['name' => 'crud:support']);
+        $supportPermission = Permission::create(['name' => 'crud:feedback']);
         $complainPermission = Permission::create(['name' => 'crud:complain']);
         $departmentPermission = Permission::create(['name' => 'crud:department']);
 
