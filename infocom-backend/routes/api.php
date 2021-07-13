@@ -73,10 +73,11 @@ Route::middleware(['auth:api'])->group(function () {
 
     //customers
     Route::get('customers', [\App\Http\Controllers\Api\CustomerController::class, 'index']);
-    Route::get('customers/{customer_id}', [\App\Http\Controllers\Api\CustomerController::class, 'find']);
+    Route::get('customers/notice', [\App\Http\Controllers\Api\CustomerController::class, 'getNoticeHistory']);
     Route::get('customers/code', [\App\Http\Controllers\Api\CustomerController::class, 'getAllCustomerCode']);
+    Route::get('customers/{customer_id}', [\App\Http\Controllers\Api\CustomerController::class, 'find']);
     Route::post('customers', [\App\Http\Controllers\Api\CustomerController::class, 'create']);
-    Route::post('customers/sms', [\App\Http\Controllers\Api\CustomerController::class, 'sendSMS']);
+    Route::post('customers/notice', [\App\Http\Controllers\Api\CustomerController::class, 'sendNotice']);
     Route::put('customers/{customer_id}', [\App\Http\Controllers\Api\CustomerController::class, 'update']);
 
     //complains

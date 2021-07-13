@@ -19,7 +19,7 @@
 </head>
 <body class="antialiased">
 <div class="relative  items-top min-h-screen bg-gray-100 dark:bg-gray-900  py-4 sm:pt-0">
-    <p>{{$customermessage->message}}</p>
+    <p>{{$message}}</p>
 
     <br/><br/>
     <span>Regards, <br/>

@@ -13,6 +13,7 @@ use App\Mail\CustomerCustomMessage;
 use App\Models\Customer;
 use App\Models\CustomerMessage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class CustomerController extends Controller
@@ -49,9 +50,14 @@ class CustomerController extends Controller
         return response()->json($customer);
     }
 
+    public function getNoticeHistory()
+    {
+
+    }
+
     public function getAllCustomerCode()
     {
-        $customerCodes = Customer::where('code', '!=', '')->pluck('code');
+        $customerCodes = Customer::where('code', '!=', '')->get(['id', 'code'])->toArray();
         return response()->json($customerCodes);
     }
 
@@ -71,31 +77,39 @@ class CustomerController extends Controller
     }
 
 
-    public function sendSMS(SendCustomerMessage $request)
+    public function sendNotice(SendCustomerMessage $request)
     {
         $info = $request->validated();
         $customers = null;
         if ($info['type'] == 'popaddress') {
-            $customers = Customer::where('popaddress_id', $info['type_id']);
+            $customers = Customer::where('popaddress_id', $info['type_id'])->get();
         } elseif ($info['type'] == 'service') {
-            $customers = Customer::whereJsonContains('services', $info['type_id']);
+            $customers = Customer::whereJsonContains('services', $info['type_id'])->get();
         } elseif ($info['type'] == 'individual') {
-            $customers = Customer::find($info['type_id']);
-        } else if ($info['type'] == 'total') {
+            $customers = Customer::where('id', $info['type_id'])->get();
+        } else if ($info['type'] == 'all') {
             $customers = Customer::all();
         }
+        $customers->load('user');
 
-        $customers = $customers->with('user')->get('id', 'user.phone', 'user.email')->toArray();
-        foreach ($customers as $customer) {
-            $customermessage = CustomerMessage::create([
+        DB::beginTransaction();
+        try {
+            foreach ($customers as $customer) {
+
+                SendSMSJob::dispatch(['receiver' => $customer->user->phone, 'message' => $info['message']]);
+                Mail::to($customer->user->email)->queue(new CustomerCustomMessage($info['message']));
+            }
+            CustomerMessage::create([
                 'type' => $info['type'],
-                'customers' => array_column($customers, 'id'),
+                'customers' => $customers->pluck('id'),
                 'message' => $info['message']
             ]);
-            SendSMSJob::dispatch(['receiver' => $customer['phone'], 'message' => $info['message']]);
-            Mail::to($customer['email'])->queue(new CustomerCustomMessage($customermessage));
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            throw new \Exception($exception->getMessage());
         }
 
+        DB::commit();
         return response()->noContent();
     }
 }

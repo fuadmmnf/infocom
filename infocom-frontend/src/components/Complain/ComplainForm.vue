@@ -277,7 +277,7 @@ export default {
     fetchCustomerCodes() {
       this.$axios.get('customers/code')
         .then((res) => {
-          this.customerCodes = res.data
+          this.customerCodes = res.data.map((c) => c.code)
         })
     },
 

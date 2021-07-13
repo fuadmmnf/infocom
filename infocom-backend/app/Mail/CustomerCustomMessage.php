@@ -11,14 +11,14 @@ use Illuminate\Queue\SerializesModels;
 class CustomerCustomMessage extends Mailable implements ShouldQueue {
     use Queueable, SerializesModels;
 
-    public $customermessage;
+    public $message;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(CustomerMessage $customerMessage) {
-        $this->customermessage = $customerMessage;
+    public function __construct($message) {
+        $this->message = $message;
     }
 
     /**
