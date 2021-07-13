@@ -154,6 +154,30 @@
         </template>
       </q-date>
 
+      <q-date class="col-3 q-ma-sm" v-model="feedbackStatusRange" range color="blue-gray" subtitle="Feedback Report">
+        <template>
+          <div class="flex flex-center items-center ">
+            <q-select
+              v-if="!isSupportAgent"
+              class="col q-pr-xs " dense filled v-model.number="selectedDepartmentId"
+              :options="departments" option-label="name"
+              option-value="id" emit-value
+              map-options label="Department"
+            />
+            <download-excel class="col-2 q-mr-sm" type="csv"
+                            :name="generateFileName('feedback_log', feedbackStatusRange)"
+                            :header="generateFileName('Feedback Log', feedbackStatusRange).split('.')[0].replace('_', ' ')"
+                            :fetch="fetchDataFeedbackLog"
+            >
+              <q-btn
+                color="purple-9"
+                icon="text_snippet"
+              />
+            </download-excel>
+          </div>
+        </template>
+      </q-date>
+
     </div>
 
   </q-page>
@@ -194,6 +218,10 @@ export default {
         from: ''
       },
       servicepopStatusRange: {
+        to: '',
+        from: ''
+      },
+      feedbackStatusRange: {
         to: '',
         from: ''
       },
@@ -252,6 +280,13 @@ export default {
     async fetchDataServiceWisePopLog() {
       if (this.servicepopStatusRange !== null) {
         const response = await this.$axios.get(`reports/servicewisepop?department_id=${this.selectedDepartmentId}&start=${this.servicepopStatusRange.from.replaceAll('/', '-')}&end=${this.servicepopStatusRange.to.replaceAll('/', '-')}`)
+        return response.data.rows
+      }
+    },
+
+    async fetchDataFeedbackLog() {
+      if (this.feedbackStatusRange !== null) {
+        const response = await this.$axios.get(`reports/feedback?department_id=${this.selectedDepartmentId}&start=${this.feedbackStatusRange.from.replaceAll('/', '-')}&end=${this.feedbackStatusRange.to.replaceAll('/', '-')}`)
         return response.data.rows
       }
     },

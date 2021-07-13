@@ -95,4 +95,5 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('reports/servicetime', [\App\Http\Controllers\Api\ReportController::class, 'fetchServiceTimeLog']);
     Route::get('reports/pop', [\App\Http\Controllers\Api\ReportController::class, 'fetchPopLog']);
     Route::get('reports/servicewisepop', [\App\Http\Controllers\Api\ReportController::class, 'fetchServiceWisePopLog']);
+    Route::get('reports/feedback', [\App\Http\Controllers\Api\ReportController::class, 'fetchFeedbackLog']);
 });

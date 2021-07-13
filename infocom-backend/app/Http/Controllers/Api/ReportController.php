@@ -328,4 +328,43 @@ class ReportController extends Controller
             'rows' => $serviceWisePopLog
         ]);
     }
+
+    public function fetchFeedbackLog()
+    {
+        $helptopics = HelpTopic::all();
+        $createdcomplains = Complain::orderBy('complain_time')->whereBetween('complain_time', [$this->start, $this->end]);
+        if ($this->department_id !== '') {
+            $createdcomplains = $createdcomplains->where('department_id', $this->department_id);
+        }
+        $createdcomplains = $createdcomplains->withTrashed()->get();
+        $createdcomplains->load('customer');
+
+
+        $createdcomplains = $createdcomplains->map(function ($complain, $key) {
+            return [
+                'S/N' => $key + 1,
+                'Customer ID' => ($complain->customer != null ? $complain->customer->code : ''),
+                'TT#' => $complain->id,
+                'Complain Time' => $complain->complain_time->format('Y-m-d H:i'),
+                'Approve Time' => $complain->approved_time->format('Y-m-d H:i'),
+                'Rating' => $complain->customer_rating,
+            ];
+        });
+
+        $average = round($createdcomplains->avg('Rating'), 2);
+        $createdcomplains = $createdcomplains->add(collect([
+            'S/N' => '',
+            'Customer ID' => '',
+            'TT#' => '',
+            'Complain Time' => '',
+            'Approve Time' => '',
+            'Rating' => 'Average: ' . $average,
+        ]));
+
+        return response()->json([
+            'title' => 'Report on Customer Feedback ' . $this->start . ' - ' . $this->end,
+            'headers' => ['S\N', 'Customer ID', 'TT#', 'Complain Time', 'Approve Time', 'Rating'],
+            'rows' => $createdcomplains
+        ]);
+    }
 }
