@@ -27,21 +27,21 @@ class AuthorizationSeeder extends Seeder
         $supportAgentCreatePermission = Permission::create(['name' => 'crud:support_agent']);
         $customerCreatePermission = Permission::create(['name' => 'crud:customer']);
         $callcenterPermission = Permission::create(['name' => 'crud:callcenter']);
-        $supportPermission = Permission::create(['name' => 'crud:support']);
+        $supportPermission = Permission::create(['name' => 'crud:feedback']);
         $complainPermission = Permission::create(['name' => 'crud:complain']);
         $departmentPermission = Permission::create(['name' => 'crud:department']);
 
         $callcenterAgentCreatePermission->syncRoles([$superAdminRole]);
         $supportAgentCreatePermission->syncRoles([$superAdminRole]);
-        $customerCreatePermission->syncRoles([$superAdminRole]);
         $departmentPermission->syncRoles([$superAdminRole]);
+        $customerCreatePermission->syncRoles([$superAdminRole, $callcenterAgentRole]);
         $callcenterPermission->syncRoles([$superAdminRole, $callcenterAgentRole]);
         $supportPermission->syncRoles([$superAdminRole, $supportAgentRole]);
         $complainPermission->syncRoles([$superAdminRole, $callcenterAgentRole, $supportAgentRole, $customerRole]);
 
 
         $userTokenHandler = new UserTokenHandler();
-        $user = $userTokenHandler->createUser( 'superadmin', '00000000000', 'admin@infocom.com', 'admin123');
+        $user = $userTokenHandler->createUser('superadmin', '00000000000', 'admin@infocom.com', 'admin@infocom.com', 'admin123');
         $superadmin = new Admin();
         $superadmin->user_id = $user->id;
         $superadmin->save();

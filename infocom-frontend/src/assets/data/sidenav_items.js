@@ -44,10 +44,17 @@ export default function () {
       route: {name: 'dashboard-complains'}
     },
     {
+      title: 'Notices',
+      caption: '',
+      icon: 'home',
+      permission: 'hasAdminAccess',
+      route: {name: 'dashboard-notices'}
+    },
+    {
       title: 'Reports',
       caption: '',
       icon: 'home',
-      permission: null,
+      permission: 'hasAuthorityAccess',
       route: {name: 'dashboard-reports'}
     },
   ]

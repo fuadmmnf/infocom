@@ -27,6 +27,13 @@
                       <q-item-section>
                         <q-input
                           filled
+                          v-model="staffForm.code"
+                          label="Code"
+                          :rules="[val => (!!val ) || 'Enter staff code']"
+                        />
+
+                        <q-input
+                          filled
                           v-model="staffForm.name"
                           label="Name"
                           :rules="[val => (!!val ) || 'Enter staff name']"
@@ -86,7 +93,7 @@
                          label="Delete" @click="deleteStaff"
                   />
                   <q-btn flat
-                         :disable="(staffForm.id !== undefined || staffForm.password !== staffForm.password_confirmation) && ( staffForm.name ==='' || staffForm.phone === '' || staffForm.email === '')"
+                         :disable="(staffForm.id !== undefined || staffForm.password !== staffForm.password_confirmation) && ( staffForm.name ==='' || staffForm.code ==='' || staffForm.phone === '' || staffForm.email === '')"
                          label="Confirm"
                          type="submit" />
                 </q-card-actions>
@@ -103,6 +110,7 @@
 const staffFormTemplate = () => {
   return {
     name: '',
+    code: '',
     email: '',
     phone: '',
     department_id: '',
@@ -123,7 +131,8 @@ export default {
       staffs: [],
       staffForm: staffFormTemplate(),
       columns: [
-        { name: 'name', align: 'center', label: 'Name', field: row => row.user.name, sortable: true },
+        { name: 'code', align: 'center', label: 'Code', field: row => row.user.code },
+        { name: 'name', align: 'center', label: 'Name', field: row => row.user.name },
         { name: 'phone', align: 'center', label: 'Phone', field: row => row.user.phone },
         { name: 'email', align: 'center', label: 'Email', field: row => row.user.email },
       ].concat(this.$route.params.type === 'supportagents' ?

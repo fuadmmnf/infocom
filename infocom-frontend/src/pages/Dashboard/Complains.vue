@@ -11,43 +11,43 @@
           align="justify"
           narrow-indicator
         >
-          <q-tab v-if="hasCallcenterAgentAccess" name="agent-complain" label="New Complain" />
+          <q-tab v-if="$store.getters.hasCallcenterAccess || $store.getters.hasCustomerAccess" name="agent-complain" label="New Complain" />
 
-          <q-tab v-if="hasCallcenterAgentAccess" name="pending" label="Pending Complains" />
+          <q-tab v-if="$store.getters.hasCallcenterAccess" name="pending" label="Pending Complains" />
 
-          <q-tab v-if="hasSupportAgentAccess" name="assigned" label="Assigned Complains" />
+          <q-tab v-if="$store.getters.hasSupportAgentAccess" name="assigned" label="Assigned Complains" />
 
-          <q-tab v-if="hasSupportAgentAccess" name="running" label="Running Complains" />
-          <q-tab v-if="hasCallcenterAgentAccess" name="feedback" label="Feedback Complains" />
+          <q-tab name="running" label="Running Complains" />
+          <q-tab v-if="$store.getters.hasCallcenterAccess" name="feedback" label="Feedback Complains" />
           <q-tab name="history" label="Complain History" />
-          <q-tab name="overdue" label="Overdue Complains" />
+          <q-tab v-if="$store.getters.hasCallcenterAccess" name="overdue" label="Overdue Complains" />
         </q-tabs>
 
         <q-separator />
 
         <q-tab-panels v-model="tab" animated>
-          <q-tab-panel v-if="hasCallcenterAgentAccess" name="agent-complain">
+          <q-tab-panel  v-if="$store.getters.hasCallcenterAccess || $store.getters.hasCustomerAccess" name="agent-complain">
             <div class="text-h6">New Customer Complain</div>
             <complain-form />
           </q-tab-panel>
 
-          <q-tab-panel v-if="hasCallcenterAgentAccess" name="pending">
+          <q-tab-panel v-if="$store.getters.hasCallcenterAccess" name="pending">
             <div class="text-h6">Pending Complains</div>
             <complains-list status="pending" />
           </q-tab-panel>
 
-          <q-tab-panel v-if="hasSupportAgentAccess" name="assigned">
+          <q-tab-panel v-if="$store.getters.hasSupportAgentAccess" name="assigned">
             <div class="text-h6">Requested Complains</div>
             <complains-list status="assigned" />
           </q-tab-panel>
 
-          <q-tab-panel v-if="hasSupportAgentAccess" name="running">
+          <q-tab-panel name="running">
             <div class="text-h6">Running Complains</div>
             <complains-list status="working" />
           </q-tab-panel>
 
 
-          <q-tab-panel v-if="hasCallcenterAgentAccess" name="feedback">
+          <q-tab-panel v-if="$store.getters.hasCallcenterAccess" name="feedback">
             <div class="text-h6">Feedback Complains</div>
             <complains-list status="finished" />
           </q-tab-panel>
@@ -58,7 +58,7 @@
             <complains-list status="approved" />
           </q-tab-panel>
 
-          <q-tab-panel name="overdue">
+          <q-tab-panel v-if="$store.getters.hasCallcenterAccess" name="overdue">
             <div class="text-h6">Overdue History</div>
             <complains-list status="overdue" />
           </q-tab-panel>
@@ -90,19 +90,7 @@ export default {
       })
     })
   },
-  computed: {
-    hasSupportAgentAccess: function () {
-      return this.$store.getters.getUser !== null && (this.$store.getters.getUser.support_agent !== undefined ||
-                                                      this.$store.getters.getUser.super_admin !== undefined
-      )
-    },
 
-    hasCallcenterAgentAccess: function () {
-      return this.$store.getters.getUser !== null && (this.$store.getters.getUser.callcenter_agent !== undefined ||
-                                                      this.$store.getters.getUser.super_admin !== undefined)
-    },
-
-  },
   methods: {}
 }
 </script>

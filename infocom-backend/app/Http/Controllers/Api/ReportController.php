@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Complain;
 use App\Models\HelpTopic;
 use App\Models\PopAddress;
+use App\Models\Service;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 
@@ -74,7 +75,7 @@ class ReportController extends Controller
                     'Department' => $c->department->name
                 ]) + [
                     'Time' => $c->time->format('Y-m-d H:i'),
-                    'Member' => $c->editor == null? "" : "{$c->editor->user->name} ({$c->editor->user->phone})",
+                    'Member' => $c->editor == null ? "" : "{$c->editor->user->name} ({$c->editor->user->phone})",
                     'Task' => $c->type,
                     'Complain' => "TT#{$c->id}",
                     'Customer' => "{$c->customer->user->name} ({$c->customer->user->phone})"
@@ -150,7 +151,7 @@ class ReportController extends Controller
 
 
         return response()->json([
-            'title' => 'Pop wise service report from ' . $this->start . ' - ' . $this->end,
+            'title' => 'Topic/Pop wise report from ' . $this->start . ' - ' . $this->end,
             'headers' => ($topicWisePopLog->count()) ? array_keys($topicWisePopLog[0]) : ['S\N', 'Help/Complaint Issue', 'Count'],
             'rows' => $topicWisePopLog
         ]);
@@ -261,6 +262,109 @@ class ReportController extends Controller
             'title' => 'Report for ' . $this->start . ' - ' . $this->end,
             'headers' => ($poplog->count()) ? array_keys($poplog[0]) : ['S\N', 'POP', 'Client Number', 'Overall (%)'],
             'rows' => $poplog
+        ]);
+    }
+
+
+    public function fetchServiceWisePopLog()
+    {
+        $services = Service::all();
+        $popaddresses = PopAddress::all();
+        $approvedcomplains = Complain::orderBy('approved_time')->whereBetween('approved_time', [$this->start, $this->end]);
+        if ($this->department_id !== '') {
+            $approvedcomplains = $approvedcomplains->where('department_id', $this->department_id);
+        }
+
+        $approvedcomplains = $approvedcomplains->with('customer')->withTrashed()->get();
+        $serviceWisePopLog = $services->map(function ($service, $key) use ($approvedcomplains, $popaddresses) {
+
+            $serviceComplains = $approvedcomplains->filter(function ($complain) use ($service) {
+                return in_array($service->id, $complain->customer->services);
+            });
+
+            $popCounts = [];
+            foreach ($popaddresses as $popaddress) {
+                $count = $serviceComplains->filter(function ($complain) use ($popaddress) {
+                    return $complain->customer->popaddress_id == $popaddress->id;
+                })->count();
+                $popCounts[$popaddress->name] = $count;
+            }
+
+            return [
+                    'S/N' => $key + 1,
+                    'Service' => $service->name,
+                    'Count' => array_sum($popCounts),
+                ] + $popCounts;
+        });
+
+        $totalCount = $serviceWisePopLog->sum('Count');
+        $popWisePercentage = $popaddresses->mapWithKeys(function ($popaddress) use ($serviceWisePopLog, $totalCount) {
+            return [$popaddress->name => $totalCount ? (($serviceWisePopLog->sum($popaddress->name) / (float)$totalCount) * 100.0) : 0];
+        })->all();
+
+        $serviceWisePopLog = $serviceWisePopLog->add(collect([
+                'S/N' => '',
+                'Service' => '',
+                'Count' => $totalCount,
+
+            ] + $popaddresses->mapWithKeys(function ($popaddress) use ($serviceWisePopLog) {
+                return [$popaddress->name => $serviceWisePopLog->sum($popaddress->name)];
+            })->all()
+        ));
+
+
+        $serviceWisePopLog = $serviceWisePopLog->add(collect([
+                'S/N' => '',
+                'Service' => '',
+                'Count' => 'Percentage',
+
+            ] + $popWisePercentage
+        ));
+
+
+        return response()->json([
+            'title' => 'Serviec/Pop wise report from ' . $this->start . ' - ' . $this->end,
+            'headers' => ($serviceWisePopLog->count()) ? array_keys($serviceWisePopLog[0]) : ['S\N', 'Service', 'Count'],
+            'rows' => $serviceWisePopLog
+        ]);
+    }
+
+    public function fetchFeedbackLog()
+    {
+        $helptopics = HelpTopic::all();
+        $createdcomplains = Complain::orderBy('complain_time')->whereBetween('complain_time', [$this->start, $this->end]);
+        if ($this->department_id !== '') {
+            $createdcomplains = $createdcomplains->where('department_id', $this->department_id);
+        }
+        $createdcomplains = $createdcomplains->withTrashed()->get();
+        $createdcomplains->load('customer');
+
+
+        $createdcomplains = $createdcomplains->map(function ($complain, $key) {
+            return [
+                'S/N' => $key + 1,
+                'Customer ID' => ($complain->customer != null ? $complain->customer->code : ''),
+                'TT#' => $complain->id,
+                'Complain Time' => $complain->complain_time->format('Y-m-d H:i'),
+                'Approve Time' => $complain->approved_time->format('Y-m-d H:i'),
+                'Rating' => $complain->customer_rating,
+            ];
+        });
+
+        $average = round($createdcomplains->avg('Rating'), 2);
+        $createdcomplains = $createdcomplains->add(collect([
+            'S/N' => '',
+            'Customer ID' => '',
+            'TT#' => '',
+            'Complain Time' => '',
+            'Approve Time' => '',
+            'Rating' => 'Average: ' . $average,
+        ]));
+
+        return response()->json([
+            'title' => 'Report on Customer Feedback ' . $this->start . ' - ' . $this->end,
+            'headers' => ['S\N', 'Customer ID', 'TT#', 'Complain Time', 'Approve Time', 'Rating'],
+            'rows' => $createdcomplains
         ]);
     }
 }

@@ -26,7 +26,7 @@ class UserController extends Controller
     public function login(LoginRequest $request)
     {
         $info = $request->validated();
-        $user = User::where('email', $info['email'])->firstOrFail();
+        $user = User::where('code', $info['code'])->firstOrFail();
         if ($user && Hash::check($info['password'], $user->password)) {
             $userTokenHandler = new UserTokenHandler();
             $user = $this->getUserType($userTokenHandler->regenerateUserToken($user));
@@ -47,9 +47,11 @@ class UserController extends Controller
     public function forgetPassword(ForgetPasswordRequest $request)
     {
         $info = $request->validated();
-        $user = User::where('email', $info['email'])->firstOrFail();
+        $user = User::where('code', $info['code'])->firstOrFail();
         $info['name'] = $user->name;
         $info['phone'] = $user->phone;
+        $info['code'] = $user->code;
+        $info['email'] = $user->email;
         $info['password'] = $this->generatePassword();
 
         \DB::beginTransaction();

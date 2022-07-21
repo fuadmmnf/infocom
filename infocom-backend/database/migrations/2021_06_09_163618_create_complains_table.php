@@ -23,6 +23,8 @@ class CreateComplainsTable extends Migration
             $table->string('complain_summary')->default('');
             $table->string('complain_feedback')->default('');
             $table->enum('priority', ['low', 'medium', 'high', 'urgent'])->nullable();
+            $table->string('customer_file')->nullable();
+            $table->string('feedback_file')->nullable();
             $table->string('customer_review')->default('');
             $table->integer('customer_rating')->nullable();
             $table->dateTimeTz('complain_time');

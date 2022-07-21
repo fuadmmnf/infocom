@@ -19,7 +19,7 @@ class CallcenterAgentController extends Controller {
         $info = $request->validated();
 
         $userTokenHandler = new UserTokenHandler();
-        $user = $userTokenHandler->createUser($info['name'], $info['phone'], $info['email'], $info['password']);
+        $user = $userTokenHandler->createUser($info['name'], $info['phone'], $info['code'], $info['email'], $info['password']);
         $callcenterAgent = new CallcenterAgent();
         $callcenterAgent->user_id = $user->id;
         $callcenterAgent->save();

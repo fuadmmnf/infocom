@@ -15,6 +15,7 @@ class CreateCustomer extends FormRequest {
             'type' => 'required',
 //            'password' => 'required|confirmed',
             'services' => 'array',
+            'address' => 'present',
             'technical_contact' => 'present',
             'management_contact' => 'present',
             'connection_package' => 'present',
