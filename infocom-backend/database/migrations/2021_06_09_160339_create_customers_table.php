@@ -12,6 +12,7 @@ class CreateCustomersTable extends Migration {
             $table->unsignedBigInteger('popaddress_id')->nullable();
             $table->json('services')->nullable();
             $table->string('code')->nullable();
+            $table->enum('type', ['VIP', 'corporate', 'home'])->nullable();
             $table->string('address')->default('');
             $table->string('technical_contact')->default('');
             $table->string('management_contact')->default('');

@@ -49,7 +49,13 @@
                 </div>
 
                 <div class="row q-my-none">
-                  <q-select class="col-md-12 col-xs-12 q-my-xs q-px-xs" filled
+                  <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
+                            v-model="customerForm.type"
+                            :options="['VIP', 'corporate', 'home']"
+                            label="Type"
+
+                  />
+                  <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
                             v-model="customerForm.services" multiple
                             :options="$store.getters.getServices" option-label="name"
                             option-value="id" emit-value
@@ -142,6 +148,7 @@ const customerFormTemplate = () => {
     email: '',
     phone: '',
     code: '',
+    type: 'home',
     services: [],
     popaddress_id: '',
     technical_contact: '',
