@@ -103,7 +103,13 @@
                      label="KAM Name" />
           </div>
 
+          <div class="row q-my-none">
 
+            <q-btn class="col-md-3 col-xs-12 q-my-xs q-px-xs" filled
+                     label="Identity File" @click="downloadItem(customerForm.identity_file, 'Identity File')" />
+            <q-btn class="col-md-3 col-xs-12 q-my-xs q-px-xs" filled
+                     label="Agreement Form"  @click="downloadItem(customerForm.agreement_form, 'Agreement Form')"/>
+          </div>
           <div class="q-pa-sm">
             <!--      <q-btn class="bg-info text-white q-mr-sm" label="Resubmit" type="button"-->
             <!--             @click="updateComplain(false)"-->
@@ -137,6 +143,20 @@ export default {
     this.fetchCustomer()
   },
   methods: {
+    downloadItem (url, label) {
+      const downloadRoot = process.env.PROD ? 'http://221.120.96.121/uploads/customers' : 'http://127.0.0.1:8000/uploads/customers'
+      // const blob = new Blob([response.data])
+      const link = document.createElement('a')
+      link.href = downloadRoot + url
+      link.download = label
+      link.target= '_blank'
+      link.click()
+      // this.$axios.get(downloadRoot + url, { responseType: 'blob' })
+      //   .then(response => {
+      //
+      //     URL.revokeObjectURL(link.href)
+      //   }).catch(console.error)
+    },
     fetchCustomer() {
       this.$axios.get(`customers/${this.$route.params.customer_id}`)
         .then((res) => {
