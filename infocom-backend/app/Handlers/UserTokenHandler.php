@@ -7,13 +7,13 @@ namespace App\Handlers;
 use App\Models\Customer;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 
-class UserTokenHandler
-{
-    public function createUser($name, $phone, $code, $email, $password): User
-    {
+class UserTokenHandler {
+    public function createUser($name, $phone, $code, $email, $password): User {
         $newUser = new User();
         $newUser->email = $email;
         $newUser->code = $code;
@@ -52,28 +52,39 @@ class UserTokenHandler
     }
 
 
-    public function createCustomer(array $info)
-    {
-        $user = $this->createUser($info['name'], $info['phone'], $info['code'], $info['email'], $info['phone']);
-        $customer = new Customer();
-        $customer->user_id = $user->id;
-        $customer->popaddress_id = $info['popaddress_id'] ?? null;
-        $customer->code = $info['code'] ?? '';
-        $customer->type = $info['type'];
-        $customer->services = $info['services'] ?? '';
-        $customer->address = $info['address'] ?? '';
-        $customer->technical_contact = $info['technical_contact'] ?? '';
-        $customer->management_contact = $info['management_contact'] ?? '';
-        $customer->connection_package = $info['connection_package'] ?? '';
-        $customer->other_services = $info['other_services'] ?? '';
-        $customer->connection_details = $info['connection_details'] ?? '';
-        $customer->additional_technical_box = $info['additional_technical_box'] ?? '';
-        $customer->billing_information = $info['billing_information'] ?? '';
-        $customer->kam_name = $info['kam_name'] ?? '';
-        $customer->installation_date = isset($info['installation_date']) ? Carbon::parse($info['installation_date']) : null;
-        $customer->save();
-        $user->assignRole('customer');
-
+    public function createCustomer(array $info, array $files) {
+        DB::beginTransaction();
+        try {
+            $user = $this->createUser($info['name'], $info['phone'], $info['code'], $info['email'], $info['phone']);
+            $customer = new Customer();
+            $customer->user_id = $user->id;
+            $customer->popaddress_id = $info['popaddress_id'] ?? null;
+            $customer->code = $info['code'] ?? '';
+            $customer->type = $info['type'];
+            $customer->services = $info['services'] ?? '';
+            $customer->address = $info['address'] ?? '';
+            $customer->technical_contact = $info['technical_contact'] ?? '';
+            $customer->management_contact = $info['management_contact'] ?? '';
+            $customer->connection_package = $info['connection_package'] ?? '';
+            $customer->other_services = $info['other_services'] ?? '';
+            $customer->connection_details = $info['connection_details'] ?? '';
+            $customer->additional_technical_box = $info['additional_technical_box'] ?? '';
+            $customer->billing_information = $info['billing_information'] ?? '';
+            $customer->kam_name = $info['kam_name'] ?? '';
+            $customer->installation_date = isset($info['installation_date']) ? Carbon::parse($info['installation_date']) : null;
+            foreach ($files as $attr => $file) {
+                $name = '/' . $attr . '_' . uniqid() . '.' . $file->extension();
+//                $file->store('local', $name);
+                Storage::disk('public_uploads')->putFileAs('customers', $file, $name);
+                $customer->setAttribute($attr, $name);
+            }
+            $customer->save();
+            $user->assignRole('customer');
+        }catch (\Exception $e){
+            DB::rollBack();
+            throw new \Exception($e->getMessage());
+        }
+        DB::commit();
         return $customer;
     }
 

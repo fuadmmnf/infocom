@@ -16,10 +16,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
-class CustomerController extends Controller
-{
-    public function index(Request $request)
-    {
+class CustomerController extends Controller {
+    public function index(Request $request) {
         $customers = Customer::with('user')->orderByDesc('created_at');
         $query = $request->query('query');
         $queryService = $request->query('service');
@@ -42,43 +40,37 @@ class CustomerController extends Controller
         return response()->json($customers);
     }
 
-    public function find($customer_id)
-    {
+    public function find($customer_id) {
         $customer = Customer::findOrFail($customer_id);
         $customer->load('user', 'popaddress');
 
         return response()->json($customer);
     }
 
-    public function getNoticeHistory()
-    {
+    public function getNoticeHistory() {
 
     }
 
-    public function getAllCustomerCode()
-    {
+    public function getAllCustomerCode() {
         $customerCodes = Customer::where('code', '!=', '')->get(['id', 'code'])->toArray();
         return response()->json($customerCodes);
     }
 
 
-    public function create(CreateCustomer $request)
-    {
+    public function create(CreateCustomer $request) {
         $userTokenHandler = new UserTokenHandler();
-        $customer = $userTokenHandler->createCustomer($request->validated());
+        $customer = $userTokenHandler->createCustomer($request->validated(), ['identity_file' => $request->file('identity_file'), 'agreement_form' => $request->file('agreement_form')]);
         return response()->json($customer, 201);
     }
 
-    public function update(UpdateCustomer $request)
-    {
+    public function update(UpdateCustomer $request) {
         $userTokenHandler = new UserTokenHandler();
         $userTokenHandler->updateCustomer($request->route('customer_id'), $request->validated());
         return response()->noContent();
     }
 
 
-    public function sendNotice(SendCustomerMessage $request)
-    {
+    public function sendNotice(SendCustomerMessage $request) {
         $info = $request->validated();
         $customers = null;
         if ($info['type'] == 'popaddress') {

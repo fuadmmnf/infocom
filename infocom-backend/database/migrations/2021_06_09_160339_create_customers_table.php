@@ -22,6 +22,8 @@ class CreateCustomersTable extends Migration {
             $table->string('additional_technical_box')->default('');
             $table->string('billing_information')->default('');
             $table->string('kam_name')->default('');
+            $table->string('identity_file')->default('');
+            $table->string('agreement_form')->default('');
             $table->dateTimeTz('installation_date')->nullable();
             $table->softDeletes();
             $table->timestamps();

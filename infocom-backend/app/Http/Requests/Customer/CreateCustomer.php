@@ -25,6 +25,8 @@ class CreateCustomer extends FormRequest {
             'billing_information' => 'present',
             'kam_name' => 'present',
             'installation_date' => 'nullable|date',
+            'identity_file' => 'present|file',
+            'agreement_form' => 'present|file',
         ];
     }
 

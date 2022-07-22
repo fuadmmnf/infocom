@@ -30,7 +30,7 @@
                   </q-btn>
                 </q-bar>
 
-                <q-form @submit="createCustomer()"
+                <q-form @submit="createCustomer"
                         @reset="customerForm = {}"
                         class="q-gutter-md">
                   <div class="row">
@@ -130,6 +130,27 @@
                              label="KAM Name"/>
                   </div>
 
+                  <div class="row q-my-none">
+                    <q-file class="col-md-6 col-xs-12 q-my-xs q-px-xs" clearable filled accept=".jpg, image/*"
+                            name="identity_file" v-model="customerForm.identity_file"
+                            id="identity_file"
+                            ref="identity_file" @change="handleIdentityFile()"
+                            label="Identity File">
+                      <template v-slot:prepend>
+                        <q-icon name="attach_file"/>
+                      </template>
+                    </q-file>
+                    <q-file class="col-md-6 col-xs-12 q-my-xs q-px-xs" clearable filled
+                            name="agreement_form" v-model="customerForm.agreement_form"
+                            id="agreement_form"
+                            ref="agreement_form" @change="handleAgreementForm()"
+                            label="Agreement Form">
+                      <template v-slot:prepend>
+                        <q-icon name="attach_file"/>
+                      </template>
+                    </q-file>
+                  </div>
+
 
                   <div class="q-pa-sm">
                     <!--      <q-btn class="bg-info text-white q-mr-sm" label="Resubmit" type="button"-->
@@ -199,6 +220,8 @@ const customerFormTemplate = () => {
     installation_date: '',
     password: '',
     password_confirmation: '',
+    identity_file: null,
+    agreement_form: null,
   }
 }
 export default {
@@ -247,20 +270,44 @@ export default {
 
         })
     },
+
+    handleIdentityFile() {
+      this.customerForm.identity_file = this.$refs.identity_file.files[0]
+    },
+
+    handleAgreementForm() {
+      this.customerForm.agreement_form = this.$refs.agreement_form.files[0]
+    },
+
     createCustomer() {
-      this.$axios.post('customers', this.customerForm)
-        .then((res) => {
-          if (res.status === 201) {
-            this.showCustomerForm = false
-            this.fetchCustomers()
-            this.customerForm = customerFormTemplate()
-            this.$q.notify({
-              type: 'positive',
-              message: `Customer Created Successfully`,
-              position: 'top-right'
-            })
+      this.errors = null
+
+      let formData = new FormData()
+      for (const [key, value] of Object.entries(this.customerForm)) {
+        Array.isArray(this.customerForm[key])
+          ? value.forEach(value => formData.append(key + '[]', value))
+          : formData.append(key, value) ;
+      }
+
+
+      this.$axios.post('customers', formData, {
+          headers: {
+            'Content-Type': "multipart/form-data; charset=utf-8; boundary=" + Math.random().toString().substr(2)
           }
-        })
+        }
+      ).then((res) => {
+        if (res.status === 201) {
+          this.showCustomerForm = false
+          this.fetchCustomers()
+          this.customerForm = customerFormTemplate()
+          this.$q.notify({
+            type: 'positive',
+            message: `Customer Created Successfully`,
+            position: 'top-right'
+          })
+        }
+      })
+
     },
 
   }
