@@ -21,6 +21,13 @@ class UpdateCustomer extends FormRequest {
             'billing_information' => 'present|nullable',
             'kam_name' => 'present|nullable',
             'installation_date' => 'nullable|date',
+            'client_type' => 'present',
+            'connection_type' => 'present',
+            'bandwidth_distribution_point' => 'present',
+            'connectivity_type' => 'present',
+            'bandwidth_allocation' => 'present',
+            'allocated_ip' => 'present',
+            'selling_price_bdt_excluding_vat' => 'present',
         ];
     }
 
