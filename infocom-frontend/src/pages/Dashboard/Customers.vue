@@ -49,13 +49,16 @@
                 </div>
 
                 <div class="row q-my-none">
-                  <q-select class="col-md-12 col-xs-12 q-my-xs q-px-xs" filled
+                  <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
                             v-model="customerForm.services" multiple
                             :options="$store.getters.getServices" option-label="name"
                             option-value="id" emit-value
                             map-options label="Services"
 
                   />
+
+                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.selling_price_bdt_excluding_vat"
+                           label="Selling price bdt excluding vat"/>
                 </div>
 
                 <div class="row q-my-none">
@@ -113,6 +116,30 @@
                            label="KAM Name"/>
                 </div>
 
+                <div class="row q-my-none">
+                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.client_type"
+                           label="Client type"/>
+                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.connection_type"
+                           label="Connection Type"/>
+                </div>
+
+                <div class="row q-my-none">
+                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.bandwidth_distribution_point"
+                           label="Bandwidth distribution point"/>
+                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.connectivity_type"
+                           label="Connectivity type"/>
+                </div>
+
+
+
+                <div class="row q-my-none">
+                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.bandwidth_allocation"
+                           label="Bandwidth allocation"/>
+                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.allocated_ip"
+                           label="Allocated IP"/>
+
+                </div>
+
 
                 <div class="q-pa-sm">
                   <!--      <q-btn class="bg-info text-white q-mr-sm" label="Resubmit" type="button"-->
@@ -155,6 +182,13 @@ const customerFormTemplate = () => {
     installation_date: '',
     password: '',
     password_confirmation: '',
+    client_type: '',
+    connection_type: '',
+    bandwidth_distribution_point: '',
+    connectivity_type: '',
+    bandwidth_allocation: '',
+    allocated_ip: '',
+    selling_price_bdt_excluding_vat: ''
   }
 }
 export default {

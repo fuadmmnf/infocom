@@ -4,27 +4,41 @@
       <q-date class="col-3 q-ma-sm" v-model="departmentLogRange" range color="secondary"
               subtitle="Department Activity Log">
         <template>
-          <div class="flex flex-center items-center ">
-            <q-select
-              v-if="!isSupportAgent"
-              class="col q-pr-xs " dense filled v-model.number="selectedDepartmentId"
+          <div>
+            <div class="flex flex-center items-center ">
+              <q-select
+                v-if="!isSupportAgent"
+                class="col q-pr-xs " dense filled v-model.number="selectedDepartmentId"
 
-              :options="departments" option-label="name"
-              option-value="id" emit-value
-              map-options label="Department"
+                :options="departments" option-label="name"
+                option-value="id" emit-value
+                map-options label="Department"
 
-            />
-            <download-excel class="col-2 q-mr-sm" type="csv"
-                            :name="generateFileName('department_activity_log', departmentLogRange)"
-                            :header="generateFileName('Department Activity Log', departmentLogRange).split('.')[0].replace('_', ' ')"
-                            :fetch="fetchDataDepartmentLog"
-            >
+              />
+            </div>
+
+            <div class="q-mt-sm flex flex-center items-center ">
+              <download-excel class="q-mr-sm" type="csv"
+                              :name="generateFileName('department_activity_log', departmentLogRange)"
+                              :header="generateFileName('Department Activity Log', departmentLogRange).split('.')[0].replace('_', ' ')"
+                              :fetch="fetchDataDepartmentLog"
+              >
+                <q-btn
+
+                  color="secondary"
+                  icon="text_snippet"
+                >excel
+                </q-btn>
+              </download-excel>
+
               <q-btn
 
-                color="secondary"
-                icon="text_snippet"
-              />
-            </download-excel>
+                color="red-12"
+                icon="picture_as_pdf"
+              >pdf
+              </q-btn>
+            </div>
+
           </div>
         </template>
       </q-date>
@@ -55,80 +69,200 @@
       <!--      </q-date>-->
 
 
-      <q-date class="col-3 q-ma-sm" v-model="topicStatusRange" range color="indigo" subtitle="POP/Topic Report">
+      <q-date class="col-3 q-ma-sm" v-model="popWiseTopicStatusRange" range color="indigo" subtitle="POP/Topic Report">
         <template>
-          <div class="flex flex-center items-center ">
-            <q-select
-              v-if="!isSupportAgent"
-              class="col q-pr-xs " dense filled v-model.number="selectedDepartmentId"
-              :options="departments" option-label="name"
-              option-value="id" emit-value
-              map-options label="Department"
+          <div>
+            <div class="flex flex-center items-center ">
+              <q-select
+                v-if="!isSupportAgent"
+                class="col q-pr-xs " dense filled v-model.number="selectedDepartmentId"
+                :options="departments" option-label="name"
+                option-value="id" emit-value
+                map-options label="Department"
 
-            />
-            <download-excel class="col-2 q-mr-sm" type="csv"
-                            :name="generateFileName('pop_topic_log', topicStatusRange)"
-                            :header="generateFileName('Pop Topic Log', topicStatusRange).split('.')[0].replace('_', ' ')"
-                            :fetch="fetchDataTopicLog"
-            >
-              <q-btn
-                color="indigo"
-                icon="text_snippet"
               />
-            </download-excel>
+            </div>
+            <div class="flex flex-center items-center q-mt-sm">
+
+              <download-excel class="col-2 q-mr-sm" type="csv"
+                              :name="generateFileName('pop_topic_log', popWiseTopicStatusRange)"
+                              :header="generateFileName('Pop Topic Log', popWiseTopicStatusRange).split('.')[0].replace('_', ' ')"
+                              :fetch="fetchDataTopicLog"
+              >
+                <q-btn
+
+                  color="secondary"
+                  icon="text_snippet"
+                >excel
+                </q-btn>
+              </download-excel>
+
+              <q-btn
+
+                color="red-12"
+                icon="picture_as_pdf"
+              >pdf
+              </q-btn>
+            </div>
           </div>
         </template>
       </q-date>
 
       <q-date class="col-3 q-ma-sm" v-model="serviceTimeRange" range color="blue-grey" subtitle="Service Time Report">
         <template>
-          <div class="flex flex-center items-center ">
-            <q-select
-              v-if="!isSupportAgent"
-              class="col q-pr-xs " dense filled v-model.number="selectedDepartmentId"
-              :options="departments" option-label="name"
-              option-value="id" emit-value
-              map-options label="Department"
+          <div>
+            <div class="flex flex-center items-center ">
+              <q-select
+                v-if="!isSupportAgent"
+                class="col q-pr-xs " dense filled v-model.number="selectedDepartmentId"
+                :options="departments" option-label="name"
+                option-value="id" emit-value
+                map-options label="Department"
 
-            />
+              />
+            </div>
+
+            <div class="flex flex-center items-center q-mt-sm">
+
             <download-excel class="col-2 q-mr-sm" type="csv"
                             :name="generateFileName('service_time_log', serviceTimeRange)"
                             :header="generateFileName('Service Time Log', serviceTimeRange).split('.')[0].replace('_', ' ')"
                             :fetch="fetchDataServiceLog"
             >
               <q-btn
-                color="blue-grey"
-                icon="text_snippet"
-              />
-            </download-excel>
-          </div>
-        </template>
-      </q-date>
 
-      <q-date class="col-3 q-ma-sm" v-model="popStatusRange" range color="purple-9" subtitle="POP Report">
-        <template>
-          <div class="flex flex-center items-center ">
-            <q-select
-              v-if="!isSupportAgent"
-              class="col q-pr-xs " dense filled v-model.number="selectedDepartmentId"
-              :options="departments" option-label="name"
-              option-value="id" emit-value
-              map-options label="Department"
-            />
-            <download-excel class="col-2 q-mr-sm" type="csv"
-                            :name="generateFileName('pop_log', popStatusRange)"
-                            :header="generateFileName('Pop Log', popStatusRange).split('.')[0].replace('_', ' ')"
-                            :fetch="fetchDataPopLog"
-            >
+                color="secondary"
+                icon="text_snippet"
+              >excel
+              </q-btn>
+            </download-excel>
+
               <q-btn
-                color="purple-9"
-                icon="text_snippet"
-              />
-            </download-excel>
+
+                color="red-12"
+                icon="picture_as_pdf"
+              >pdf
+              </q-btn>
+            </div>
           </div>
         </template>
       </q-date>
 
+      <q-date class="col-3 q-ma-sm" v-model="popStatusRange" range color="secondary" subtitle="POP Report">
+        <template>
+          <div>
+            <div class="flex flex-center items-center ">
+              <q-select
+                v-if="!isSupportAgent"
+                class="col q-pr-xs " dense filled v-model.number="selectedDepartmentId"
+                :options="departments" option-label="name"
+                option-value="id" emit-value
+                map-options label="Department"
+              />
+
+            </div>
+            <div class="flex flex-center items-center q-mt-sm">
+              <download-excel class="col-2 q-mr-sm" type="csv"
+                              :name="generateFileName('pop_log', popStatusRange)"
+                              :header="generateFileName('Pop Log', popStatusRange).split('.')[0].replace('_', ' ')"
+                              :fetch="fetchDataPopLog"
+              >
+                <q-btn
+
+                  color="secondary"
+                  icon="text_snippet"
+                >excel
+                </q-btn>
+              </download-excel>
+
+              <q-btn
+
+                color="red-12"
+                icon="picture_as_pdf"
+              >pdf
+              </q-btn>
+            </div>
+            </div>
+
+        </template>
+      </q-date>
+
+      <q-date class="col-3 q-ma-sm" v-model="helpTopicRange" range color="indigo" subtitle="Help Topic Report">
+        <template>
+          <div>
+            <div class="flex flex-center items-center ">
+              <q-select
+                v-if="!isSupportAgent"
+                class="col q-pr-xs " dense filled v-model.number="selectedDepartmentId"
+                :options="departments" option-label="name"
+                option-value="id" emit-value
+                map-options label="Department"
+              />
+
+            </div>
+            <div class="flex flex-center items-center q-mt-sm">
+              <download-excel class="col-2 q-mr-sm" type="csv"
+                              :name="generateFileName('topic_log', helpTopicRange)"
+                              :header="generateFileName('Topic Log', helpTopicRange).split('.')[0].replace('_', ' ')"
+                              :fetch="fetchHelpTopicLog"
+              >
+                <q-btn
+
+                  color="secondary"
+                  icon="text_snippet"
+                >excel
+                </q-btn>
+              </download-excel>
+
+              <q-btn
+
+                color="red-12"
+                icon="picture_as_pdf"
+              >pdf
+              </q-btn>
+            </div>
+          </div>
+        </template>
+      </q-date>
+
+
+      <q-date class="col-3 q-ma-sm" v-model="statusRange" range color="blue-grey" subtitle="Status Report">
+        <template>
+          <div>
+            <div class="flex flex-center items-center ">
+              <q-select
+                v-if="!isSupportAgent"
+                class="col q-pr-xs " dense filled v-model.number="selectedDepartmentId"
+                :options="departments" option-label="name"
+                option-value="id" emit-value
+                map-options label="Department"
+              />
+
+            </div>
+            <div class="flex flex-center items-center q-mt-sm">
+              <download-excel class="col-2 q-mr-sm" type="csv"
+                              :name="generateFileName('topic_log', statusRange)"
+                              :header="generateFileName('Topic Log', statusRange).split('.')[0].replace('_', ' ')"
+                              :fetch="fetchStatusLog"
+              >
+                <q-btn
+
+                  color="secondary"
+                  icon="text_snippet"
+                >excel
+                </q-btn>
+              </download-excel>
+
+              <q-btn
+
+                color="red-12"
+                icon="picture_as_pdf"
+              >pdf
+              </q-btn>
+            </div>
+          </div>
+        </template>
+      </q-date>
     </div>
 
   </q-page>
@@ -156,7 +290,7 @@ export default {
         to: '',
         from: ''
       },
-      topicStatusRange: {
+      popWiseTopicStatusRange: {
         to: '',
         from: ''
       },
@@ -165,6 +299,14 @@ export default {
         from: ''
       },
       popStatusRange: {
+        to: '',
+        from: ''
+      },
+      helpTopicRange: {
+        to: '',
+        from: ''
+      },
+      statusRange: {
         to: '',
         from: ''
       },
@@ -199,8 +341,8 @@ export default {
     // }
 
     async fetchDataTopicLog() {
-      if (this.topicStatusRange !== null) {
-        const response = await this.$axios.get(`reports/topicwisepop?department_id=${this.selectedDepartmentId}&start=${this.topicStatusRange.from.replaceAll('/', '-')}&end=${this.topicStatusRange.to.replaceAll('/', '-')}`)
+      if (this.popWiseTopicStatusRange !== null) {
+        const response = await this.$axios.get(`reports/topicwisepop?department_id=${this.selectedDepartmentId}&start=${this.popWiseTopicStatusRange.from.replaceAll('/', '-')}&end=${this.popWiseTopicStatusRange.to.replaceAll('/', '-')}`)
         return response.data.rows
       }
     },
@@ -219,6 +361,20 @@ export default {
         return response.data.rows
       }
     },
+
+    async fetchHelpTopicLog() {
+      if (this.helpTopicRange !== null) {
+        const response = await this.$axios.get(`reports/helptopic?department_id=${this.selectedDepartmentId}&start=${this.helpTopicRange.from.replaceAll('/', '-')}&end=${this.helpTopicRange.to.replaceAll('/', '-')}`)
+        return response.data.rows
+      }
+    },
+
+    async fetchStatusLog() {
+      if (this.statusRange !== null) {
+        const response = await this.$axios.get(`reports/status?department_id=${this.selectedDepartmentId}&start=${this.statusRange.from.replaceAll('/', '-')}&end=${this.statusRange.to.replaceAll('/', '-')}`)
+        return response.data.rows
+      }
+    }
   }
 }
 </script>

@@ -13,6 +13,10 @@
 
         <q-toolbar-title>
           Infocom CMS Dashboard
+
+          <q-badge transparent align="middle" color="teal">
+            {{$store.getters.getUser.roles[0].name.replace('_', ' ')}}
+          </q-badge>
         </q-toolbar-title>
         <div>
           <q-btn :to="{name: 'dashboard-profile'}" flat label="profile"/>
