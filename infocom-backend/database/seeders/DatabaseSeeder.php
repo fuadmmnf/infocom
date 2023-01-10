@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
         Artisan::call('migrate:fresh');
         Artisan::call('passport:client --personal --name=infocom');
         $this->call(AuthorizationSeeder::class);
+        $this->call(ResourceSeeder::class);
+        $this->call(CustomerSeeder::class);
         // \App\Models\User::factory(10)->create();
     }
 }

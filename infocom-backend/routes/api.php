@@ -87,6 +87,7 @@ Route::middleware(['auth:api'])->group(function () {
 
 
     //reports
+    Route::get('reports/customers', [\App\Http\Controllers\Api\ReportController::class, 'exportCustomers']);
     Route::get('reports/departmentlog', [\App\Http\Controllers\Api\ReportController::class, 'fetchDepartmentActivityLog']);
     Route::get('reports/complainstatus', [\App\Http\Controllers\Api\ReportController::class, 'fetchComplainStatusLog']);
     Route::get('reports/topicwisepop', [\App\Http\Controllers\Api\ReportController::class, 'fetchTopicWisePopLog']);

@@ -1,0 +1,21 @@
+{
+  "id": "3cc8bd2e-8736-4d13-80f0-c8e7b63757ed",
+  "version": "2.0",
+  "name": "infocom",
+  "url": "",
+  "tests": [{
+    "id": "e7000de5-c48d-4868-947e-0729f29d0218",
+    "name": "create customer",
+    "commands": []
+  }],
+  "suites": [{
+    "id": "af947196-ec5e-41a0-b3c9-d2b25f2c6e33",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["e7000de5-c48d-4868-947e-0729f29d0218"]
+  }],
+  "urls": [],
+  "plugins": []
+}

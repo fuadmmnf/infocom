@@ -12,157 +12,180 @@
       @update:pagination="({page}) => {fetchCustomers(page)}"
     >
       <template v-slot:top-right>
-        <q-btn label="Create" @click="() => {
+        <div class="flex flex-center items-center">
+          <q-btn label="Create" @click="() => {
           openCustomerModal(null)
         }">
 
 
-          <q-dialog v-model="showCustomerForm" persistent>
-            <q-card style="min-width: 70%">
-              <q-bar>
-                <div>Create Customer</div>
+            <q-dialog v-model="showCustomerForm" persistent>
+              <q-card style="min-width: 70%">
+                <q-bar>
+                  <div>Create Customer</div>
 
-                <q-space/>
+                  <q-space/>
 
-                <q-btn dense flat icon="close" v-close-popup>
-                  <q-tooltip>Close</q-tooltip>
-                </q-btn>
-              </q-bar>
+                  <q-btn dense flat icon="close" v-close-popup>
+                    <q-tooltip>Close</q-tooltip>
+                  </q-btn>
+                </q-bar>
 
-              <q-form @submit="customerForm.id === undefined? createCustomer(): updateCustomer()"
-                      @reset="customerForm = {}"
-                      class="q-gutter-md">
-                <div class="row">
-                  <q-input class="col-md-6 col-xs-12  q-my-xs q-px-xs" filled v-model="customerForm.name"
-                           label="Full Name"/>
-                  <q-input class="col-md-6 col-xs-12  q-my-xs q-px-xs" filled v-model="customerForm.phone" label="Phone"
-                           :rules="[ val => !!val && val.length === 11 || 'Please enter 11 digit phone number']"
-                  />
-                </div>
+                <q-form @submit="customerForm.id === undefined? createCustomer(): updateCustomer()"
+                        @reset="customerForm = {}"
+                        class="q-gutter-md">
+                  <div class="row">
+                    <q-input class="col-md-6 col-xs-12  q-my-xs q-px-xs" filled v-model="customerForm.name"
+                             label="Full Name"/>
+                    <q-input class="col-md-6 col-xs-12  q-my-xs q-px-xs" filled v-model="customerForm.phone"
+                             label="Phone"
+                             :rules="[ val => !!val && val.length === 11 || 'Please enter 11 digit phone number']"
+                    />
+                  </div>
 
-                <div class="row q-my-none">
-                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.email" type="email"
-                           label="Email"/>
-                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.code" label="Code"/>
-
-
-                </div>
-
-                <div class="row q-my-none">
-                  <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
-                            v-model="customerForm.services" multiple
-                            :options="$store.getters.getServices" option-label="name"
-                            option-value="id" emit-value
-                            map-options label="Services"
-
-                  />
-
-                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.selling_price_bdt_excluding_vat"
-                           label="Selling price bdt excluding vat"/>
-                </div>
-
-                <div class="row q-my-none">
-                  <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
-                            v-model.number="customerForm.popaddress_id"
-                            :options="$store.getters.getPopAddresses" option-label="name"
-                            option-value="id" emit-value
-                            map-options label="Pop Address"
-
-                  />
-                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.installation_date"
-                           mask="date"
-                           label="Installation Date">
-                    <template v-slot:append>
-                      <q-icon name="event" class="cursor-pointer">
-                        <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                          <q-date v-model="customerForm.installation_date">
-                            <div class="row items-center justify-end">
-                              <q-btn v-close-popup label="Close" color="primary" flat/>
-                            </div>
-                          </q-date>
-                        </q-popup-proxy>
-                      </q-icon>
-                    </template>
-                  </q-input>
-                </div>
-
-                <div class="row q-my-none">
-                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.technical_contact"
-                           :rules="[ val => (val===undefined || val === '' || val.replace(/\s/g,'').split(',').filter((v) => v.length !== 11).length === 0) || 'Please enter comma separated 11 digit phone numbers']"
-                           label="Technical Contact"/>
-                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.management_contact"
-                           label="Management Contact"/>
-                </div>
-
-                <div class="row q-my-none">
-                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.connection_package"
-                           label="Connection Package"/>
-                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.connection_details"
-                           label="Connection Details"/>
-                </div>
-
-                <div class="row q-my-none">
-                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.other_services"
-                           label="Other Services"/>
-                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
-                           v-model="customerForm.additional_technical_box"
-                           label="Additional Technical Box"/>
-                </div>
-
-                <div class="row q-my-none">
-                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.billing_information"
-                           label="Billing Information"/>
-                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.kam_name"
-                           label="KAM Name"/>
-                </div>
-
-                <div class="row q-my-none">
-                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.client_type"
-                           label="Client type"/>
-                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.connection_type"
-                           label="Connection Type"/>
-                </div>
-
-                <div class="row q-my-none">
-                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.bandwidth_distribution_point"
-                           label="Bandwidth distribution point"/>
-                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.connectivity_type"
-                           label="Connectivity type"/>
-                </div>
+                  <div class="row q-my-none">
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.email" type="email"
+                             label="Email"/>
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.code"
+                             label="Code"/>
 
 
+                  </div>
 
-                <div class="row q-my-none">
-                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.bandwidth_allocation"
-                           label="Bandwidth allocation"/>
-                  <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.allocated_ip"
-                           label="Allocated IP"/>
+                  <div class="row q-my-none">
+                    <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
+                              v-model="customerForm.services" multiple
+                              :options="$store.getters.getServices" option-label="name"
+                              option-value="id" emit-value
+                              map-options label="Services"
 
-                </div>
+                    />
+
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
+                             v-model="customerForm.selling_price_bdt_excluding_vat"
+                             label="Selling price bdt excluding vat"/>
+                  </div>
+
+                  <div class="row q-my-none">
+                    <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
+                              v-model.number="customerForm.popaddress_id"
+                              :options="$store.getters.getPopAddresses" option-label="name"
+                              option-value="id" emit-value
+                              map-options label="Pop Address"
+
+                    />
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.installation_date"
+                             mask="date"
+                             label="Installation Date">
+                      <template v-slot:append>
+                        <q-icon name="event" class="cursor-pointer">
+                          <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                            <q-date v-model="customerForm.installation_date">
+                              <div class="row items-center justify-end">
+                                <q-btn v-close-popup label="Close" color="primary" flat/>
+                              </div>
+                            </q-date>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                  </div>
+
+                  <div class="row q-my-none">
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.technical_contact"
+                             :rules="[ val => (val===undefined || val === '' || val.replace(/\s/g,'').split(',').filter((v) => v.length !== 11).length === 0) || 'Please enter comma separated 11 digit phone numbers']"
+                             label="Technical Contact"/>
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.management_contact"
+                             label="Management Contact"/>
+                  </div>
+
+                  <div class="row q-my-none">
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.connection_package"
+                             label="Connection Package"/>
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.connection_details"
+                             label="Connection Details"/>
+                  </div>
+
+                  <div class="row q-my-none">
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.other_services"
+                             label="Other Services"/>
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
+                             v-model="customerForm.additional_technical_box"
+                             label="Additional Technical Box"/>
+                  </div>
+
+                  <div class="row q-my-none">
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
+                             v-model="customerForm.billing_information"
+                             label="Billing Information"/>
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.kam_name"
+                             label="KAM Name"/>
+                  </div>
+
+                  <div class="row q-my-none">
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.client_type"
+                             label="Client type"/>
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.connection_type"
+                             label="Connection Type"/>
+                  </div>
+
+                  <div class="row q-my-none">
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
+                             v-model="customerForm.bandwidth_distribution_point"
+                             label="Bandwidth distribution point"/>
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.connectivity_type"
+                             label="Connectivity type"/>
+                  </div>
 
 
-                <div class="q-pa-sm">
-                  <!--      <q-btn class="bg-info text-white q-mr-sm" label="Resubmit" type="button"-->
-                  <!--             @click="updateComplain(false)"-->
-                  <!--             :disable="this.$store.getters.getActionRunningState"/>-->
+                  <div class="row q-my-none">
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
+                             v-model="customerForm.bandwidth_allocation"
+                             label="Bandwidth allocation"/>
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.allocated_ip"
+                             label="Allocated IP"/>
 
-<!--                  <q-btn class=" q-mr-sm" label="Reset" type="reset"/>-->
+                  </div>
 
-                  <q-btn class="bg-purple text-white" label="Submit" type="submit"
-                         :disable="$store.getters.getActionRunningState"/>
-                </div>
 
-              </q-form>
+                  <div class="q-pa-sm">
+                    <!--      <q-btn class="bg-info text-white q-mr-sm" label="Resubmit" type="button"-->
+                    <!--             @click="updateComplain(false)"-->
+                    <!--             :disable="this.$store.getters.getActionRunningState"/>-->
 
-            </q-card>
-          </q-dialog>
-        </q-btn>
+                    <!--                  <q-btn class=" q-mr-sm" label="Reset" type="reset"/>-->
+
+                    <q-btn class="bg-purple text-white" label="Submit" type="submit"
+                           :disable="$store.getters.getActionRunningState"/>
+                  </div>
+
+                </q-form>
+
+              </q-card>
+            </q-dialog>
+          </q-btn>
+
+          <download-excel class="q-ml-md" type="csv"
+                          :name="`Customers_${(new Date()).toLocaleDateString('en-US').replaceAll('/', '_')}.csv`"
+                          :header="`Customers_${(new Date()).toLocaleDateString('en-US').replaceAll('/', '_')}.csv`"
+                          :fetch="fetchCustomerData"
+          >
+            <q-btn
+              color="green-10"
+              icon="text_snippet"
+            >Export
+            </q-btn>
+          </download-excel>
+        </div>
+
       </template>
     </q-table>
   </q-page>
 </template>
 
 <script>
+import {date} from "quasar";
+import JsonExcel from "vue-json-excel";
+
 const customerFormTemplate = () => {
   return {
     name: '',
@@ -193,6 +216,12 @@ const customerFormTemplate = () => {
 }
 export default {
   name: 'DashboardCustomers',
+  components: {'downloadExcel': JsonExcel},
+  computed: {
+    date() {
+      return date
+    }
+  },
   data() {
     return {
       showCustomerForm: false,
@@ -233,7 +262,9 @@ export default {
           phone: customer.user.phone,
           email: customer.user.email,
           popaddress_id: customer.popaddress === null ? '' : customer.popaddress_id,
-          services: customer.services.filter((s) => { return serviceIds.includes(s)})
+          services: customer.services.filter((s) => {
+            return serviceIds.includes(s)
+          })
         }
       }
 
@@ -245,6 +276,10 @@ export default {
           this.customers = res.data.data
 
         })
+    },
+    async fetchCustomerData() {
+      const response = await this.$axios.get(`reports/customers`)
+      return response.data.rows
     },
     createCustomer() {
       this.$axios.post('customers', this.customerForm)

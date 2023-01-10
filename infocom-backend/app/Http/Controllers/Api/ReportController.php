@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Complain;
+use App\Models\Customer;
 use App\Models\HelpTopic;
 use App\Models\PopAddress;
+use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ReportController extends Controller
 {
@@ -36,6 +39,39 @@ class ReportController extends Controller
             return ['start' => array_shift($week), 'end' => array_pop($week)];
         }, $weeks);
         return $ranges;
+    }
+
+
+    public function exportCustomers()
+    {
+        $customers = Customer::with('user')->get();
+        $customers = $customers->transform(function ($c) {
+            $address_arr = explode(',', $c->address);
+            return [
+                'client_type' => $c->client_type,
+                'connection_type' => $c->connection_type,
+                'client_name' => $c->user->name,
+                'bandwidth_distribution_point' => $c->bandwidth_distribution_point,
+                'connectivity_type' => $c->connectivity_type,
+                'activation_date' => Carbon::create($c->installation_date)->format('d/m/Y'),
+                'bandwidth_allocation' => $c->bandwidth_allocation,
+                'allocated_ip' => $c->allocated_ip,
+                'division' => $address_arr[count($address_arr) - 1],
+                'district' => $address_arr[count($address_arr) - 2],
+                'thana' => $address_arr[count($address_arr) - 3],
+                'address' => join(",", array_slice($address_arr, 0, count($address_arr) - 3)),
+                'client_mobile' => $c->user->phone,
+                'client_email' => $c->user->email,
+                'selling_price_bdt_excluding_vat' => $c->selling_price_bdt_excluding_vat,
+            ];
+        })->toArray();
+
+
+        return response()->json([
+            'title' => 'Customers-' . Carbon::now()->format('Y_m_d-H-i'),
+            'headers' => (count($customers) > 0 ? array_keys($customers[0]) : []),
+            'rows' => $customers
+        ]);
     }
 
     public function fetchDepartmentActivityLog()
@@ -74,7 +110,7 @@ class ReportController extends Controller
                     'Department' => $c->department->name
                 ]) + [
                     'Time' => $c->time->format('Y-m-d H:i'),
-                    'Member' => $c->editor == null? "" : "{$c->editor->user->name} ({$c->editor->user->phone})",
+                    'Member' => $c->editor == null ? "" : "{$c->editor->user->name} ({$c->editor->user->phone})",
                     'Task' => $c->type,
                     'Complain' => "TT#{$c->id}",
                     'Customer' => "{$c->customer->user->name} ({$c->customer->user->phone})"
