@@ -13,7 +13,6 @@ class StaffSeeder extends Seeder
     public function run()
     {
         $callcenterUsers = User::factory()->count(5)->create();
-        $departments = Department::all();
         foreach ($callcenterUsers as $user) {
             $user->assignRole('callcenter_agent');
             $callcenter = new CallcenterAgent();
@@ -21,15 +20,15 @@ class StaffSeeder extends Seeder
             $callcenter->save();
         }
 
-        $supportUsers = User::factory()->count($departments->count() * 2)->create();
         $departments = Department::all();
-        foreach (range(0, $departments->count()) as $i) {
-            $dept = $departments->slice($i, 1);
+        $supportUsers = User::factory()->count($departments->count() * 2)->create();
+        foreach (range(0, $departments->count()-1) as $i) {
+            $dept = $departments->slice($i, 1)->first();
             foreach (range(0, 1) as $j) {
 
                 $user->assignRole('support_agent');
                 $supportagent = new SupportAgent();
-                $supportagent->user_id = $supportUsers->slice($i * 2 + $j, 1)->id;
+                $supportagent->user_id = $supportUsers->slice($i * 2 + $j, 1)->first()->id;
                 $supportagent->department_id = $dept->id;
                 $supportagent->save();
 
