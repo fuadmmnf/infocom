@@ -56,6 +56,7 @@ class UserTokenHandler
         $customer->user_id = $user->id;
         $customer->popaddress_id = $info['popaddress_id'] ?? null;
         $customer->code = $info['code'] ?? '';
+        $customer->address = "{$info['address']},{$info['thana']},{$info['district']},{$info['division']}}";
         $customer->services = $info['services'] ?? '';
         $customer->technical_contact = $info['technical_contact'] ?? '';
         $customer->management_contact = $info['management_contact'] ?? '';

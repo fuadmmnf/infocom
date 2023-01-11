@@ -146,6 +146,26 @@
 
                   </div>
 
+                  <div class="flex flex-center items-center q-mt-none">
+                    <span class="text-subtitle1">Customer Address</span>
+                  </div>
+                  <div class="row q-my-none">
+                    <q-input class="col-md-4 col-xs-12 q-my-xs q-px-xs" filled
+                             v-model="customerForm.division"
+                             label="Division"/>
+                    <q-input class="col-md-4 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.district"
+                             label="District"/>
+                    <q-input class="col-md-4 col-xs-12 q-my-xs q-px-xs" filled
+                             v-model="customerForm.thana"
+                             label="Thana"/>
+
+                  </div>
+                  <div class="row q-my-none">
+
+                    <q-input class="col-md-12 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.address"
+                             label="Address"/>
+
+                  </div>
 
                   <div class="q-pa-sm">
                     <!--      <q-btn class="bg-info text-white q-mr-sm" label="Resubmit" type="button"-->
@@ -192,6 +212,10 @@ const customerFormTemplate = () => {
     email: '',
     phone: '',
     code: '',
+    division: '',
+    district: '',
+    thana: '',
+    address: '',
     services: [],
     popaddress_id: '',
     technical_contact: '',
