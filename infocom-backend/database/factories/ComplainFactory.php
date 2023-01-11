@@ -17,7 +17,7 @@ class ComplainFactory extends Factory
             'complain_text' => $this->faker->paragraph,
             'complain_summary' => $this->faker->paragraph(2),
             'priority' => $this->faker->randomElement(['low', 'medium', 'high', 'urgent']),
-            'complain_time' => $this->faker->dateTime
+            'complain_time' => $this->faker->dateTimeThisMonth
         ];
     }
 }

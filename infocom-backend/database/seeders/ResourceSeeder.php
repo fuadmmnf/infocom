@@ -14,7 +14,7 @@ class ResourceSeeder extends Seeder
     public function run()
     {
         $departments = ['dept1', 'dept2', 'dept3', 'dept4'];
-        $slaPlans = ['sla1', 'sla2', 'sla3'];
+        $slaPlans = ['sla1', 'sla2', 'sla3', 'sla4'];
         $pops = ['pop1', 'pop2', 'pop3', 'pop4'];
         $services = ['service1', 'service2', 'service3', 'service4'];
         $topics = ['topic1', 'topic2', 'topic3', 'topic4'];
@@ -33,11 +33,11 @@ class ResourceSeeder extends Seeder
         foreach ($topics as $topic) {
             HelpTopic::create(['name' => $topic]);
         }
-        foreach ($slaPlans as $slaPlan) {
+        foreach (range(0, count($topics)-1) as $i) {
             SlaPlan::create([
-                'name' => $slaPlan,
+                'name' => $slaPlans[$i],
                 'timelimit' => 2,
-                'helptopic_id' => rand(1, 4)
+                'helptopic_id' => $i+1
             ]);
         }
     }
