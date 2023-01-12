@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Log;
 
 class ReportController extends Controller
 {
-    private $department_id, $start, $end;
+    private $department_id, $start, $end, $isPDF;
 
     public function __construct(Request $request)
     {
@@ -22,6 +22,7 @@ class ReportController extends Controller
         $this->department_id = $request->query('department_id') ?? '';
         $this->start = $request->query('start') ?? '';
         $this->end = $request->query('end') ?? '';
+        $this->isPDF = $request->query('pdf')?? null;
     }
 
     private function generateWeekDistribution()
@@ -206,7 +207,7 @@ class ReportController extends Controller
             'Less than 8 hours' => [4, 8],
             'Less than 24 hours' => [8, 24],
             'Less than 48 hours' => [24, 48],
-            '48 hours plus' => [48, 2000],
+            '48 hours plus' => [48, 20000],
         ];
 
         $topicServiceLog = $helptopics->map(function ($helptopic, $key) use ($approvedcomplains, $durations) {
@@ -216,9 +217,9 @@ class ReportController extends Controller
 
             $serviceHourCounts = [];
             foreach ($durations as $duration => $range) {
-                $count = $topicComplains->filter(function ($complain) use ($range) {
+                $count = $topicComplains->filter(function ($complain) use ($duration, $range) {
                     $diff = $complain->approved_time->floatDiffInHours($complain->complain_time);
-                    return $diff > $range[0] && $diff <= $range[1];
+                    return ($duration != '48 hours plus' && $diff > $range[0] && $diff <= $range[1]) || ($duration == '48 hours plus' && $diff > $range[0]);
                 })->count();
                 $serviceHourCounts[$duration] = $count;
             }
@@ -299,4 +300,5 @@ class ReportController extends Controller
             'rows' => $poplog
         ]);
     }
+
 }

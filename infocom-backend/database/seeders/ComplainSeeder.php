@@ -11,15 +11,15 @@ use App\Models\SlaPlan;
 use App\Models\SupportAgent;
 use Carbon\Carbon;
 use Faker\Factory;
-use Faker\Generator;
 use Illuminate\Database\Seeder;
+
+
 
 class ComplainSeeder extends Seeder
 {
     public function run()
     {
         $faker = Factory::create();
-
         $customers = Customer::all();
         $callcenters = CallcenterAgent::all();
         $topics = HelpTopic::all();
