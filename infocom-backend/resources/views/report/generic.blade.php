@@ -11,7 +11,7 @@
 
 @section('content')
 
-    @if($logs->count() > 0)
+    @if(count($logs) > 0)
         <table class="bordertable">
             <thead>
             <tr>

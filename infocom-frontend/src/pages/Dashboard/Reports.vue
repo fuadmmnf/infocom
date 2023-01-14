@@ -32,7 +32,7 @@
               </download-excel>
 
               <q-btn
-
+                @click="()=>{fetchDataDepartmentLog(true)}"
                 color="red-12"
                 icon="picture_as_pdf"
               >pdf
