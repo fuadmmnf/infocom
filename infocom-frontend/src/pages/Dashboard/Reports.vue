@@ -90,7 +90,6 @@
                               :fetch="fetchDataTopicLog"
               >
                 <q-btn
-
                   color="secondary"
                   icon="text_snippet"
                 >excel
@@ -98,7 +97,7 @@
               </download-excel>
 
               <q-btn
-
+                @click="()=>{fetchDataTopicLog(true)}"
                 color="red-12"
                 icon="picture_as_pdf"
               >pdf
@@ -124,21 +123,20 @@
 
             <div class="flex flex-center items-center q-mt-sm">
 
-            <download-excel class="col-2 q-mr-sm" type="csv"
-                            :name="generateFileName('service_time_log', serviceTimeRange)"
-                            :header="generateFileName('Service Time Log', serviceTimeRange).split('.')[0].replace('_', ' ')"
-                            :fetch="fetchDataServiceLog"
-            >
+              <download-excel class="col-2 q-mr-sm" type="csv"
+                              :name="generateFileName('service_time_log', serviceTimeRange)"
+                              :header="generateFileName('Service Time Log', serviceTimeRange).split('.')[0].replace('_', ' ')"
+                              :fetch="fetchDataServiceLog"
+              >
+                <q-btn
+                  color="secondary"
+                  icon="text_snippet"
+                >excel
+                </q-btn>
+              </download-excel>
+
               <q-btn
-
-                color="secondary"
-                icon="text_snippet"
-              >excel
-              </q-btn>
-            </download-excel>
-
-              <q-btn
-
+                @click="()=>{fetchDataServiceLog(true)}"
                 color="red-12"
                 icon="picture_as_pdf"
               >pdf
@@ -176,13 +174,13 @@
               </download-excel>
 
               <q-btn
-
+                @click="()=> {fetchDataPopLog(true)}"
                 color="red-12"
                 icon="picture_as_pdf"
               >pdf
               </q-btn>
             </div>
-            </div>
+          </div>
 
         </template>
       </q-date>
@@ -207,7 +205,6 @@
                               :fetch="fetchHelpTopicLog"
               >
                 <q-btn
-
                   color="secondary"
                   icon="text_snippet"
                 >excel
@@ -215,7 +212,7 @@
               </download-excel>
 
               <q-btn
-
+                @click="()=> {fetchHelpTopicLog(true)}"
                 color="red-12"
                 icon="picture_as_pdf"
               >pdf
@@ -254,6 +251,7 @@
               </download-excel>
 
               <q-btn
+                @click="()=> {fetchStatusLog(true)}"
 
                 color="red-12"
                 icon="picture_as_pdf"
@@ -328,10 +326,33 @@ export default {
       }
       return `${title}_${range.to.replaceAll('/', '-')}--${range.from.replaceAll('/', '-')}.csv`
     },
-    async fetchDataDepartmentLog() {
+
+    showToPDF(base64, title) {
+      const blob = this.base64ToBlob(base64, 'application/pdf');
+      const url = URL.createObjectURL(blob);
+      const pdfWindow = window.open("");
+      pdfWindow.document.title = title;
+      pdfWindow.document.write("<iframe width='100%' height='100%' style='position:fixed; top:0; left:0; bottom:0; right:0; width:100%; height:100%; border:none; margin:0; padding:0; overflow:hidden; z-index:999999;' src='" + url + "'></iframe>");
+    },
+
+    base64ToBlob(base64, type = "application/octet-stream") {
+      const binStr = atob(base64);
+      const len = binStr.length;
+      const arr = new Uint8Array(len);
+      for (let i = 0; i < len; i++) {
+        arr[i] = binStr.charCodeAt(i);
+      }
+      return new Blob([arr], {type: type});
+    },
+
+
+    async fetchDataDepartmentLog(isPDF = false) {
       if (this.departmentLogRange !== null) {
-        const response = await this.$axios.get(`reports/departmentlog?department_id=${this.selectedDepartmentId}&start=${this.departmentLogRange.from.replaceAll('/', '-')}&end=${this.departmentLogRange.to.replaceAll('/', '-')}`)
-        return response.data.rows
+        const response = await this.$axios.get(`reports/departmentlog?department_id=${this.selectedDepartmentId}&start=${this.departmentLogRange.from.replaceAll('/', '-')}&end=${this.departmentLogRange.to.replaceAll('/', '-')}&pdf=${isPDF}`)
+        if (!isPDF) {
+          return response.data.rows
+        }
+        this.showToPDF(response.data, "Department Wise Report")
       }
 
     },
@@ -340,39 +361,54 @@ export default {
     //   return response.data.rows
     // }
 
-    async fetchDataTopicLog() {
+    async fetchDataTopicLog(isPDF = false) {
       if (this.popWiseTopicStatusRange !== null) {
-        const response = await this.$axios.get(`reports/topicwisepop?department_id=${this.selectedDepartmentId}&start=${this.popWiseTopicStatusRange.from.replaceAll('/', '-')}&end=${this.popWiseTopicStatusRange.to.replaceAll('/', '-')}`)
-        return response.data.rows
+        const response = await this.$axios.get(`reports/topicwisepop?department_id=${this.selectedDepartmentId}&start=${this.popWiseTopicStatusRange.from.replaceAll('/', '-')}&end=${this.popWiseTopicStatusRange.to.replaceAll('/', '-')}&pdf=${isPDF}`)
+        if (!isPDF) {
+          return response.data.rows
+        }
+        this.showToPDF(response.data, "Topic Wise Pop Report")
       }
     },
 
-    async fetchDataServiceLog() {
+    async fetchDataServiceLog(isPDF = false) {
       if (this.serviceTimeRange !== null) {
-        const response = await this.$axios.get(`reports/servicetime?department_id=${this.selectedDepartmentId}&start=${this.serviceTimeRange.from.replaceAll('/', '-')}&end=${this.serviceTimeRange.to.replaceAll('/', '-')}`)
-        return response.data.rows
+        const response = await this.$axios.get(`reports/servicetime?department_id=${this.selectedDepartmentId}&start=${this.serviceTimeRange.from.replaceAll('/', '-')}&end=${this.serviceTimeRange.to.replaceAll('/', '-')}&pdf=${isPDF}`)
+        if (!isPDF) {
+          return response.data.rows
+        }
+        this.showToPDF(response.data, "Service Time Log Report")
       }
 
     },
 
-    async fetchDataPopLog() {
+    async fetchDataPopLog(isPDF = false) {
       if (this.popStatusRange !== null) {
-        const response = await this.$axios.get(`reports/pop?department_id=${this.selectedDepartmentId}&start=${this.popStatusRange.from.replaceAll('/', '-')}&end=${this.popStatusRange.to.replaceAll('/', '-')}`)
-        return response.data.rows
+        const response = await this.$axios.get(`reports/pop?department_id=${this.selectedDepartmentId}&start=${this.popStatusRange.from.replaceAll('/', '-')}&end=${this.popStatusRange.to.replaceAll('/', '-')}&pdf=${isPDF}`)
+        if (!isPDF) {
+          return response.data.rows
+        }
+        this.showToPDF(response.data, "Pop Log Report")
       }
     },
 
-    async fetchHelpTopicLog() {
+    async fetchHelpTopicLog(isPDF = false) {
       if (this.helpTopicRange !== null) {
-        const response = await this.$axios.get(`reports/helptopic?department_id=${this.selectedDepartmentId}&start=${this.helpTopicRange.from.replaceAll('/', '-')}&end=${this.helpTopicRange.to.replaceAll('/', '-')}`)
-        return response.data.rows
+        const response = await this.$axios.get(`reports/helptopic?department_id=${this.selectedDepartmentId}&start=${this.helpTopicRange.from.replaceAll('/', '-')}&end=${this.helpTopicRange.to.replaceAll('/', '-')}&pdf=${isPDF}`)
+        if (!isPDF) {
+          return response.data.rows
+        }
+        this.showToPDF(response.data, "Help Topic Report")
       }
     },
 
-    async fetchStatusLog() {
+    async fetchStatusLog(isPDF = false) {
       if (this.statusRange !== null) {
-        const response = await this.$axios.get(`reports/status?department_id=${this.selectedDepartmentId}&start=${this.statusRange.from.replaceAll('/', '-')}&end=${this.statusRange.to.replaceAll('/', '-')}`)
-        return response.data.rows
+        const response = await this.$axios.get(`reports/status?department_id=${this.selectedDepartmentId}&start=${this.statusRange.from.replaceAll('/', '-')}&end=${this.statusRange.to.replaceAll('/', '-')}&pdf=${isPDF}`)
+        if (!isPDF) {
+          return response.data.rows
+        }
+        this.showToPDF(response.data, "Status Report")
       }
     }
   }

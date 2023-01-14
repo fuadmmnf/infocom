@@ -11,6 +11,8 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf as PDF;
+
 
 class ReportController extends Controller
 {
@@ -18,11 +20,11 @@ class ReportController extends Controller
 
     public function __construct(Request $request)
     {
-        $this->middleware(['auth:api']);
+//        $this->middleware(['auth:api']);
         $this->department_id = $request->query('department_id') ?? '';
         $this->start = $request->query('start') ?? '';
         $this->end = $request->query('end') ?? '';
-        $this->isPDF = $request->query('pdf')?? null;
+        $this->isPDF = filter_var($request->query('pdf'), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
     }
 
     private function generateWeekDistribution()
@@ -119,11 +121,21 @@ class ReportController extends Controller
         }, $complains);
 
 
-        return response()->json([
-            'title' => 'Activity log for ' . $this->start . ' - ' . $this->end,
-            'headers' => ($this->department_id != '' ? [] : ['Department']) + ['Time', 'Member', 'Task', 'Complain', 'Customer'],
-            'rows' => $complains
-        ]);
+        if ($this->isPDF) {
+            $pdf = PDF::loadView(
+                'report.generic',
+                ['title'=> 'Activity Log Report', 'start' => $this->start, 'end' => $this->end, 'logs' => $complains]
+            );
+            return response()->json(base64_encode($pdf->output()));
+        } else {
+            return response()->json([
+                'title' => 'Activity log for ' . $this->start . ' - ' . $this->end,
+                'headers' => ($this->department_id != '' ? [] : ['Department']) + ['Time', 'Member', 'Task', 'Complain', 'Customer'],
+                'rows' => $complains
+            ]);
+        }
+
+
     }
 
 //    public function fetchComplainStatusLog() {
@@ -186,11 +198,21 @@ class ReportController extends Controller
         ));
 
 
-        return response()->json([
-            'title' => 'Pop wise service report from ' . $this->start . ' - ' . $this->end,
-            'headers' => ($topicWisePopLog->count()) ? array_keys($topicWisePopLog[0]) : ['S\N', 'Help/Complaint Issue', 'Count'],
-            'rows' => $topicWisePopLog
-        ]);
+        if ($this->isPDF) {
+            $pdf = PDF::loadView(
+                'report.generic',
+                ['title'=> 'Topic Wise Pop Report', 'start' => $this->start, 'end' => $this->end, 'logs' => $topicWisePopLog]
+            );
+            return response()->json(base64_encode($pdf->output()));
+        } else {
+            return response()->json([
+                'title' => 'Topic Wise Pop Report from ' . $this->start . ' - ' . $this->end,
+                'headers' => ($topicWisePopLog->count()) ? array_keys($topicWisePopLog[0]) : ['S\N', 'Help/Complaint Issue', 'Count'],
+                'rows' => $topicWisePopLog
+            ]);
+        }
+
+
     }
 
     public function fetchServiceTimeLog()
@@ -243,11 +265,22 @@ class ReportController extends Controller
             '48 hours plus' => $topicServiceLog->sum('48 hours plus'),
         ]));
 
-        return response()->json([
-            'title' => 'Report on Service Time ' . $this->start . ' - ' . $this->end,
-            'headers' => ($topicServiceLog->count()) ? array_keys($topicServiceLog[0]) : ['S\N', 'Help/Complaint Issue', 'Count'],
-            'rows' => $topicServiceLog
-        ]);
+
+        if ($this->isPDF) {
+            $pdf = PDF::loadView(
+                'report.generic',
+                ['title'=> 'Service Time Report', 'start' => $this->start, 'end' => $this->end, 'logs' => $topicServiceLog]
+            );
+            return response()->json(base64_encode($pdf->output()));
+        } else {
+            return response()->json([
+                'title' => 'Report on Service Time ' . $this->start . ' - ' . $this->end,
+                'headers' => ($topicServiceLog->count()) ? array_keys($topicServiceLog[0]) : ['S\N', 'Help/Complaint Issue', 'Count'],
+                'rows' => $topicServiceLog
+            ]);
+        }
+
+
     }
 
     public function fetchPopLog()
@@ -272,13 +305,13 @@ class ReportController extends Controller
                     return $complain->approved_time->between($week['start'], $week['end']);
                 })->count();
                 $weeklyComplainCounts['Week-' . $idx] = $count;
-                $weeklyComplainCounts['Column-' . $idx] = ($popaddress->customers_count ? (($count / (float)$popaddress->customers_count) * 100.0) : 0) . '%';
+                $weeklyComplainCounts['Column-' . $idx] = ($popaddress->customers_count ? round(($count / (float)$popaddress->customers_count) * 100.0, 2) : 0) . '%';
             }
 
             $overallTotal = array_sum(array_filter($weeklyComplainCounts, function ($v, $k) {
                 return str_starts_with($k, 'Week-');
             }, ARRAY_FILTER_USE_BOTH));
-            $overallPercentage = $popaddress->customers_count ? (($overallTotal / (float)$popaddress->customers_count) * 100.0) : 0;
+            $overallPercentage = $popaddress->customers_count ? round(($overallTotal / (float)$popaddress->customers_count) * 100.0, 2) : 0;
 
             return [
                     'S/N' => $key + 1,
@@ -289,16 +322,26 @@ class ReportController extends Controller
         });
 
         $poplog = $poplog->add(collect([
-            'S/N' => '',
+            'S/N' => 'Total',
             'POP' => '',
             'Client Number' => $poplog->sum('Client Number'),
+
         ]));
 
-        return response()->json([
-            'title' => 'Report for ' . $this->start . ' - ' . $this->end,
-            'headers' => ($poplog->count()) ? array_keys($poplog[0]) : ['S\N', 'POP', 'Client Number', 'Overall (%)'],
-            'rows' => $poplog
-        ]);
+        if ($this->isPDF) {
+            $pdf = PDF::loadView(
+                'report.generic',
+                ['title' => 'Complain Service Time Report', 'start' => $this->start, 'end' => $this->end, 'logs' => $poplog]
+            );
+//            $fileName = 'PopLogReport' . '.pdf';
+            return response()->json(base64_encode($pdf->output()));
+        } else {
+            return response()->json([
+                'title' => 'Report for ' . $this->start . ' - ' . $this->end,
+                'headers' => ($poplog->count()) ? array_keys($poplog[0]) : ['S\N', 'POP', 'Client Number', 'Overall (%)'],
+                'rows' => $poplog
+            ]);
+        }
     }
 
 }

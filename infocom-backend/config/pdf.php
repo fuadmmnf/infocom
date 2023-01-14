@@ -1,12 +1,13 @@
 <?php
 
 return [
-	'mode'                  => 'utf-8',
+    'title'                 => 'Infocom CMS',
+    'mode'                  => 'utf-8',
 	'format'                => 'A4',
-	'author'                => '',
-	'subject'               => '',
-	'keywords'              => '',
-	'creator'               => 'Laravel Pdf',
+	'author'                => 'Infocom CMS',
+	'subject'               => 'Infocom CMS',
+	'keywords'              => 'Infocom CMS',
+	'creator'               => 'Infocom CMS',
 	'display_mode'          => 'fullpage',
 	'tempDir'               => base_path('../temp/'),
 	'pdf_a'                 => false,

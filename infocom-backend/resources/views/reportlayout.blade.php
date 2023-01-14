@@ -51,10 +51,10 @@
 <body>
 
 <main>
-    <p align="center" style="line-height: 1.2;">
+    <p align="center" style="line-height: 1.2; vertical-align: center">
         {{--        @if($store->monogram != null)--}}
         @if(file_exists( public_path('images/maillogo.png')))
-            <img src="{{ public_path('images/maillogo.png') }}" style="height: 40px; width: auto;">
+            <img src="{{ public_path('images/maillogo.png') }}" style="height: 40px; width: auto;vertical-align:middle"> <br/><br/>
 
         @endif
         {{--        @endif--}}
@@ -69,7 +69,8 @@
         {{--    @endif--}}
         {{--        <br/>--}}
         {{--        <span align="center" style="color: #397736; border-bottom: 1px solid #397736;">--}}
-        @yield('report_title')
+        <span style="font-size: 1.2rem">@yield('report_title')</span>
+
         {{--    </span>--}}
     </p>
     <div>@yield('content')</div>
@@ -94,7 +95,7 @@
             </td>
             <td align="right" style="color: #525659;">
                 <small>
-                    <span class="page-number">| পাতাঃ {PAGENO}/{nbpg} </span>
+                    <span class="page-number">| Page: {PAGENO}/{nbpg} </span>
                 </small>
             </td>
         </tr>
