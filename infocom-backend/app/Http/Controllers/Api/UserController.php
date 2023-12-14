@@ -30,6 +30,7 @@ class UserController extends Controller
         if ($user && Hash::check($info['password'], $user->password)) {
             $userTokenHandler = new UserTokenHandler();
             $user = $this->getUserType($userTokenHandler->regenerateUserToken($user));
+
             return response()->json($user);
         }
 

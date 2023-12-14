@@ -7,12 +7,14 @@ use App\Models\Department;
 use App\Models\SupportAgent;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Testing\Fluent\Concerns\Has;
+use phpseclib3\Crypt\Hash;
 
 class StaffSeeder extends Seeder
 {
     public function run()
     {
-        $callcenterUsers = User::factory()->count(5)->create();
+        $callcenterUsers = User::factory()->count(5)->create(['password' => \Illuminate\Support\Facades\Hash::make('callcenter')]);
         foreach ($callcenterUsers as $user) {
             $user->assignRole('callcenter_agent');
             $callcenter = new CallcenterAgent();
@@ -21,10 +23,15 @@ class StaffSeeder extends Seeder
         }
 
         $departments = Department::all();
-        $supportUsers = User::factory()->count($departments->count() * 2)->create();
+        $supportUsers = User::factory()->count($departments->count() * 2)->create(['password' => \Illuminate\Support\Facades\Hash::make('supportagent')]);
+
+
+        $k=0;
         foreach (range(0, $departments->count()-1) as $i) {
             $dept = $departments->slice($i, 1)->first();
+
             foreach (range(0, 1) as $j) {
+                $user = $supportUsers->slice($k, 1)->first();
 
                 $user->assignRole('support_agent');
                 $supportagent = new SupportAgent();
@@ -37,6 +44,7 @@ class StaffSeeder extends Seeder
                     $dept->save();
 
                 }
+                $k++;
             }
         }
     }
