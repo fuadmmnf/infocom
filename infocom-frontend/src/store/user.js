@@ -8,10 +8,10 @@ export const state = () => ({
 export const getters = {
   getUser: (state) => state.user,
   getActionRunningState: (state) => state.isActionRunning,
-  hasCustomerAccess: (state) => state.user && state.user.customer !== undefined || state.user.super_admin !== undefined,
+  hasCustomerAccess: (state) => state.user && (state.user.customer !== undefined || state.user.super_admin !== undefined),
   hasAuthorityAccess: (state) => state.user && (state.user.callcenter_agent !== undefined || state.user.support_agent !== undefined || state.user.super_admin !== undefined),
-  hasCallcenterAccess: (state) => state.user && state.user.callcenter_agent !== undefined || state.user.super_admin !== undefined,
-  hasSupportAgentAccess: (state) => state.user && state.user.support_agent !== undefined || state.user.super_admin !== undefined,
+  hasCallcenterAccess: (state) => state.user && (state.user.callcenter_agent !== undefined || state.user.super_admin !== undefined),
+  hasSupportAgentAccess: (state) => state.user && (state.user.support_agent !== undefined || state.user.super_admin !== undefined),
   hasAdminAccess: (state) => state.user && state.user.super_admin !== undefined
 }
 export const mutations = {

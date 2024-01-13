@@ -27,7 +27,7 @@ export default function ({ store } ) {
   Router.beforeEach((to, from, next) => {
     const currentUser = store.getters.getUser
     if (currentUser === null) {
-      if(['login','register', 'complain-feedback'].includes(to.name)){
+      if(['login','register', 'customer-complain', 'complain-feedback'].includes(to.name)){
         next()
       } else {
         next('/login')
