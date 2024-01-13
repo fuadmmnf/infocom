@@ -1,6 +1,6 @@
 <template>
   <q-page class="flex flex-center">
-    <div v-if="complain.status !==undefined && !feedbackStored" class="q-pa-md">
+    <div v-if="!feedbackStored" class="q-pa-md">
       <div class="q-gutter-y-md column">
         <q-form @submit="storeFeedback">
           <q-rating
@@ -25,12 +25,10 @@
       </div>
 
     </div>
-    <div v-else-if="feedbackStored">
+    <div v-else>
       <h3>Your feedback has been submitted successfully</h3>
     </div>
-    <div v-else>
-      <h5>Sorry, no complain found</h5>
-    </div>
+
   </q-page>
 </template>
 
@@ -44,15 +42,8 @@ export default {
     }
   },
   mounted() {
-    this.fetchComplainByCode()
   },
   methods: {
-    fetchComplainByCode() {
-      this.$axios.get(`complains/${this.$route.params.complain_code}`)
-        .then((res) => {
-          this.complain = res.data
-        })
-    },
     storeFeedback() {
       this.$axios.put(`complains/${this.$route.params.complain_code}/feedback`, this.complain)
         .then((res) => {

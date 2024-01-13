@@ -58,6 +58,7 @@ class UserTokenHandler
         $customer->user_id = $user->id;
         $customer->popaddress_id = $info['popaddress_id'] ?? null;
         $customer->code = $info['code'] ?? '';
+        $customer->address = "{$info['address']},{$info['thana']},{$info['district']},{$info['division']}}";
         $customer->services = $info['services'] ?? '';
         $customer->address = $info['address'] ?? '';
         $customer->technical_contact = $info['technical_contact'] ?? '';
@@ -69,6 +70,13 @@ class UserTokenHandler
         $customer->billing_information = $info['billing_information'] ?? '';
         $customer->kam_name = $info['kam_name'] ?? '';
         $customer->installation_date = isset($info['installation_date']) ? Carbon::parse($info['installation_date']) : null;
+        $customer->client_type = $info['client_type'];
+        $customer->connection_type = $info['connection_type'];
+        $customer->bandwidth_distribution_point = $info['bandwidth_distribution_point'];
+        $customer->connectivity_type = $info['connectivity_type'];
+        $customer->bandwidth_allocation = $info['bandwidth_allocation'];
+        $customer->allocated_ip = $info['allocated_ip'];
+        $customer->selling_price_bdt_excluding_vat = $info['selling_price_bdt_excluding_vat'];
         $customer->save();
         $user->assignRole('customer');
 

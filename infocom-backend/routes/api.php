@@ -23,7 +23,7 @@ Route::get('helptopics', [\App\Http\Controllers\Api\HelpTopicController::class, 
 
 //complains
 Route::post('complains', [\App\Http\Controllers\Api\ComplainController::class, 'create']);
-
+Route::put('complains/{complain_code}/feedback', [\App\Http\Controllers\Api\ComplainController::class, 'storeFeedback']);
 
 
 Route::middleware(['auth:api'])->group(function () {
@@ -73,28 +73,23 @@ Route::middleware(['auth:api'])->group(function () {
 
     //customers
     Route::get('customers', [\App\Http\Controllers\Api\CustomerController::class, 'index']);
-    Route::get('customers/notice', [\App\Http\Controllers\Api\CustomerController::class, 'getNoticeHistory']);
     Route::get('customers/code', [\App\Http\Controllers\Api\CustomerController::class, 'getAllCustomerCode']);
-    Route::get('customers/{customer_id}', [\App\Http\Controllers\Api\CustomerController::class, 'find']);
+    Route::get('customers/{customer_code}', [\App\Http\Controllers\Api\CustomerController::class, 'searchCustomer']);
     Route::post('customers', [\App\Http\Controllers\Api\CustomerController::class, 'create']);
-    Route::post('customers/notice', [\App\Http\Controllers\Api\CustomerController::class, 'sendNotice']);
     Route::put('customers/{customer_id}', [\App\Http\Controllers\Api\CustomerController::class, 'update']);
 
     //complains
     Route::get('complains', [\App\Http\Controllers\Api\ComplainController::class, 'index']);
     Route::get('complains/{complain_code}', [\App\Http\Controllers\Api\ComplainController::class, 'getComplainByCode']);
     Route::put('complains/{complain_id}', [\App\Http\Controllers\Api\ComplainController::class, 'update']);
-    Route::put('complains/{complain_id}/file', [\App\Http\Controllers\Api\ComplainController::class, 'uploadComplainFile']);
-    Route::put('complains/{complain_code}/feedback', [\App\Http\Controllers\Api\ComplainController::class, 'storeFeedback']);
     Route::delete('complains/{complain_id}', [\App\Http\Controllers\Api\ComplainController::class, 'destroy']);
 
 
     //reports
+    Route::get('reports/customers', [\App\Http\Controllers\Api\ReportController::class, 'exportCustomers']);
     Route::get('reports/departmentlog', [\App\Http\Controllers\Api\ReportController::class, 'fetchDepartmentActivityLog']);
     Route::get('reports/complainstatus', [\App\Http\Controllers\Api\ReportController::class, 'fetchComplainStatusLog']);
     Route::get('reports/topicwisepop', [\App\Http\Controllers\Api\ReportController::class, 'fetchTopicWisePopLog']);
     Route::get('reports/servicetime', [\App\Http\Controllers\Api\ReportController::class, 'fetchServiceTimeLog']);
     Route::get('reports/pop', [\App\Http\Controllers\Api\ReportController::class, 'fetchPopLog']);
-    Route::get('reports/servicewisepop', [\App\Http\Controllers\Api\ReportController::class, 'fetchServiceWisePopLog']);
-    Route::get('reports/feedback', [\App\Http\Controllers\Api\ReportController::class, 'fetchFeedbackLog']);
 });
