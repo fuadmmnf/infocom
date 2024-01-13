@@ -56,7 +56,12 @@ class CustomerController extends Controller {
         return response()->json($customerCodes);
     }
 
+    public function searchByCode($code) {
+        $customer = Customer::where('code', $code)->firstOrFail();
+        $customer->load('user', 'popaddress');
 
+        return response()->json($customer);
+    }
     public function create(CreateCustomer $request) {
         $userTokenHandler = new UserTokenHandler();
         $customer = $userTokenHandler->createCustomer($request->validated(), ['identity_file' => $request->file('identity_file'), 'agreement_form' => $request->file('agreement_form')]);

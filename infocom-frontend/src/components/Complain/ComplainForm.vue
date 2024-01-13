@@ -217,6 +217,9 @@ export default {
       search: '',
       complain: {
         customer_id: '',
+        name: '',
+        phone: '',
+        email: '',
         helptopic_id: '',
         complain_text: '',
         customer_file: null

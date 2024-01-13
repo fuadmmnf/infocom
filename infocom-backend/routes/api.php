@@ -74,7 +74,7 @@ Route::middleware(['auth:api'])->group(function () {
     //customers
     Route::get('customers', [\App\Http\Controllers\Api\CustomerController::class, 'index']);
     Route::get('customers/code', [\App\Http\Controllers\Api\CustomerController::class, 'getAllCustomerCode']);
-    Route::get('customers/{customer_code}', [\App\Http\Controllers\Api\CustomerController::class, 'searchCustomer']);
+    Route::get('customers/{customer_code}', [\App\Http\Controllers\Api\CustomerController::class, 'searchByCode']);
     Route::post('customers', [\App\Http\Controllers\Api\CustomerController::class, 'create']);
     Route::put('customers/{customer_id}', [\App\Http\Controllers\Api\CustomerController::class, 'update']);
 
