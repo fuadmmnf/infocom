@@ -29,6 +29,9 @@ class ComplainController extends Controller
         if ($request->query('department_id') !== null) {
             $complainsQuery->where('department_id', $request->query('department_id'));
         }
+        if ($request->query('customer_id') !== null) {
+            $complainsQuery->where('customer_id', $request->query('customer_id'));
+        }
 
         if ($request->query('status') == 'approved') {
             $complainsQuery->orWhere('status', 'overdue')->whereNotNull('approved_time');

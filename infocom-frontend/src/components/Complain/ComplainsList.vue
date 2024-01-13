@@ -1,5 +1,10 @@
 <template>
   <div>
+    <div class="row items-center">
+      <v-select class="col-md-3 col-xs-5  q-my-xs q-px-xs" v-model="search" :options="customerCodes" label="code"  :reduce="c => c.id"></v-select>
+      <!--      <q-input class="col-md-3 col-xs-5  q-my-xs q-px-xs" filled v-model="search" label="Search Customer"></q-input>-->
+      <q-btn flat label="search" type="button" @click="() => {fetchComplainsList()}"/>
+    </div>
     <q-table
       title=""
       flat
@@ -87,12 +92,14 @@
 </template>
 
 <script>
+import vSelect from 'vue-select'
+import 'vue-select/dist/vue-select.css';
 import {date} from 'quasar'
 import ComplainForm from "components/Complain/ComplainForm";
 
 export default {
   name: "ComplainsList",
-  components: {ComplainForm},
+  components: {ComplainForm, vSelect},
   props: {
     status: {
       type: String,
@@ -102,6 +109,8 @@ export default {
   data() {
     return {
       loading: false,
+      search: '',
+      customerCodes: [],
       filter: '',
       showComplainDetailModal: false,
       selectedComplain: null,
@@ -135,6 +144,7 @@ export default {
     if (this.status === 'assigned') {
       this.fetchSupportAgent()
     }
+    this.fetchCustomerCodes()
     this.fetchSupportAgent()
     this.$root.$on('complain-updated', (data) => {
       this.showComplainDetailModal = false
@@ -168,8 +178,16 @@ export default {
       // ...and turn of loading indicator
       this.loading = false
     },
+
+    fetchCustomerCodes() {
+      this.$axios.get('customers/code')
+        .then((res) => {
+          this.customerCodes = res.data
+        })
+    },
     fetchComplainsList(page = 1) {
-      this.$axios.get(`complains?status=${this.status}${this.selectedDepartmentId === '' ? '' : ('&department_id=' + this.selectedDepartmentId)}&page=${page}`)
+      console.log(this.search)
+      this.$axios.get(`complains?status=${this.status}${this.selectedDepartmentId === '' ? '' : ('&department_id=' + this.selectedDepartmentId)}${(''+this.search).length > 0? "&customer_id=" + this.search: ""}&page=${page}`)
         .then((res) => {
           this.complains = res.data.data
         })

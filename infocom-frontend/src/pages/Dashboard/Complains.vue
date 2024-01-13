@@ -28,7 +28,7 @@
         <q-tab-panels v-model="tab" animated>
           <q-tab-panel  v-if="$store.getters.hasCallcenterAccess || $store.getters.hasCustomerAccess" name="agent-complain">
             <div class="text-h6">New Customer Complain</div>
-            <complain-form />
+            <complain-form/>
           </q-tab-panel>
 
           <q-tab-panel v-if="$store.getters.hasCallcenterAccess" name="pending">
