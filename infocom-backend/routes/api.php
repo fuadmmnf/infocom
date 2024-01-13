@@ -23,7 +23,7 @@ Route::get('helptopics', [\App\Http\Controllers\Api\HelpTopicController::class, 
 
 //complains
 Route::post('complains', [\App\Http\Controllers\Api\ComplainController::class, 'create']);
-
+Route::put('complains/{complain_code}/feedback', [\App\Http\Controllers\Api\ComplainController::class, 'storeFeedback']);
 
 
 Route::middleware(['auth:api'])->group(function () {
@@ -82,7 +82,6 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('complains', [\App\Http\Controllers\Api\ComplainController::class, 'index']);
     Route::get('complains/{complain_code}', [\App\Http\Controllers\Api\ComplainController::class, 'getComplainByCode']);
     Route::put('complains/{complain_id}', [\App\Http\Controllers\Api\ComplainController::class, 'update']);
-    Route::put('complains/{complain_code}/feedback', [\App\Http\Controllers\Api\ComplainController::class, 'storeFeedback']);
     Route::delete('complains/{complain_id}', [\App\Http\Controllers\Api\ComplainController::class, 'destroy']);
 
 

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CallcenterAgent extends Model
 {
+    use SoftDeletes;
     protected $guarded = [];
     use SoftDeletes;
     public function user(){
