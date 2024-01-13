@@ -2,19 +2,64 @@
   <q-page>
     <q-table
       v-if="$store.getters.hasCallcenterAccess"
+      title="Customers"
       :data="customers"
       :columns="columns"
       row-key="id"
       :rows-per-page-options="[20]"
       :pagination.sync="pagination"
-      @row-click="(e, row, idx) => {$router.push({name: 'dashboard-customer-detail', params: {customer_id: row.id}})}"
+      @row-click="(e, row, idx) => {openCustomerModal(row)}"
       @update:pagination="({page}) => {fetchCustomers(page)}"
+      @request="onRequest"
     >
-      <template v-slot:top-left>
-        <div class="row items-center">
-          <span class="text-h5 q-mr-md">Customers</span>
+      <template v-slot:pagination="scope">
+        <q-btn
+          v-if="scope.pagesNumber > 2"
+          icon="first_page"
+          color="grey-8"
+          round
+          dense
+          flat
+          :disable="scope.isFirstPage"
+          @click="scope.firstPage"
+        />
+
+        <q-btn
+          icon="chevron_left"
+          color="grey-8"
+          round
+          dense
+          flat
+          :disable="scope.isFirstPage"
+          @click="scope.prevPage"
+        />
+
+        <q-btn
+          icon="chevron_right"
+          color="grey-8"
+          round
+          dense
+          flat
+          :disable="scope.isLastPage"
+          @click="scope.nextPage"
+        />
+
+        <q-btn
+          v-if="scope.pagesNumber > 2"
+          icon="last_page"
+          color="grey-8"
+          round
+          dense
+          flat
+          :disable="scope.isLastPage"
+          @click="scope.lastPage"
+        />
+      </template>
+
+      <template v-slot:top-right>
+        <div class="flex flex-center items-center">
           <q-btn label="Create" @click="() => {
-          openCustomerModal()
+          openCustomerModal(null)
         }">
 
 
@@ -30,7 +75,7 @@
                   </q-btn>
                 </q-bar>
 
-                <q-form @submit="createCustomer"
+                <q-form @submit="customerForm.id === undefined? createCustomer(): updateCustomer()"
                         @reset="customerForm = {}"
                         class="q-gutter-md">
                   <div class="row">
@@ -52,19 +97,17 @@
                   </div>
 
                   <div class="row q-my-none">
-                    <q-select class="col-md-4 col-xs-12 q-my-xs q-px-xs" filled
-                              v-model="customerForm.type"
-                              :options="['VIP', 'corporate', 'home']"
-                              label="Type"
-
-                    />
-                    <q-select class="col-md-8 col-xs-12 q-my-xs q-px-xs" filled
+                    <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
                               v-model="customerForm.services" multiple
                               :options="$store.getters.getServices" option-label="name"
                               option-value="id" emit-value
                               map-options label="Services"
 
                     />
+
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
+                             v-model="customerForm.selling_price_bdt_excluding_vat"
+                             label="Selling price bdt excluding vat"/>
                   </div>
 
                   <div class="row q-my-none">
@@ -93,17 +136,10 @@
                   </div>
 
                   <div class="row q-my-none">
-                    <q-input class="col-md-12 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.address"
-                             label="Address"/>
-                  </div>
-                  <div class="row q-my-none">
-                    <q-input class="col-md-12 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.technical_contact"
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.technical_contact"
+                             :rules="[ val => (val===undefined || val === '' || val.replace(/\s/g,'').split(',').filter((v) => v.length !== 11).length === 0) || 'Please enter comma separated 11 digit phone numbers']"
                              label="Technical Contact"/>
-                  </div>
-
-                  <div class="row q-my-none">
-                    <q-input class="col-md-12 col-xs-12 q-my-xs q-px-xs" filled
-                             v-model="customerForm.management_contact"
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.management_contact"
                              label="Management Contact"/>
                   </div>
 
@@ -131,26 +167,50 @@
                   </div>
 
                   <div class="row q-my-none">
-                    <q-file class="col-md-6 col-xs-12 q-my-xs q-px-xs" clearable filled accept=".jpg, image/*"
-                            name="identity_file" v-model="customerForm.identity_file"
-                            id="identity_file"
-                            ref="identity_file" @change="handleIdentityFile()"
-                            label="Identity File">
-                      <template v-slot:prepend>
-                        <q-icon name="attach_file"/>
-                      </template>
-                    </q-file>
-                    <q-file class="col-md-6 col-xs-12 q-my-xs q-px-xs" clearable filled
-                            name="agreement_form" v-model="customerForm.agreement_form"
-                            id="agreement_form"
-                            ref="agreement_form" @change="handleAgreementForm()"
-                            label="Agreement Form">
-                      <template v-slot:prepend>
-                        <q-icon name="attach_file"/>
-                      </template>
-                    </q-file>
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.client_type"
+                             label="Client type"/>
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.connection_type"
+                             label="Connection Type"/>
                   </div>
 
+                  <div class="row q-my-none">
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
+                             v-model="customerForm.bandwidth_distribution_point"
+                             label="Bandwidth distribution point"/>
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.connectivity_type"
+                             label="Connectivity type"/>
+                  </div>
+
+
+                  <div class="row q-my-none">
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
+                             v-model="customerForm.bandwidth_allocation"
+                             label="Bandwidth allocation"/>
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.allocated_ip"
+                             label="Allocated IP"/>
+
+                  </div>
+
+                  <div class="flex flex-center items-center q-mt-none">
+                    <span class="text-subtitle1">Customer Address</span>
+                  </div>
+                  <div class="row q-my-none">
+                    <q-input class="col-md-4 col-xs-12 q-my-xs q-px-xs" filled
+                             v-model="customerForm.division"
+                             label="Division"/>
+                    <q-input class="col-md-4 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.district"
+                             label="District"/>
+                    <q-input class="col-md-4 col-xs-12 q-my-xs q-px-xs" filled
+                             v-model="customerForm.thana"
+                             label="Thana"/>
+
+                  </div>
+                  <div class="row q-my-none">
+
+                    <q-input class="col-md-12 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.address"
+                             label="Address"/>
+
+                  </div>
 
                   <div class="q-pa-sm">
                     <!--      <q-btn class="bg-info text-white q-mr-sm" label="Resubmit" type="button"-->
@@ -168,29 +228,18 @@
               </q-card>
             </q-dialog>
           </q-btn>
-        </div>
 
-      </template>
-      <template v-slot:top-right>
-        <div class="row items-center">
-          <q-select class="col-5" filled
-                    v-model="queryServices"
-                    :options="[{name: 'All', id: ''}, ...$store.getters.getServices]" option-label="name"
-                    option-value="id" emit-value
-                    map-options label="Services"
-
-          />
-
-          <q-input class="col-6 q-ml-xs" borderless dense v-model="query" placeholder="Search">
-            <template v-slot:append>
-              <q-icon class="cursor-pointer" name="search" @click="() => {fetchCustomers()}"/>
-              <q-icon class="cursor-pointer" name="close" @click="() => {
-              query = ''
-              queryServices = ''
-              fetchCustomers()
-            }"/>
-            </template>
-          </q-input>
+          <download-excel class="q-ml-md" type="csv"
+                          :name="`Customers_${(new Date()).toLocaleDateString('en-US').replaceAll('/', '_')}.csv`"
+                          :header="`Customers_${(new Date()).toLocaleDateString('en-US').replaceAll('/', '_')}.csv`"
+                          :fetch="fetchCustomerData"
+          >
+            <q-btn
+              color="green-10"
+              icon="text_snippet"
+            >Export
+            </q-btn>
+          </download-excel>
         </div>
 
       </template>
@@ -199,15 +248,20 @@
 </template>
 
 <script>
+import {date} from "quasar";
+import JsonExcel from "vue-json-excel";
+
 const customerFormTemplate = () => {
   return {
     name: '',
     email: '',
     phone: '',
     code: '',
-    type: 'home',
-    services: [],
+    division: '',
+    district: '',
+    thana: '',
     address: '',
+    services: [],
     popaddress_id: '',
     technical_contact: '',
     management_contact: '',
@@ -220,29 +274,40 @@ const customerFormTemplate = () => {
     installation_date: '',
     password: '',
     password_confirmation: '',
-    identity_file: null,
-    agreement_form: null,
+    client_type: '',
+    connection_type: '',
+    bandwidth_distribution_point: '',
+    connectivity_type: '',
+    bandwidth_allocation: '',
+    allocated_ip: '',
+    selling_price_bdt_excluding_vat: ''
   }
 }
 export default {
   name: 'DashboardCustomers',
+  components: {'downloadExcel': JsonExcel},
+  computed: {
+    date() {
+      return date
+    }
+  },
   data() {
     return {
+      loading: false,
       showCustomerForm: false,
       pagination: {
         page: 1,
-        rowsPerPage: 20
+        rowsPerPage: 3,
+        rowsNumber: 10
       },
       departments: [],
       customers: [],
-      query: '',
-      queryServices: '',
       customerForm: customerFormTemplate(),
       columns: [
-        {name: 'code', align: 'center', label: 'Client ID', field: row => row.code},
         {name: 'name', align: 'center', label: 'Name', field: row => row.user.name, sortable: true},
         {name: 'phone', align: 'center', label: 'Phone', field: row => row.user.phone},
         {name: 'email', align: 'center', label: 'Email', field: row => row.user.email},
+        {name: 'code', align: 'center', label: 'Code', field: row => row.code},
         {
           name: 'popaddress',
           align: 'center',
@@ -254,62 +319,91 @@ export default {
     }
   },
   mounted() {
+    this.onRequest({
+      pagination: this.pagination,
+      filter: undefined
+    })
   },
   methods: {
-    openCustomerModal() {
-      this.customerForm = customerFormTemplate()
+    onRequest (props) {
+      const { page, rowsPerPage, sortBy, descending } = props.pagination
+      const filter = props.filter
+
+      this.loading = true
+      this.fetchCustomers(page)
+      this.pagination.page = page
+      this.pagination.sortBy = sortBy
+      this.pagination.descending = descending
+
+      // this.pagination.rowsPerPage = rowsPerPage
+
+
+      // ...and turn of loading indicator
+      this.loading = false
+    },
+    openCustomerModal(customer) {
+      if (customer === null) {
+        this.customerForm = customerFormTemplate()
+      } else {
+        const serviceIds = this.$store.getters.getServices.map((s) => s.id)
+        this.customerForm = {
+          ...customerFormTemplate(),
+          ...customer,
+          name: customer.user.name,
+          phone: customer.user.phone,
+          email: customer.user.email,
+          popaddress_id: customer.popaddress === null ? '' : customer.popaddress_id,
+          services: customer.services.filter((s) => {
+            return serviceIds.includes(s)
+          })
+        }
+      }
+
       this.showCustomerForm = true
     },
     fetchCustomers(page = 1) {
-      const searchQuery = (this.query === '' || this.query === undefined) ? '' : ('&query=' + this.query)
-      const servicesQuery = (this.queryServices === '' || this.query === undefined) ? '' : ('&service=' +
-        this.queryServices)
-      this.$axios.get(`customers?page=${page}${searchQuery}${servicesQuery}`)
+      this.$axios.get(`customers?page=${page}`)
         .then((res) => {
           this.customers = res.data.data
 
         })
     },
-
-    handleIdentityFile() {
-      this.customerForm.identity_file = this.$refs.identity_file.files[0]
+    async fetchCustomerData() {
+      const response = await this.$axios.get(`reports/customers`)
+      return response.data.rows
     },
-
-    handleAgreementForm() {
-      this.customerForm.agreement_form = this.$refs.agreement_form.files[0]
-    },
-
     createCustomer() {
-      this.errors = null
-
-      let formData = new FormData()
-      for (const [key, value] of Object.entries(this.customerForm)) {
-        Array.isArray(this.customerForm[key])
-          ? value.forEach(value => formData.append(key + '[]', value))
-          : formData.append(key, value) ;
-      }
-
-
-      this.$axios.post('customers', formData, {
-          headers: {
-            'Content-Type': "multipart/form-data; charset=utf-8; boundary=" + Math.random().toString().substr(2)
+      this.$axios.post('customers', this.customerForm)
+        .then((res) => {
+          if (res.status === 201) {
+            this.showCustomerForm = false
+            this.fetchCustomers()
+            this.customerForm = customerFormTemplate()
+            this.$q.notify({
+              type: 'positive',
+              message: `Customer Created Successfully`,
+              position: 'top-right'
+            })
           }
-        }
-      ).then((res) => {
-        if (res.status === 201) {
-          this.showCustomerForm = false
-          this.fetchCustomers()
-          this.customerForm = customerFormTemplate()
-          this.$q.notify({
-            type: 'positive',
-            message: `Customer Created Successfully`,
-            position: 'top-right'
-          })
-        }
-      })
-
+        })
     },
+    updateCustomer() {
+      this.$axios.put(`customers/${this.customerForm.id}`, this.customerForm)
+        .then((res) => {
+          if (res.status === 204) {
+            this.showCustomerForm = false
+            this.fetchCustomers()
+            this.customerForm = customerFormTemplate()
+            this.$q.notify({
+              type: 'positive',
+              message: `Customer Updated Successfully`,
+              position: 'top-right'
+            })
 
+          }
+
+        })
+    }
   }
 }
 </script>

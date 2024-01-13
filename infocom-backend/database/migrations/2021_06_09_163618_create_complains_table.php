@@ -20,8 +20,8 @@ class CreateComplainsTable extends Migration
             $table->enum('status', ['pending', 'assigned', 'working', 'finished', 'approved', 'overdue'])->default('pending');
             $table->enum('ticket_source', ['customer', 'agent', 'email'])->default('customer');
             $table->text('complain_text');
-            $table->string('complain_summary')->default('');
-            $table->string('complain_feedback')->default('');
+            $table->text('complain_summary')->nullable();
+            $table->text('complain_feedback')->nullable();
             $table->enum('priority', ['low', 'medium', 'high', 'urgent'])->nullable();
             $table->string('customer_file')->nullable();
             $table->string('feedback_file')->nullable();

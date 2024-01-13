@@ -9,73 +9,90 @@
       :rows-per-page-options="[20]"
       :pagination.sync="pagination"
       @update:pagination="({page}) => {fetchComplainsList(page)}"
+      @request="onRequest"
+
       @row-click="(e, row, idx) => {
         selectedComplain = row
         showComplainDetailModal = true
       }"
     >
-      <q-dialog v-model="showComplainDetailModal" persistent @hide="(e) => {selectedComplain = null}">
-        <q-card style="min-width: 70%">
-          <q-bar>
-            <div>Complain Details</div>
+      <template v-slot:pagination="scope">
+        <q-btn
+          v-if="scope.pagesNumber > 2"
+          icon="first_page"
+          color="grey-8"
+          round
+          dense
+          flat
+          :disable="scope.isFirstPage"
+          @click="scope.firstPage"
+        />
 
-            <q-space />
+        <q-btn
+          icon="chevron_left"
+          color="grey-8"
+          round
+          dense
+          flat
+          :disable="scope.isFirstPage"
+          @click="scope.prevPage"
+        />
 
-            <q-btn dense flat icon="close" v-close-popup>
-              <q-tooltip>Close</q-tooltip>
-            </q-btn>
-          </q-bar>
-          <q-card-section class="q-pa-xs">
-            <complain-form :existing-complain="selectedComplain" :supportagents="supportagents" />
-          </q-card-section>
+        <q-btn
+          icon="chevron_right"
+          color="grey-8"
+          round
+          dense
+          flat
+          :disable="scope.isLastPage"
+          @click="scope.nextPage"
+        />
 
-          <q-card-actions align="right" class="text-primary">
-            <!--          <q-btn flat label="Close" v-close-popup/>-->
-            <!--          <q-btn flat/>-->
-          </q-card-actions>
-        </q-card>
-      </q-dialog>
-
-      <template v-slot:top-right>
-        <div class="row items-center" v-if="status === 'approved'">
-
-          <q-icon size="25px" name="event" class="col-3 cursor-pointer">
-            <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-              <q-date v-model="dateRangeQuery" range>
-                <div class="row items-center justify-end">
-                  <q-btn v-close-popup label="Close" color="primary" flat />
-                </div>
-              </q-date>
-            </q-popup-proxy>
-          </q-icon>
-
-          <q-input class="col-8 q-ml-xs" borderless dense v-model="query" placeholder="Search">
-            <template v-slot:append>
-              <q-icon name="search" @click="() => {fetchComplainsList()}" />
-              <q-icon name="close" @click="() => {
-              query = ''
-              dateRangeQuery = {
-                from: null,
-                to: null
-              }
-              fetchComplainsList()
-            }" />
-            </template>
-          </q-input>
-        </div>
+        <q-btn
+          v-if="scope.pagesNumber > 2"
+          icon="last_page"
+          color="grey-8"
+          round
+          dense
+          flat
+          :disable="scope.isLastPage"
+          @click="scope.lastPage"
+        />
       </template>
     </q-table>
+
+    <q-dialog v-model="showComplainDetailModal" persistent @hide="(e) => {selectedComplain = null}">
+      <q-card style="min-width: 70%">
+        <q-bar>
+          <div>Complain Details</div>
+
+          <q-space/>
+
+          <q-btn dense flat icon="close" v-close-popup>
+            <q-tooltip>Close</q-tooltip>
+          </q-btn>
+        </q-bar>
+        <q-card-section class="q-pa-xs">
+          <complain-form :existing-complain="selectedComplain" :supportagents="supportagents"/>
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <!--          <q-btn flat label="Close" v-close-popup/>-->
+          <!--          <q-btn flat/>-->
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
 
   </div>
 </template>
 
 <script>
-import { date } from 'quasar'
+import {date} from 'quasar'
 import ComplainForm from "components/Complain/ComplainForm";
 
 export default {
   name: "ComplainsList",
-  components: { ComplainForm },
+  components: {ComplainForm},
   props: {
     status: {
       type: String,
@@ -84,33 +101,26 @@ export default {
   },
   data() {
     return {
+      loading: false,
+      filter: '',
       showComplainDetailModal: false,
       selectedComplain: null,
-      selectedDepartmentId: this.$store.getters.getUser.support_agent ===
-                            undefined ? '' : this.$store.getters.getUser.support_agent.department_id,
+      selectedDepartmentId: this.$store.getters.getUser.support_agent === undefined ? '' : this.$store.getters.getUser.support_agent.department_id,
       supportagents: [],
       pagination: {
+        sortBy: 'desc',
+        descending: false,
         page: 1,
-        rowsPerPage: 20
-      },
-      query: '',
-      dateRangeQuery: {
-        to: null,
-        from: null
+        rowsPerPage: 3,
+        rowsNumber: 10
       },
       complains: [],
       columns: [
-        { name: 'id', align: 'center', label: 'TT #', field: row => row.id },
-        { name: 'name', align: 'center', label: 'Name', field: row => row.customer.user.name },
-        { name: 'phone', align: 'center', label: 'Phone', field: row => row.customer.user.phone },
-        { name: 'email', align: 'center', label: 'Email', field: row => row.customer.user.email },
-        {
-          name: 'Topic',
-          align: 'center',
-          label: 'Topic',
-          field: row => row.helptopic_id === null ? '' : this.$store.getters.getHelpTopics.find((h) => h.id ===
-                                                                                                       row.helptopic_id).name
-        },
+        {name: 'id', align: 'center', label: 'TT #', field: row => row.id},
+        {name: 'name', align: 'center', label: 'Name', field: row => row.customer.user.name},
+        {name: 'phone', align: 'center', label: 'Phone', field: row => row.customer.user.phone},
+        {name: 'email', align: 'center', label: 'Email', field: row => row.customer.user.email},
+        {name: 'priority', align: 'center', label: 'Priority', field: row => row.priority},
         {
           name: 'complain_time',
           align: 'center',
@@ -121,20 +131,10 @@ export default {
     }
   },
   mounted() {
+    // this.fetchComplainsList()
     if (this.status === 'assigned') {
       this.fetchSupportAgent()
     }
-
-    if (this.status === 'approved') {
-      this.columns.push({
-        name: 'rating',
-        align: 'center',
-        label: 'Rating',
-        field: row => ((row === null ? '' : row.customer_rating) +
-                       ((row === null || row.approve_time !== null) ? '' : ' (Overdue)'))
-      })
-    }
-
     this.fetchSupportAgent()
     this.$root.$on('complain-updated', (data) => {
       this.showComplainDetailModal = false
@@ -146,25 +146,33 @@ export default {
         position: 'top-right'
       })
     })
+    this.onRequest({
+      pagination: this.pagination,
+      filter: undefined
+    })
   },
   methods: {
-    fetchComplainsList(page = 1) {
-      const deptQuery = this.selectedDepartmentId === '' ? '' : ('&department_id=' + this.selectedDepartmentId)
-      const customerQuery = this.query === '' ? '' : ('&customer_code=' + this.query)
-      const daterangeQuery = ((this.dateRangeQuery.from === null || this.dateRangeQuery.to === null) ? '' :
-        ('&start_date=' + this.dateRangeQuery.from.replaceAll('/', '-') + '&end_date=' +
-         this.dateRangeQuery.to.replaceAll('/', '-')))
+    onRequest (props) {
+      const { page, rowsPerPage, sortBy, descending } = props.pagination
+      const filter = props.filter
 
-      this.$axios.get(`complains?status=${this.status}${deptQuery}${customerQuery}${daterangeQuery}&page=${page}`)
+      this.loading = true
+      this.fetchComplainsList(page)
+      this.pagination.page = page
+      this.pagination.sortBy = sortBy
+      this.pagination.descending = descending
+
+      // this.pagination.rowsPerPage = rowsPerPage
+
+
+      // ...and turn of loading indicator
+      this.loading = false
+    },
+    fetchComplainsList(page = 1) {
+      this.$axios.get(`complains?status=${this.status}${this.selectedDepartmentId === '' ? '' : ('&department_id=' + this.selectedDepartmentId)}&page=${page}`)
         .then((res) => {
           this.complains = res.data.data
-        }).catch((e) => {
-        this.$q.notify({
-          type: 'negative',
-          message: 'Customer code invalid',
-          position: 'top-right'
         })
-      })
     },
 
     fetchSupportAgent() {
