@@ -27,12 +27,10 @@ class CustomerFactory extends Factory
             'address' => $this->faker->streetAddress . ',' . $this->faker->streetName . ',' . $this->faker->city . ',' . $this->faker->country,
             'installation_date' => $this->faker->dateTime,
             'client_type' => $this->faker->randomElement(['Home', 'Corporate']),
-            'connection_type' => $this->faker->randomElement(['Wired', 'Wireless']),
-            'bandwidth_distribution_point' => $this->faker->randomElement(['DC', 'AC']),
-            'connectivity_type' => $this->faker->randomElement(['Dedicated', 'Shared']),
-            'bandwidth_allocation' => $this->faker->numberBetween(1, 20),
-            'allocated_ip' => $this->faker->ipv4,
-            'selling_price_bdt_excluding_vat' => $this->faker->numberBetween(1000, 100000),
+//            'connectivity_type' => $this->faker->randomElement(['Dedicated', 'Shared']),
+//            'bandwidth_allocation' => $this->faker->numberBetween(1, 20),
+//            'allocated_ip' => $this->faker->ipv4,
+//            'selling_price_bdt_excluding_vat' => $this->faker->numberBetween(1000, 100000),
         ];
     }
 }

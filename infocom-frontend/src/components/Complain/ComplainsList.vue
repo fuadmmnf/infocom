@@ -9,11 +9,57 @@
       :rows-per-page-options="[20]"
       :pagination.sync="pagination"
       @update:pagination="({page}) => {fetchComplainsList(page)}"
+      @request="onRequest"
+
       @row-click="(e, row, idx) => {
         selectedComplain = row
         showComplainDetailModal = true
       }"
-    />
+    >
+      <template v-slot:pagination="scope">
+        <q-btn
+          v-if="scope.pagesNumber > 2"
+          icon="first_page"
+          color="grey-8"
+          round
+          dense
+          flat
+          :disable="scope.isFirstPage"
+          @click="scope.firstPage"
+        />
+
+        <q-btn
+          icon="chevron_left"
+          color="grey-8"
+          round
+          dense
+          flat
+          :disable="scope.isFirstPage"
+          @click="scope.prevPage"
+        />
+
+        <q-btn
+          icon="chevron_right"
+          color="grey-8"
+          round
+          dense
+          flat
+          :disable="scope.isLastPage"
+          @click="scope.nextPage"
+        />
+
+        <q-btn
+          v-if="scope.pagesNumber > 2"
+          icon="last_page"
+          color="grey-8"
+          round
+          dense
+          flat
+          :disable="scope.isLastPage"
+          @click="scope.lastPage"
+        />
+      </template>
+    </q-table>
 
     <q-dialog v-model="showComplainDetailModal" persistent @hide="(e) => {selectedComplain = null}">
       <q-card style="min-width: 70%">
@@ -55,13 +101,18 @@ export default {
   },
   data() {
     return {
+      loading: false,
+      filter: '',
       showComplainDetailModal: false,
       selectedComplain: null,
       selectedDepartmentId: this.$store.getters.getUser.support_agent === undefined ? '' : this.$store.getters.getUser.support_agent.department_id,
       supportagents: [],
       pagination: {
+        sortBy: 'desc',
+        descending: false,
         page: 1,
-        rowsPerPage: 20
+        rowsPerPage: 3,
+        rowsNumber: 10
       },
       complains: [],
       columns: [
@@ -95,8 +146,28 @@ export default {
         position: 'top-right'
       })
     })
+    this.onRequest({
+      pagination: this.pagination,
+      filter: undefined
+    })
   },
   methods: {
+    onRequest (props) {
+      const { page, rowsPerPage, sortBy, descending } = props.pagination
+      const filter = props.filter
+
+      this.loading = true
+      this.fetchComplainsList(page)
+      this.pagination.page = page
+      this.pagination.sortBy = sortBy
+      this.pagination.descending = descending
+
+      // this.pagination.rowsPerPage = rowsPerPage
+
+
+      // ...and turn of loading indicator
+      this.loading = false
+    },
     fetchComplainsList(page = 1) {
       this.$axios.get(`complains?status=${this.status}${this.selectedDepartmentId === '' ? '' : ('&department_id=' + this.selectedDepartmentId)}&page=${page}`)
         .then((res) => {

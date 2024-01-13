@@ -25,7 +25,7 @@ class ComplainSeeder extends Seeder
         $topics = HelpTopic::all();
         $depts = Department::all();
         //create 5 pending complains
-        foreach (range(1, 5) as $i) {
+        foreach (range(1, 25) as $i) {
             $topic = $topics->random();
             Complain::factory()
                 ->create([
@@ -37,7 +37,7 @@ class ComplainSeeder extends Seeder
                 ]);
         }
 
-        foreach (range(1, 5) as $i) {
+        foreach (range(1, 25) as $i) {
             $topic = $topics->random();
             $time = Carbon::now()->subDays(5);
             Complain::factory()
@@ -54,7 +54,7 @@ class ComplainSeeder extends Seeder
         }
 
 
-        foreach (range(1, 5) as $i) {
+        foreach (range(1, 25) as $i) {
             $topic = $topics->random();
             $dept = $depts->random();
             $time = Carbon::now()->subDays(5);
@@ -73,7 +73,7 @@ class ComplainSeeder extends Seeder
         }
 
 
-        foreach (range(1, 5) as $i) {
+        foreach (range(1, 25) as $i) {
             $topic = $topics->random();
             $dept = $depts->random();
             $time = Carbon::now()->subDays(5);
@@ -94,7 +94,7 @@ class ComplainSeeder extends Seeder
         }
 
 
-        foreach (range(1, 5) as $i) {
+        foreach (range(1, 25) as $i) {
             $topic = $topics->random();
             $dept = $depts->random();
             $time = Carbon::now()->subDays(5);
@@ -116,7 +116,7 @@ class ComplainSeeder extends Seeder
         }
 
 
-        foreach (range(1, 5) as $i) {
+        foreach (range(1, 25) as $i) {
             $topic = $topics->random();
             $dept = $depts->random();
             $time = Carbon::now()->subDays(5);
