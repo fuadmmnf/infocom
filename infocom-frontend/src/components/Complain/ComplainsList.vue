@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="row items-center">
-      <v-select class="col-md-3 col-xs-5  q-my-xs q-px-xs" v-model="search" :options="customerCodes" label="code"  :reduce="c => c.id"></v-select>
+      <v-select class="col-md-3 col-xs-5  q-my-xs q-px-xs" v-model="search" :options="customerCodes" label="code"  :reduce="c => c.id" placeholder="Search by Customer ID"></v-select>
       <!--      <q-input class="col-md-3 col-xs-5  q-my-xs q-px-xs" filled v-model="search" label="Search Customer"></q-input>-->
       <q-btn flat label="search" type="button" @click="() => {fetchComplainsList()}"/>
     </div>

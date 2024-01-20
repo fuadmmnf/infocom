@@ -27,7 +27,7 @@ class CustomerController extends Controller {
         }
 
         if ($query) {
-            $customers->where('code', $query)
+            $customers->where('customer_id', $query)
                 ->orWhereHas('user', function ($q) use ($query) {
                     $q->where('phone', $query)->orWhere('email', $query);
                 })
@@ -51,20 +51,20 @@ class CustomerController extends Controller {
 
     }
 
-    public function getAllCustomerCode() {
-        $customerCodes = Customer::where('code', '!=', '')->get(['id', 'code'])->toArray();
+    public function getAllCustomerIds() {
+        $customerCodes = Customer::where('customer_id', '!=', '')->get(['id', 'customer_id'])->toArray();
         return response()->json($customerCodes);
     }
 
-    public function searchByCode($code) {
-        $customer = Customer::where('code', $code)->firstOrFail();
+    public function searchByCustomerId($customer_id) {
+        $customer = Customer::where('customer_id', $customer_id)->firstOrFail();
         $customer->load('user', 'popaddress');
 
         return response()->json($customer);
     }
     public function create(CreateCustomer $request) {
         $userTokenHandler = new UserTokenHandler();
-        $customer = $userTokenHandler->createCustomer($request->validated(), ['identity_file' => $request->file('identity_file'), 'agreement_form' => $request->file('agreement_form')]);
+        $customer = $userTokenHandler->createCustomer($request->validated(), ['additional_file' => $request->file('additional_file')]);
         return response()->json($customer, 201);
     }
 
