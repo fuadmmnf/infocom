@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="row items-center">
-      <v-select class="col-md-3 col-xs-5  q-my-xs q-px-xs" v-model="search" :options="customerCodes" label="code"  :reduce="c => c.id" placeholder="Search by Customer ID"></v-select>
+      <v-select class="col-md-3 col-xs-5  q-my-xs q-px-xs" v-model="search" :options="customerCodes" label="customer_id"  :reduce="c => c.id" placeholder="Search by Customer ID"></v-select>
       <!--      <q-input class="col-md-3 col-xs-5  q-my-xs q-px-xs" filled v-model="search" label="Search Customer"></q-input>-->
       <q-btn flat label="search" type="button" @click="() => {fetchComplainsList()}"/>
     </div>
@@ -144,7 +144,7 @@ export default {
     if (this.status === 'assigned') {
       this.fetchSupportAgent()
     }
-    this.fetchCustomerCodes()
+    this.fetchCustomerIds()
     this.fetchSupportAgent()
     this.$root.$on('complain-updated', (data) => {
       this.showComplainDetailModal = false
@@ -179,8 +179,8 @@ export default {
       this.loading = false
     },
 
-    fetchCustomerCodes() {
-      this.$axios.get('customers/code')
+    fetchCustomerIds() {
+      this.$axios.get('customers/customer_id/all')
         .then((res) => {
           this.customerCodes = res.data
         })

@@ -12,12 +12,15 @@ use App\Jobs\SendSMSJob;
 use App\Mail\CustomerCustomMessage;
 use App\Models\Customer;
 use App\Models\CustomerMessage;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
-class CustomerController extends Controller {
-    public function index(Request $request) {
+class CustomerController extends Controller
+{
+    public function index(Request $request)
+    {
         $customers = Customer::with('user')->orderByDesc('created_at');
         $query = $request->query('query');
         $queryService = $request->query('service');
@@ -27,11 +30,10 @@ class CustomerController extends Controller {
         }
 
         if ($query) {
-            $customers->where('customer_id', $query)
+            $customers->where('customer_id', 'like', '%'. $query . '%')
                 ->orWhereHas('user', function ($q) use ($query) {
-                    $q->where('phone', $query)->orWhere('email', $query);
-                })
-                ->orWhere('address', 'like', '%' . strtolower($query) . '%');
+                    $q->where('name', 'like', '%'. $query . '%')->orWhere('phone', 'like', '%'. $query . '%');
+                });
         }
 
 
@@ -40,48 +42,57 @@ class CustomerController extends Controller {
         return response()->json($customers);
     }
 
-    public function find($customer_id) {
+    public function find($customer_id)
+    {
         $customer = Customer::findOrFail($customer_id);
         $customer->load('user', 'popaddress');
 
         return response()->json($customer);
     }
 
-    public function getNoticeHistory() {
+    public function getNoticeHistory()
+    {
 
     }
 
-    public function getAllCustomerIds() {
+    public function getAllCustomerIds()
+    {
         $customerCodes = Customer::where('customer_id', '!=', '')->get(['id', 'customer_id'])->toArray();
         return response()->json($customerCodes);
     }
 
-    public function searchByCustomerId($customer_id) {
+    public function searchByCustomerId($customer_id)
+    {
         $customer = Customer::where('customer_id', $customer_id)->firstOrFail();
         $customer->load('user', 'popaddress');
 
         return response()->json($customer);
     }
-    public function create(CreateCustomer $request) {
+
+    public function create(CreateCustomer $request)
+    {
         $userTokenHandler = new UserTokenHandler();
         $customer = $userTokenHandler->createCustomer($request->validated());
         return response()->json($customer, 201);
     }
 
-    public function saveFile(UpdateCustomer $request) {
+    public function saveFile(UpdateCustomer $request)
+    {
         $userTokenHandler = new UserTokenHandler();
         $userTokenHandler->updateCustomerFile($request->route('customer_id'), ['additional_file' => $request->file('additional_file')]);
         return response()->noContent();
     }
 
-    public function update(UpdateCustomer $request) {
+    public function update(UpdateCustomer $request)
+    {
         $userTokenHandler = new UserTokenHandler();
         $userTokenHandler->updateCustomer($request->route('customer_id'), $request->validated());
         return response()->noContent();
     }
 
 
-    public function sendNotice(SendCustomerMessage $request) {
+    public function sendNotice(SendCustomerMessage $request)
+    {
         $info = $request->validated();
         $customers = null;
         if ($info['type'] == 'popaddress') {

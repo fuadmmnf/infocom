@@ -2,7 +2,7 @@
   <q-form @submit="complain.status === undefined? createComplain(): updateComplain(true)" @reset="complain = {}"
           class="q-gutter-md">
     <div class="row items-center" v-if="isAuthenticated && complain.status === undefined">
-      <v-select class="col-md-3 col-xs-5  q-my-xs q-px-xs" v-model="search" :options="customerCodes"></v-select>
+      <v-select class="col-md-3 col-xs-5  q-my-xs q-px-xs" v-model="search" :options="customerIds"></v-select>
       <!--      <q-input class="col-md-3 col-xs-5  q-my-xs q-px-xs" filled v-model="search" label="Search Customer"></q-input>-->
       <q-btn flat label="search" type="button" @click="searchCustomer"/>
     </div>
@@ -213,7 +213,7 @@ export default {
   data() {
     return {
       statusList: ['pending', 'assigned', 'working', 'finished', 'approved'],
-      customerCodes: [],
+      customerIds: [],
       search: '',
       complain: {
         customer_id: '',
@@ -271,7 +271,7 @@ export default {
     }
 
     if (this.$store.getters.hasAuthorityAccess) {
-      this.fetchCustomerCodes()
+      this.fetchCustomerIds()
     }
   },
   methods: {
@@ -279,15 +279,15 @@ export default {
       let s = this.$store.getters.getSLAPlans.find((sla) => sla.helptopic_id === this.complain.helptopic_id)
       this.complain.slaplan_id = (s !== undefined ? s.id : '')
     },
-    fetchCustomerCodes() {
+    fetchCustomerIds() {
       this.$axios.get('customers/customer_id/all')
         .then((res) => {
-          this.customerCodes = res.data.map((c) => c.code)
+          this.customerIds = res.data.map((c) => c.customer_id)
         })
     },
 
     searchCustomer() {
-      this.$axios.get(`customers/${this.search}`)
+      this.$axios.get(`customers/${this.search}/customer_id`)
         .then((res) => {
           this.complain.customer_id = res.data.id
           this.complain.name = res.data.user.name

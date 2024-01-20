@@ -57,6 +57,14 @@
       </template>
 
       <template v-slot:top-right>
+        <q-input class="q-mx-md" borderless debounce="300" v-model="query" placeholder="Search">
+          <template v-slot:append>
+            <q-icon name="search" @click="() => {onRequest({
+      pagination: pagination,
+    })}"/>
+          </template>
+        </q-input>
+        <q-space></q-space>
         <div class="flex flex-center items-center">
           <q-btn label="Create" @click="() => {
           openCustomerModal(null)
@@ -66,6 +74,7 @@
             <q-dialog v-model="showCustomerForm" persistent>
               <q-card style="min-width: 70%">
                 <q-bar>
+
                   <div>Create Customer</div>
 
                   <q-space/>
@@ -267,6 +276,7 @@
             >Export
             </q-btn>
           </download-excel>
+
         </div>
 
       </template>
@@ -319,6 +329,7 @@ export default {
     return {
       loading: false,
       showCustomerForm: false,
+      query: '',
       pagination: {
         page: 1,
         rowsPerPage: 3,
@@ -346,13 +357,11 @@ export default {
   mounted() {
     this.onRequest({
       pagination: this.pagination,
-      filter: undefined
     })
   },
   methods: {
     onRequest(props) {
       const {page, rowsPerPage, sortBy, descending} = props.pagination
-      const filter = props.filter
 
       this.loading = true
       this.fetchCustomers(page)
@@ -387,7 +396,7 @@ export default {
       this.showCustomerForm = true
     },
     fetchCustomers(page = 1) {
-      this.$axios.get(`customers?page=${page}`)
+      this.$axios.get(`customers?page=${page}` + (this.query.length > 0 ? `&query=${this.query}` : ""))
         .then((res) => {
           this.customers = res.data.data
 
