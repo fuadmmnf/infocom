@@ -73,10 +73,12 @@ Route::middleware(['auth:api'])->group(function () {
 
     //customers
     Route::get('customers', [\App\Http\Controllers\Api\CustomerController::class, 'index']);
-    Route::get('customers/customer_id', [\App\Http\Controllers\Api\CustomerController::class, 'getAllCustomerIds']);
-    Route::get('customers/{customer_id}', [\App\Http\Controllers\Api\CustomerController::class, 'searchByCustomerId']);
+    Route::get('customers/{id}', [\App\Http\Controllers\Api\CustomerController::class, 'find']);
+    Route::get('customers/{customer_id}/customer_id', [\App\Http\Controllers\Api\CustomerController::class, 'searchByCustomerId']);
+    Route::get('customers/customer_id/all', [\App\Http\Controllers\Api\CustomerController::class, 'getAllCustomerIds']);
     Route::post('customers', [\App\Http\Controllers\Api\CustomerController::class, 'create']);
     Route::put('customers/{customer_id}', [\App\Http\Controllers\Api\CustomerController::class, 'update']);
+    Route::post('customers/{customer_id}/file', [\App\Http\Controllers\Api\CustomerController::class, 'saveFile']);
 
     //complains
     Route::get('complains', [\App\Http\Controllers\Api\ComplainController::class, 'index']);

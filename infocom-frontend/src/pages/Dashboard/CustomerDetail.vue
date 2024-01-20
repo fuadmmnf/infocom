@@ -6,9 +6,9 @@
         <q-form @submit="updateCustomer()"
                 @reset="customerForm = {}"
                 class="q-gutter-md">
-          <div class="row">
+          <div class="row q-mb-none">
             <q-input class="col-md-6 col-xs-12  q-my-xs q-px-xs" filled v-model="customerForm.name"
-                     label="Full Name" />
+                     label="Full Name"/>
             <q-input class="col-md-6 col-xs-12  q-my-xs q-px-xs" filled v-model="customerForm.phone"
                      label="Phone"
                      :rules="[ val => !!val && val.length === 11 || 'Please enter 11 digit phone number']"
@@ -17,27 +17,25 @@
 
           <div class="row q-my-none">
             <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.email" type="email"
-                     label="Email" />
-            <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.code"
-                     label="Code" />
+                     label="Email"/>
+            <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.customer_id"
+                     label="Customer ID"/>
 
 
           </div>
 
           <div class="row q-my-none">
-            <q-select class="col-md-4 col-xs-12 q-my-xs q-px-xs" filled
-                      v-model="customerForm.type"
-                      :options="['VIP', 'corporate', 'home']"
-                      label="type"
-
-            />
-            <q-select class="col-md-8 col-xs-12 q-my-xs q-px-xs" filled
+            <q-select class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
                       v-model="customerForm.services" multiple
                       :options="$store.getters.getServices" option-label="name"
                       option-value="id" emit-value
                       map-options label="Services"
 
             />
+
+            <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
+                     v-model="customerForm.client_type"
+                     label="Client Type"/>
           </div>
 
           <div class="row q-my-none">
@@ -48,6 +46,66 @@
                       map-options label="Pop Address"
 
             />
+            <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.kam_name"
+                     label="Kam Name"/>
+          </div>
+
+          <div class="row q-my-none">
+            <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.connectivity_type"
+                     label="Connectivity Type"/>
+            <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.allocated_ip"
+                     label="Allocated IP"/>
+          </div>
+
+          <div class="row q-my-none">
+
+            <q-input class="col-md-12 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.technical_contact"
+                     label="Technical Contact"/>
+
+          </div>
+
+          <div class="row q-my-none">
+
+            <q-input class="col-md-12 col-xs-12 q-my-xs q-px-xs" filled
+                     v-model="customerForm.management_contact"
+                     label="Management Contact"/>
+
+          </div>
+
+
+          <div class="row q-my-none">
+            <q-input class="col-md-12 col-xs-12 q-my-xs q-px-xs" filled
+                     v-model="customerForm.billing_contact_person"
+                     label="Billing Contact Person"/>
+          </div>
+
+          <div class="row q-my-none">
+            <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.selling_price"
+                     label="Selling Price"/>
+            <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
+                     v-model="customerForm.price_details"
+                     label="Price Details"/>
+          </div>
+
+          <div class="row q-my-none">
+            <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
+                     v-model="customerForm.nttn"
+                     label="NTTN"/>
+            <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.bw_allocation"
+                     label="BW Allocation"/>
+          </div>
+          <div class="row q-my-none">
+            <q-input class="col-md-12 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.mrtg_details"
+                     label="MRTG Details"/>
+          </div>
+
+          <div class="row q-my-none">
+            <q-input class="col-md-12 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.router_details"
+                     label="Router Details"/>
+          </div>
+
+
+          <div class="row q-my-none">
             <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.installation_date"
                      mask="date"
                      label="Installation Date">
@@ -56,7 +114,23 @@
                   <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
                     <q-date v-model="customerForm.installation_date">
                       <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Close" color="primary" flat />
+                        <q-btn v-close-popup label="Close" color="primary" flat/>
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+
+            <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.first_billing_date"
+                     mask="date"
+                     label="First Billing Date">
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                    <q-date v-model="customerForm.first_billing_date">
+                      <div class="row items-center justify-end">
+                        <q-btn v-close-popup label="Close" color="primary" flat/>
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -66,49 +140,37 @@
           </div>
 
           <div class="row q-my-none">
+
             <q-input class="col-md-12 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.address"
-                     label="Address" />
-          </div>
-          <div class="row q-my-none">
-            <q-input class="col-md-12 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.technical_contact"
-                     label="Technical Contact" />
-          </div>
+                     label="Customer Address"/>
 
+          </div>
           <div class="row q-my-none">
-            <q-input class="col-md-12 col-xs-12 q-my-xs q-px-xs" filled
-                     v-model="customerForm.management_contact"
-                     label="Management Contact" />
+            <q-input class="col-md-12 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.comment_box"
+                     label="Comment Box"/>
           </div>
 
           <div class="row q-my-none">
-            <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.connection_package"
-                     label="Connection Package" />
-            <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.connection_details"
-                     label="Connection Details" />
-          </div>
+            <div  v-if="customerForm.additional_file !== null">
+              <q-btn @click.stop="() => {downloadItem(customerForm.additional_file, 'Customer Additional File')}">Download Additional File</q-btn>
+              <q-btn @click="()=>{customerForm.file = null; customerForm.additional_file = null}">Remove</q-btn>
+            </div>
+            <q-file v-else class="col-md-5 col-xs-12 q-my-xs q-px-xs" filled bottom-slots v-model="file"
+                    label="Additional Customer File" counter max-files="1">
+              <template v-slot:before>
+                <q-icon name="attachment"/>
+              </template>
+              <template v-if="customerForm.file !== null" v-slot:append>
+                <q-icon name="close" @click.stop=" () => {customerForm.file = null}" class="cursor-pointer"/>
+              </template>
 
-          <div class="row q-my-none">
-            <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.other_services"
-                     label="Other Services" />
-            <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
-                     v-model="customerForm.additional_technical_box"
-                     label="Additional Technical Box" />
-          </div>
+              <template v-slot:hint>
+                Additional File
+              </template>
+            </q-file>
 
-          <div class="row q-my-none">
-            <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
-                     v-model="customerForm.billing_information"
-                     label="Billing Information" />
-            <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.kam_name"
-                     label="KAM Name" />
-          </div>
-
-          <div class="row q-my-none">
-
-            <q-btn class="col-md-3 col-xs-12 q-my-xs q-px-xs" filled
-                     label="Identity File" @click="downloadItem(customerForm.identity_file, 'Identity File')" />
-            <q-btn class="col-md-3 col-xs-12 q-my-xs q-px-xs" filled
-                     label="Agreement Form"  @click="downloadItem(customerForm.agreement_form, 'Agreement Form')"/>
+            <!--            <q-btn class="col-md-3 col-xs-12 q-my-xs q-px-xs" filled-->
+            <!--                   label="Download"  @click="downloadItem(customerForm.additional_file, 'Additional File')"/>-->
           </div>
           <div class="q-pa-sm">
             <!--      <q-btn class="bg-info text-white q-mr-sm" label="Resubmit" type="button"-->
@@ -117,8 +179,8 @@
 
             <!--                  <q-btn class=" q-mr-sm" label="Reset" type="reset"/>-->
 
-            <q-btn class="bg-purple text-white" label="Update" type="submit"
-                   :disable="$store.getters.getActionRunningState" />
+            <q-btn class="bg-purple text-white" label="Submit" type="submit"
+                   :disable="$store.getters.getActionRunningState"/>
           </div>
 
         </q-form>
@@ -135,7 +197,10 @@ export default {
   name: "CustomerDetail",
   data() {
     return {
-      customerForm: {},
+      customerForm: {
+        file: null,
+      },
+      file: null,
     }
 
   },
@@ -143,13 +208,13 @@ export default {
     this.fetchCustomer()
   },
   methods: {
-    downloadItem (url, label) {
+    downloadItem(url, label) {
       const downloadRoot = process.env.PROD ? 'http://221.120.96.121/uploads/customers' : 'http://127.0.0.1:8000/uploads/customers'
       // const blob = new Blob([response.data])
       const link = document.createElement('a')
       link.href = downloadRoot + url
       link.download = label
-      link.target= '_blank'
+      link.target = '_blank'
       link.click()
       // this.$axios.get(downloadRoot + url, { responseType: 'blob' })
       //   .then(response => {
@@ -167,15 +232,27 @@ export default {
             phone: res.data.user.phone,
             email: res.data.user.email,
             popaddress_id: res.data.popaddress === null ? '' : res.data.popaddress_id,
-            services: res.data.services.filter((s) => { return serviceIds.includes(s)})
+            services: res.data.services.filter((s) => {
+              return serviceIds.includes(s)
+            })
           }
         })
     },
     updateCustomer() {
-      const prev = { ...this.customerForm }
+      const prev = {...this.customerForm}
+      if (this.customerForm.file === null) {
+        this.customerForm = {...this.customerForm, additional_file: null}
+      } else {
+        delete this.customerForm['additional_file'];
+      }
       this.$axios.put(`customers/${this.$route.params.customer_id}`, this.customerForm)
-        .then((res) => {
+        .then(async (res) => {
           if (res.status === 204) {
+            if (this.additional_file !== null) {
+              let formData = new FormData();
+              formData.append('additional_file', this.file);
+              await this.$axios.post(`customers/${this.$route.params.customer_id}/file`, formData);
+            }
             this.$q.notify({
               type: 'positive',
               message: `Customer Updated Successfully`,

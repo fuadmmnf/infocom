@@ -56,11 +56,11 @@ class UserTokenHandler
     }
 
 
-    public function createCustomer(array $info, array $files)
+    public function createCustomer(array $info)
     {
         DB::beginTransaction();
         try {
-            $user = $this->createUser($info['name'], $info['phone'], $info['code'], $info['email'], $info['phone']);
+            $user = $this->createUser($info['name'], $info['phone'], $info['customer_id'], $info['email'], $info['phone']);
             $customer = new Customer();
             $customer->user_id = $user->id;
             $customer->popaddress_id = $info['popaddress_id'] ?? null;
@@ -83,12 +83,12 @@ class UserTokenHandler
             $customer->router_details = $info['router_details'] ?? '';
             $customer->installation_date = isset($info['installation_date']) ? Carbon::parse($info['installation_date']) : null;
             $customer->first_billing_date = isset($info['first_billing_date']) ? Carbon::parse($info['first_billing_date']) : null;
-            foreach ($files as $attr => $file) {
-                $name = '/' . $attr . '_' . uniqid() . '.' . $file->extension();
-//                $file->store('local', $name);
-                Storage::disk('public_uploads')->putFileAs('customers', $file, $name);
-                $customer->setAttribute($attr, $name);
-            }
+//            foreach ($files as $attr => $file) {
+//                $name = '/' . $attr . '_' . uniqid() . '.' . $file->extension();
+////                $file->store('local', $name);
+//                Storage::disk('public_uploads')->putFileAs('customers', $file, $name);
+//                $customer->setAttribute($attr, $name);
+//            }
             $customer->save();
             $user->assignRole('customer');
         } catch (\Exception $e) {
@@ -110,6 +110,18 @@ class UserTokenHandler
         $customer->update($info);
 
         return $customer;
+    }
+
+    public function updateCustomerFile($customer_id, array $files)
+    {
+        $customer = Customer::findOrFail($customer_id);
+        foreach ($files as $attr => $file) {
+            $name = '/' . $attr . '_' . uniqid() . '.' . $file->extension();
+//                $file->store('local', $name);
+            Storage::disk('public_uploads')->putFileAs('customers', $file, $name);
+            $customer->setAttribute($attr, $name);
+        }
+        $customer->save();
     }
 
     public function regenerateUserToken(User $user)

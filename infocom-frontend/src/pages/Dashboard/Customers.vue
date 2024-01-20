@@ -8,7 +8,7 @@
       row-key="id"
       :rows-per-page-options="[20]"
       :pagination.sync="pagination"
-      @row-click="(e, row, idx) => {openCustomerModal(row)}"
+      @row-click="(e, row, idx) => {$router.push({name: 'dashboard-customer-detail', params: {customer_id: row.id}})}"
       @update:pagination="({page}) => {fetchCustomers(page)}"
       @request="onRequest"
     >
@@ -75,10 +75,10 @@
                   </q-btn>
                 </q-bar>
 
-                <q-form @submit="customerForm.id === undefined? createCustomer(): updateCustomer()"
+                <q-form @submit="createCustomer()"
                         @reset="customerForm = {}"
                         class="q-gutter-md">
-                  <div class="row">
+                  <div class="row q-mb-none">
                     <q-input class="col-md-6 col-xs-12  q-my-xs q-px-xs" filled v-model="customerForm.name"
                              label="Full Name"/>
                     <q-input class="col-md-6 col-xs-12  q-my-xs q-px-xs" filled v-model="customerForm.phone"
@@ -90,8 +90,8 @@
                   <div class="row q-my-none">
                     <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.email" type="email"
                              label="Email"/>
-                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.code"
-                             label="Code"/>
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.customer_id"
+                             label="Customer ID"/>
 
 
                   </div>
@@ -106,8 +106,8 @@
                     />
 
                     <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
-                             v-model="customerForm.selling_price_bdt_excluding_vat"
-                             label="Selling price bdt excluding vat"/>
+                             v-model="customerForm.client_type"
+                             label="Client Type"/>
                   </div>
 
                   <div class="row q-my-none">
@@ -118,6 +118,66 @@
                               map-options label="Pop Address"
 
                     />
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.kam_name"
+                             label="Kam Name"/>
+                  </div>
+
+                  <div class="row q-my-none">
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.connectivity_type"
+                             label="Connectivity Type"/>
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.allocated_ip"
+                             label="Allocated IP"/>
+                  </div>
+
+                  <div class="row q-my-none">
+
+                    <q-input class="col-md-12 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.technical_contact"
+                             label="Technical Contact"/>
+
+                  </div>
+
+                  <div class="row q-my-none">
+
+                    <q-input class="col-md-12 col-xs-12 q-my-xs q-px-xs" filled
+                             v-model="customerForm.management_contact"
+                             label="Management Contact"/>
+
+                  </div>
+
+
+                  <div class="row q-my-none">
+                    <q-input class="col-md-12 col-xs-12 q-my-xs q-px-xs" filled
+                             v-model="customerForm.billing_contact_person"
+                             label="Billing Contact Person"/>
+                  </div>
+
+                  <div class="row q-my-none">
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.selling_price"
+                             label="Selling Price"/>
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
+                             v-model="customerForm.price_details"
+                             label="Price Details"/>
+                  </div>
+
+                  <div class="row q-my-none">
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
+                             v-model="customerForm.nttn"
+                             label="NTTN"/>
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.bw_allocation"
+                             label="BW Allocation"/>
+                  </div>
+                  <div class="row q-my-none">
+                    <q-input class="col-md-12 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.mrtg_details"
+                             label="MRTG Details"/>
+                  </div>
+
+                  <div class="row q-my-none">
+                    <q-input class="col-md-12 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.router_details"
+                             label="Router Details"/>
+                  </div>
+
+
+                  <div class="row q-my-none">
                     <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.installation_date"
                              mask="date"
                              label="Installation Date">
@@ -133,85 +193,52 @@
                         </q-icon>
                       </template>
                     </q-input>
+
+                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.first_billing_date"
+                             mask="date"
+                             label="First Billing Date">
+                      <template v-slot:append>
+                        <q-icon name="event" class="cursor-pointer">
+                          <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                            <q-date v-model="customerForm.first_billing_date">
+                              <div class="row items-center justify-end">
+                                <q-btn v-close-popup label="Close" color="primary" flat/>
+                              </div>
+                            </q-date>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
                   </div>
 
-                  <div class="row q-my-none">
-                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.technical_contact"
-                             :rules="[ val => (val===undefined || val === '' || val.replace(/\s/g,'').split(',').filter((v) => v.length !== 11).length === 0) || 'Please enter comma separated 11 digit phone numbers']"
-                             label="Technical Contact"/>
-                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.management_contact"
-                             label="Management Contact"/>
-                  </div>
-
-                  <div class="row q-my-none">
-                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.connection_package"
-                             label="Connection Package"/>
-                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.connection_details"
-                             label="Connection Details"/>
-                  </div>
-
-                  <div class="row q-my-none">
-                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.other_services"
-                             label="Other Services"/>
-                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
-                             v-model="customerForm.additional_technical_box"
-                             label="Additional Technical Box"/>
-                  </div>
-
-                  <div class="row q-my-none">
-                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
-                             v-model="customerForm.billing_information"
-                             label="Billing Information"/>
-                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.kam_name"
-                             label="KAM Name"/>
-                  </div>
-
-                  <div class="row q-my-none">
-                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.client_type"
-                             label="Client type"/>
-                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.connection_type"
-                             label="Connection Type"/>
-                  </div>
-
-                  <div class="row q-my-none">
-                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
-                             v-model="customerForm.bandwidth_distribution_point"
-                             label="Bandwidth distribution point"/>
-                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.connectivity_type"
-                             label="Connectivity type"/>
-                  </div>
-
-
-                  <div class="row q-my-none">
-                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled
-                             v-model="customerForm.bandwidth_allocation"
-                             label="Bandwidth allocation"/>
-                    <q-input class="col-md-6 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.allocated_ip"
-                             label="Allocated IP"/>
-
-                  </div>
-
-                  <div class="flex flex-center items-center q-mt-none">
-                    <span class="text-subtitle1">Customer Address</span>
-                  </div>
-                  <div class="row q-my-none">
-                    <q-input class="col-md-4 col-xs-12 q-my-xs q-px-xs" filled
-                             v-model="customerForm.division"
-                             label="Division"/>
-                    <q-input class="col-md-4 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.district"
-                             label="District"/>
-                    <q-input class="col-md-4 col-xs-12 q-my-xs q-px-xs" filled
-                             v-model="customerForm.thana"
-                             label="Thana"/>
-
-                  </div>
                   <div class="row q-my-none">
 
                     <q-input class="col-md-12 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.address"
-                             label="Address"/>
+                             label="Customer Address"/>
 
                   </div>
+                  <div class="row q-my-none">
+                    <q-input class="col-md-12 col-xs-12 q-my-xs q-px-xs" filled v-model="customerForm.comment_box"
+                             label="Comment Box"/>
+                  </div>
+                  <div class="row q-my-none">
+                    <q-file class="col-md-5 col-xs-12 q-my-xs q-px-xs" filled bottom-slots v-model="additional_file"
+                            label="Additional Customer File" counter max-files="1">
+                      <template v-slot:before>
+                        <q-icon name="attachment"/>
+                      </template>
+                      <template v-if="additional_file !== null" v-slot:append>
+                        <q-icon name="close" @click.stop="additional_file = null" class="cursor-pointer"/>
+                      </template>
 
+                      <template v-slot:hint>
+                        Additional File
+                      </template>
+                    </q-file>
+
+                    <!--            <q-btn class="col-md-3 col-xs-12 q-my-xs q-px-xs" filled-->
+                    <!--                   label="Download"  @click="downloadItem(customerForm.additional_file, 'Additional File')"/>-->
+                  </div>
                   <div class="q-pa-sm">
                     <!--      <q-btn class="bg-info text-white q-mr-sm" label="Resubmit" type="button"-->
                     <!--             @click="updateComplain(false)"-->
@@ -253,34 +280,31 @@ import JsonExcel from "vue-json-excel";
 
 const customerFormTemplate = () => {
   return {
-    name: '',
-    email: '',
-    phone: '',
-    code: '',
-    division: '',
-    district: '',
-    thana: '',
-    address: '',
-    services: [],
     popaddress_id: '',
+    name: '',
+    phone: '',
+    email: '',
+    services: [],
+    client_type: '',
+    connectivity_type: '',
+    customer_id: '',
+    address: '',
     technical_contact: '',
     management_contact: '',
-    connection_package: '',
-    other_services: '',
-    connection_details: '',
-    additional_technical_box: '',
-    billing_information: '',
+    billing_contact_person: '',
     kam_name: '',
-    installation_date: '',
-    password: '',
-    password_confirmation: '',
-    client_type: '',
-    connection_type: '',
-    bandwidth_distribution_point: '',
-    connectivity_type: '',
-    bandwidth_allocation: '',
+    selling_price: '',
+    price_details: '',
+//           'assword'  'required|confirmed',
+    nttn: '',
+    bw_allocation: '',
+    mrtg_details: '',
     allocated_ip: '',
-    selling_price_bdt_excluding_vat: ''
+    comment_box: '',
+    router_details: '',
+    installation_date: '',
+    first_billing_date: '',
+    additional_file: '',
   }
 }
 export default {
@@ -302,12 +326,13 @@ export default {
       },
       departments: [],
       customers: [],
+      additional_file: null,
       customerForm: customerFormTemplate(),
       columns: [
-        {name: 'name', align: 'center', label: 'Name', field: row => row.user.name, sortable: true},
+        {name: 'name', align: 'center', label: 'Name', field: row => row.user.name},
         {name: 'phone', align: 'center', label: 'Phone', field: row => row.user.phone},
         {name: 'email', align: 'center', label: 'Email', field: row => row.user.email},
-        {name: 'code', align: 'center', label: 'Code', field: row => row.code},
+        {name: 'customer_id', align: 'center', label: 'Customer ID', field: row => row.customer_id},
         {
           name: 'popaddress',
           align: 'center',
@@ -325,8 +350,8 @@ export default {
     })
   },
   methods: {
-    onRequest (props) {
-      const { page, rowsPerPage, sortBy, descending } = props.pagination
+    onRequest(props) {
+      const {page, rowsPerPage, sortBy, descending} = props.pagination
       const filter = props.filter
 
       this.loading = true
@@ -374,8 +399,14 @@ export default {
     },
     createCustomer() {
       this.$axios.post('customers', this.customerForm)
-        .then((res) => {
+        .then(async (res) => {
           if (res.status === 201) {
+            const c = res.data
+            if (this.additional_file !== null) {
+              let formData = new FormData();
+              formData.append('additional_file', this.additional_file);
+              await this.$axios.post(`customers/${c.id}/file`, formData);
+            }
             this.showCustomerForm = false
             this.fetchCustomers()
             this.customerForm = customerFormTemplate()

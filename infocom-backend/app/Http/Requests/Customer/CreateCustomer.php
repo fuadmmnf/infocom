@@ -22,16 +22,15 @@ class CreateCustomer extends FormRequest {
             'kam_name' => 'present',
             'selling_price' => 'present',
             'price_details' => 'present',
-//            'password' => 'required|confirmed',
+            'password' => 'sometimes|confirmed',
             'nttn' => 'present',
             'bw_allocation' => 'present',
             'mrtg_details' => 'present',
             'allocated_ip' => 'present',
             'comment_box' => 'present',
-            'router_details' => 'present|nullable|date',
+            'router_details' => 'present|nullable',
             'installation_date' => 'present',
             'first_billing_date' => 'present',
-            'additional_file' => 'present',
         ];
     }
 

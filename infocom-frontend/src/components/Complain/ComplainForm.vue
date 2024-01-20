@@ -280,7 +280,7 @@ export default {
       this.complain.slaplan_id = (s !== undefined ? s.id : '')
     },
     fetchCustomerCodes() {
-      this.$axios.get('customers/code')
+      this.$axios.get('customers/customer_id/all')
         .then((res) => {
           this.customerCodes = res.data.map((c) => c.code)
         })

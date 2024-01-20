@@ -23,7 +23,7 @@ class CustomerFactory extends Factory
     {
         return [
             'services' => $this->faker->words(4),
-            'code' => $this->faker->unique()->word,
+            'customer_id' => $this->faker->unique()->word,
             'address' => $this->faker->streetAddress . ',' . $this->faker->streetName . ',' . $this->faker->city . ',' . $this->faker->country,
             'installation_date' => $this->faker->dateTime,
             'client_type' => $this->faker->randomElement(['Home', 'Corporate']),

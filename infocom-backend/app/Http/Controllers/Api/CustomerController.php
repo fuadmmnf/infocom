@@ -64,8 +64,14 @@ class CustomerController extends Controller {
     }
     public function create(CreateCustomer $request) {
         $userTokenHandler = new UserTokenHandler();
-        $customer = $userTokenHandler->createCustomer($request->validated(), ['additional_file' => $request->file('additional_file')]);
+        $customer = $userTokenHandler->createCustomer($request->validated());
         return response()->json($customer, 201);
+    }
+
+    public function saveFile(UpdateCustomer $request) {
+        $userTokenHandler = new UserTokenHandler();
+        $userTokenHandler->updateCustomerFile($request->route('customer_id'), ['additional_file' => $request->file('additional_file')]);
+        return response()->noContent();
     }
 
     public function update(UpdateCustomer $request) {
