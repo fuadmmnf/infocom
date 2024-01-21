@@ -91,6 +91,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('reports/customers', [\App\Http\Controllers\Api\ReportController::class, 'exportCustomers']);
     Route::get('reports/departmentlog', [\App\Http\Controllers\Api\ReportController::class, 'fetchDepartmentActivityLog']);
     Route::get('reports/complainstatus', [\App\Http\Controllers\Api\ReportController::class, 'fetchComplainStatusLog']);
+    Route::get('reports/complainstat', [\App\Http\Controllers\Api\ReportController::class, 'fetchComplainStat']);
     Route::get('reports/topicwisepop', [\App\Http\Controllers\Api\ReportController::class, 'fetchTopicWisePopLog']);
     Route::get('reports/servicetime', [\App\Http\Controllers\Api\ReportController::class, 'fetchServiceTimeLog']);
     Route::get('reports/pop', [\App\Http\Controllers\Api\ReportController::class, 'fetchPopLog']);

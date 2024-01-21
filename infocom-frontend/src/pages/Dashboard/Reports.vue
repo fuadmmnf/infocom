@@ -178,6 +178,25 @@
         </template>
       </q-date>
 
+
+      <q-date class="col-3 q-ma-sm" v-model="complainStatRange" range color="blue-gray" subtitle="Complain Status Report">
+        <template>
+          <div class="flex flex-center items-center ">
+
+            <download-excel class="col-2 q-mr-sm" type="csv"
+                            :name="generateFileName('complain_stat', complainStatRange)"
+                            :header="generateFileName('Complain Stat', complainStatRange).split('.')[0].replace('_', ' ')"
+                            :fetch="fetchComplainStat"
+            >
+              <q-btn
+                color="purple-9"
+                icon="text_snippet"
+              />
+            </download-excel>
+          </div>
+        </template>
+      </q-date>
+
     </div>
 
   </q-page>
@@ -225,6 +244,11 @@ export default {
         to: '',
         from: ''
       },
+
+      complainStatRange: {
+        to: '',
+        from: ''
+      },
     }
   },
   mounted() {
@@ -265,6 +289,14 @@ export default {
     async fetchDataServiceLog() {
       if (this.serviceTimeRange !== null) {
         const response = await this.$axios.get(`reports/servicetime?department_id=${this.selectedDepartmentId}&start=${this.serviceTimeRange.from.replaceAll('/', '-')}&end=${this.serviceTimeRange.to.replaceAll('/', '-')}`)
+        return response.data.rows
+      }
+
+    },
+
+    async fetchComplainStat() {
+      if (this.complainStatRange !== null) {
+        const response = await this.$axios.get(`reports/complainstat?start=${this.complainStatRange.from.replaceAll('/', '-')}&end=${this.complainStatRange.to.replaceAll('/', '-')}`)
         return response.data.rows
       }
 

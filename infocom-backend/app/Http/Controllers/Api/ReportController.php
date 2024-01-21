@@ -214,6 +214,57 @@ class ReportController extends Controller
         ]);
     }
 
+    public function fetchComplainStat()
+    {
+        $approvedcomplains = Complain::orderBy('approved_time')->whereBetween('approved_time', [$this->start, $this->end]);
+        $approvedcomplains = $approvedcomplains->withTrashed()->with(['department', 'slaplan', 'helptopic', 'customer', 'customer.user', 'agent', 'agent.user', 'editor', 'editor.user'])->get();
+
+        $complainLog = $approvedcomplains->map(function ($complain, $key) use ($approvedcomplains) {
+            return [
+                'Ticket Number' => $complain->id,
+                'Date' => $complain->complain_time,
+                'Subject' => ($complain->slaplan_id == null ? "N/A" : $complain->slaplan->name),
+                'From' => ($complain->customer_id == null ? "N/A" : $complain->customer->user->name),
+                'From Email' => ($complain->customer_id == null ? "N/A" : $complain->customer->user->email),
+                'Priority' => $complain->priority,
+                'Department' => ($complain->department_id == null ? "N/A" : $complain->department->name),
+                'Help Topic' => ($complain->helptopic_id == null ? "N/A" : $complain->helptopic->name),
+                'Source' => $complain->ticket_source,
+                'Current Status' => $complain->status,
+                'Last Update' => $complain->updated_at,
+                'Due Date' => $complain->assigned_time,
+                'Overdue' => ($complain->status == 'overdue' ? "1" : "0"),
+                'Answered' => ($complain->complain_feedback != null && $complain->status != 'pending' ? "1" : "0"),
+                'Assigned To' => ($complain->editor_id == null ? "N/A" : $complain->editor->user->name),
+                'Agent Assigned' => ($complain->agent_id == null ? "N/A" : $complain->agent->user->name),
+                'Team Assigned' => ($complain->department_id == null ? "N/A" : $complain->department->name),
+            ];
+        });
+        return response()->json([
+            'title' => 'Report on Approved Complain Summary ' . $this->start . ' - ' . $this->end,
+            'headers' => ($complainLog->count()) ? array_keys($complainLog[0]) : [
+                'Ticket Number',
+                'Date',
+                'Subject',
+                'From',
+                'From Email',
+                'Priority',
+                'Department',
+                'Help Topic',
+                'Source',
+                'Current Status',
+                'Last Update',
+                'Due Date',
+                'Overdue',
+                'Answered',
+                'Assigned To',
+                'Agent Assigned',
+                'Team Assigned',
+            ],
+            'rows' => $complainLog
+        ]);
+    }
+
     public function fetchPopLog()
     {
         $popaddresses = PopAddress::withCount('customers')->get(); //customers_count
