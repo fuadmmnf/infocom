@@ -235,8 +235,8 @@ class ReportController extends Controller
                 'Due Date' => $complain->assigned_time,
                 'Overdue' => ($complain->status == 'overdue' ? "1" : "0"),
                 'Answered' => ($complain->complain_feedback != null && $complain->status != 'pending' ? "1" : "0"),
-                'Assigned To' => ($complain->editor_id == null ? "N/A" : $complain->editor->user->name),
-                'Agent Assigned' => ($complain->agent_id == null ? "N/A" : $complain->agent->user->name),
+                'Assigned To' => ($complain->editor_id == null && $complain->editor != null? "N/A" : $complain->editor->user->name),
+                'Agent Assigned' => ($complain->agent_id == null && $complain->agent != null? "N/A" : $complain->agent->user->name),
                 'Team Assigned' => ($complain->department_id == null ? "N/A" : $complain->department->name),
             ];
         });

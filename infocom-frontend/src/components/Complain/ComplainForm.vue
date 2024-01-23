@@ -175,7 +175,7 @@
     </div>
 
     <div v-if="complain.status === 'overdue'">
-      <q-btn class="bg-purple text-white" label="Approve" type="submit"
+      <q-btn class="bg-purple text-white q-mx-md" label="Approve" type="submit"
              :disable="$store.getters.getActionRunningState"/>
 
       <q-btn class="bg-purple text-white" label="Reopen" type="submit"

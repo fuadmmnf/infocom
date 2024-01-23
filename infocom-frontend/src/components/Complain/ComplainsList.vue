@@ -187,7 +187,7 @@ export default {
     },
     fetchComplainsList(page = 1) {
       console.log(this.search)
-      this.$axios.get(`complains?status=${this.status}${this.selectedDepartmentId === '' ? '' : ('&department_id=' + this.selectedDepartmentId)}${(''+this.search).length > 0? "&customer_id=" + this.search: ""}&page=${page}`)
+      this.$axios.get(`complains?status=${this.status}${this.selectedDepartmentId === '' ? '' : ('&department_id=' + this.selectedDepartmentId)}${(''+this.search).length > 0 && this.search !== null? "&customer_id=" + this.search: ""}&page=${page}`)
         .then((res) => {
           this.complains = res.data.data
         })
