@@ -252,6 +252,7 @@ export default {
               let formData = new FormData();
               formData.append('additional_file', this.file);
               await this.$axios.post(`customers/${this.$route.params.customer_id}/file`, formData);
+              this.fetchCustomer();
             }
             this.$q.notify({
               type: 'positive',
