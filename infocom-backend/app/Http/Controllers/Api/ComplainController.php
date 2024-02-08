@@ -131,7 +131,7 @@ class ComplainController extends Controller
             } else if ($after->status == 'approved') {
                 $after->approved_time = Carbon::now();
                 $message = "Dear " . $after->customer->user->name . ", this SMS is to notify you that we believe this ticket (TT#" . $after->id . ")  has been resolved. Best Regards, CMS Team, INFOCOM Limited";
-                SendSMSJob::dispatch(['receiver' => $after->customer->user->phonee, 'message' => $message]);
+                SendSMSJob::dispatch(['receiver' => $after->customer->user->phone, 'message' => $message]);
                 Mail::to($after->customer->user->email)->queue(new CustomerComplainApproval($after));
             } else if ($after->status == 'overdue') {
                 $after->approved_time = Carbon::now();

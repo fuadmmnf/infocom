@@ -5,6 +5,8 @@ namespace App\Handlers;
 
 
 
+use Illuminate\Support\Facades\Log;
+
 class SMSHandler
 {
     public static function sendSMS($receiver, $message){
@@ -23,6 +25,7 @@ class SMSHandler
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $smsresult = curl_exec($ch);
         $p = explode("|",$smsresult);
+        Log::debug($p);
         $sendstatus = $p[0];
 
         if($sendstatus != 1101){ //success response code from http://login.bulksmsbd.com/apidocs.php
