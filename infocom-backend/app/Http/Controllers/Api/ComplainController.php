@@ -49,7 +49,7 @@ class ComplainController extends Controller
             $complainsQuery->whereNull('approved_time');
         }
 
-        $complains = $complainsQuery->paginate(20);
+        $complains = $complainsQuery->orderBy('id', 'desc')->paginate(20);
         $complains->load('customer', 'customer.user', 'editor', 'editor.user');
         return response()->json($complains);
     }

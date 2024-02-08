@@ -90,7 +90,7 @@
              v-model="complain.complain_feedback"
              type="textarea" autogrow
              label="Complain Feedback"
-             :disable="statusIndex<3 || !(isComplainEditor || $store.getters.hasCallcenterAccess)"
+             :disable="statusIndex<2 || !(isComplainEditor || $store.getters.hasCallcenterAccess)"
     />
 
 
@@ -228,6 +228,7 @@ export default {
   },
   computed: {
     statusIndex: function () {
+      console.log(this.statusList.indexOf(this.complain.status));
       return this.statusList.indexOf(this.complain.status)
     },
     isAuthenticated: function () {
