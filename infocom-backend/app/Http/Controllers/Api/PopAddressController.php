@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class PopAddressController extends Controller {
     public function index() {
-        $popAddresses = PopAddress::all();
+        $popAddresses = PopAddress::orderBy('id', 'desc')->get();
         return response()->json($popAddresses);
     }
 

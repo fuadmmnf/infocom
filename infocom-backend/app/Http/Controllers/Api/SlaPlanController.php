@@ -12,7 +12,7 @@ class SlaPlanController extends Controller
 {
     public function index()
     {
-        $slaplans = SlaPlan::with('helptopic')->get();
+        $slaplans = SlaPlan::with('helptopic')->orderBy('id', 'desc')->get();
         return response()->json($slaplans);
     }
 

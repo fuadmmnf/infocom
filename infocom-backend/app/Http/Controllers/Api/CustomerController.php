@@ -37,7 +37,7 @@ class CustomerController extends Controller
         }
 
 
-        $customers = $customers->paginate(20);
+        $customers = $customers->orderBy('id', 'desc')->paginate(20);
         $customers->load('popaddress');
         return response()->json($customers);
     }

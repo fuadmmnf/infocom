@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class ServicesController extends Controller {
     public function index() {
-        $services = Service::all();
+        $services = Service::orderBy('id', 'desc')->get();
         return response()->json($services);
     }
 

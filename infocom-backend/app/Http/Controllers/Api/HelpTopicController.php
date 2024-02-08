@@ -12,7 +12,7 @@ class HelpTopicController extends Controller
 {
     public function index()
     {
-        $helptopics = HelpTopic::all();
+        $helptopics = HelpTopic::orderBy('id', 'desc')->get();
         return response()->json($helptopics);
     }
 
