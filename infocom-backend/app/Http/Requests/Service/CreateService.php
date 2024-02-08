@@ -9,7 +9,7 @@ class CreateService extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|unique:services,name'
+            'name' => 'required'
         ];
     }
 
