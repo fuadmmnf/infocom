@@ -2,11 +2,15 @@
 
 namespace App\Http\Requests\Customer;
 
+use App\Models\Customer;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateCustomer extends FormRequest {
     public function rules() {
+        $customer = Customer::with('user')->find($this->route('customer_id'));
         return [
+            'phone' => 'sometimes|unique:users,phone,'. $customer->user->id,
+            'email' => 'sometimes|unique:users,email,' . $customer->user->id,
             'popaddress_id' => 'sometimes',
             'name' => 'sometimes',
             'services' => 'sometimes|array',
