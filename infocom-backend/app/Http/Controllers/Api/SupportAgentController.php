@@ -53,7 +53,10 @@ class SupportAgentController extends Controller
 
     public function destroy(Request $request){
         $supportagent = SupportAgent::findOrFail($request->route('supportagent_id'));
+        $user = $supportagent->user();
         $supportagent->delete();
+        $user->delete();
+
 
         return response()->noContent();
     }

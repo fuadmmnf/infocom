@@ -38,7 +38,9 @@ class CallcenterAgentController extends Controller {
 
     public function destroy(Request $request){
         $callcenteragent = CallcenterAgent::findOrFail($request->route('callcenteragent_id'));
+        $user = $callcenteragent->user();
         $callcenteragent->delete();
+        $user->delete();
 
         return response()->noContent();
     }
