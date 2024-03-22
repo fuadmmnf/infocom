@@ -262,7 +262,7 @@ export default {
       this.setSlaTopic()
     }
 
-    if (this.$store.getters.getUser !== null && this.$store.getters.getUser.support_agent !== undefined) {
+    if (this.complain.editor_id === null && this.$store.getters.getUser !== null && this.$store.getters.getUser.support_agent !== undefined) {
       this.complain.editor_id = this.$store.getters.getUser.support_agent.id
     } else if (this.$store.getters.getUser !== null && this.$store.getters.getUser.customer !== undefined) {
       this.complain.customer_id = this.$store.getters.getUser.customer.id
@@ -319,7 +319,7 @@ export default {
         } else {
           this.complain.status = this.statusList[this.statusList.indexOf(this.complain.status) + 1]
 
-          if (this.complain.status === 'assigned') {
+          if (this.complain.status === 'assigned' && this.complain.agent_id === null) {
             this.complain.agent_id = (this.isAuthenticated && this.$store.getters.getUser.callcenter_agent !==
               undefined) ? this.$store.getters.getUser.callcenter_agent.id : null
           }

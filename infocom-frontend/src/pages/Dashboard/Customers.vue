@@ -376,6 +376,7 @@ export default {
       this.loading = false
     },
     openCustomerModal(customer) {
+      this.additional_file = null
       if (customer === null) {
         this.customerForm = customerFormTemplate()
       } else {
@@ -419,6 +420,7 @@ export default {
             this.showCustomerForm = false
             this.fetchCustomers()
             this.customerForm = customerFormTemplate()
+            this.additional_file = null
             this.$q.notify({
               type: 'positive',
               message: `Customer Created Successfully`,

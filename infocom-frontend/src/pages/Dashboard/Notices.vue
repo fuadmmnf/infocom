@@ -67,12 +67,12 @@ export default {
   },
   methods: {
     fetchCustomerCodes() {
-      this.$axios.get('customers/code')
+      this.$axios.get('customers/customer_id/all')
         .then((res) => {
           this.customerCodes = res.data.map((c) => {
             return {
               id: c.id,
-              name: c.code
+              name: c.customer_id
             }
           })
         })

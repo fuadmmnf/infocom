@@ -15,7 +15,7 @@
 
           <q-tab v-if="$store.getters.hasCallcenterAccess" name="pending" label="Pending Complains" />
 
-          <q-tab v-if="$store.getters.hasSupportAgentAccess" name="assigned" label="Assigned Complains" />
+          <q-tab v-if="$store.getters.hasCallcenterAccess || $store.getters.hasSupportAgentAccess" name="assigned" label="Assigned Complains" />
 
           <q-tab name="running" label="Running Complains" />
           <q-tab v-if="$store.getters.hasCallcenterAccess" name="feedback" label="Feedback Complains" />
@@ -36,7 +36,7 @@
             <complains-list status="pending" />
           </q-tab-panel>
 
-          <q-tab-panel v-if="$store.getters.hasSupportAgentAccess" name="assigned">
+          <q-tab-panel v-if="$store.getters.hasCallcenterAccess || $store.getters.hasSupportAgentAccess" name="assigned">
             <div class="text-h6">Requested Complains</div>
             <complains-list status="assigned" />
           </q-tab-panel>
